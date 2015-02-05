@@ -1,7 +1,9 @@
 var colors = require('colors');
+var prompt = require('prompt');
 
 var board = [];
 var game = {};
+game.over = false;
 
 function Tile() {
 	this.isUncovered = false;
@@ -12,6 +14,7 @@ Tile.prototype.toString = function() {
 	if(this.isUncovered) {
 
 		if (this.isBomb) {
+			game.over = true;
 			return " ¤ ".bgRed;
 		} else {
 			return (" " + this.getNeighbouringBombs() + " ");
@@ -89,6 +92,10 @@ var newGame=function(x,y,bombs){
 	game.y = y;
 	console.log("newGame " + x + "," + y + " ("+ bombs+")");
 	game.numberOfBombs = bombs;
+	if(x*y<=bombs){
+		throw new Error('Not enough tiles!');
+		//console.log("error not enough tiles");
+	}
 };
 
 //creates arrays and constructs tiles
@@ -110,15 +117,18 @@ var createBoard=function(x,y){
 
 //sets random tiles to isBomb=true (game.numberOfBombs)
 var insertBombs=function(){
+	bombsHaveBeenPlanted = true;
 	var amount=game.numberOfBombs;
+
 	for (var i = 0; i < amount; i++) {
 		var x = Math.floor(Math.random() * game.x);
 		var y = Math.floor(Math.random() * game.y);
 
 		var tile = board[x][y];
 
-		if(tile.isBomb) {
+		if(tile.isBomb || tile.isUncovered) {
 			i--;
+
 		} else {
 			tile.isBomb = true;
 		}
@@ -134,11 +144,16 @@ var printBoard=function(){
 	var x = game.x;
 	var y = game.y;
 
+	var hiddenTiles = 0;
 	for (var i = 0; i < y; i++) {
 
 		for (var j = 0; j < x; j++) {
 
-			str += board[j][i].toString();
+			var tile = board[j][i];
+			
+			str += tile.toString();
+			
+			if(!tile.isUncovered){ hiddenTiles++; };
 		
 		};
 
@@ -146,37 +161,48 @@ var printBoard=function(){
 
 	};
 	console.log(str);
+	if (game.over){
+		console.log("Game Over!".red);
+		process.exit();
+	}
+
+	if(hiddenTiles==game.numberOfBombs){
+		console.log("You Win!".green);
+		process.exit();
+	}
 };
 
 
 //gameplay
 
-newGame(9,9,50);
+newGame(process.argv[2], process.argv[3], process.argv[4]);
+
 
 createBoard(game.x, game.y);
-
-insertBombs();
 
 
 printBoard();
 
+var bombsHaveBeenPlanted = false;
 
-var prompt = require('prompt');
+var ask=function(){
 
-  prompt.start();
- 
-  // 
-  // Get two properties from the user: username and email 
-  // 
-  prompt.get(['xTile', 'yTile'], function (err, result) {
-    // 
-    // Log the results. 
-    // 
-    console.log('Command-line input received:');
-    console.log('x: ' + result.xTile);
-    console.log('y: ' + result.yTile);
-    var tile = board[result.yTile][result.xTile];
-    tile.isUncovered = true;
+prompt.get(['xTile', 'yTile'], function (err, result) {
+	console.log('x: ' + result.xTile);
+	console.log('y: ' + result.yTile);
+	var tile = board[result.xTile][result.yTile];
+	tile.isUncovered = true;
+	if(!bombsHaveBeenPlanted) {
+		insertBombs();
+	}
+
 
     printBoard();
-  });
+    ask();
+});
+
+
+prompt.start();
+};
+
+ask();
