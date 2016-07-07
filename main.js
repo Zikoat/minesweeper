@@ -1,6 +1,23 @@
-var colors = require('colors');
 var prompt = require('prompt');
+var minesweeper = require('minesweeper');
+var chalk = require('chalk');
 
+var mineArray = minesweeper.generateMineArray({
+	rows: 9,
+	cols: 9,
+	mines: 10
+});
+
+var board = new minesweeper.Board(mineArray);
+var grid = board.grid();
+
+
+var printThis = chalk.green("wow");
+printThis += chalk.blue(", nice stuff");
+
+console.log(printThis);
+
+/*
 var board = [];
 var game = {};
 game.over = false;
@@ -8,7 +25,7 @@ game.over = false;
 function Tile() {
 	this.isUncovered = false;
 	this.isBomb = false;
-};
+}
 
 Tile.prototype.toString = function() {
 	if(this.isUncovered) {
@@ -18,12 +35,12 @@ Tile.prototype.toString = function() {
 			return " ¤ ".bgRed;
 		} else {
 			return (" " + this.getNeighbouringBombs() + " ");
-		};
+		}
 
 	} else {
 		//unknown
 		return "[ ]";
-	};
+	}
 };
 
 //returns amount of bomb neighbours, and sets
@@ -42,10 +59,10 @@ Tile.prototype.getNeighbouringBombs = function(){
 
 				if(this!==neighbour && neighbour.isBomb){
 					bombNeighbours++;
-				};
-			};
-		};
-	};
+				}
+			}
+		}
+	}
 	var str = bombNeighbours.toString();
 	switch(bombNeighbours) {
 		case 0:
@@ -81,7 +98,7 @@ Tile.prototype.getNeighbouringBombs = function(){
 			break;
 
 		case 8:
-			str = str.grey
+			str = str.grey;
 	}
 	return str;
 };
@@ -98,22 +115,7 @@ var newGame=function(x,y,bombs){
 	}
 };
 
-//creates arrays and constructs tiles
-var createBoard=function(x,y){
 
-	for (var i = 0; i < x; i++) {
-		
-		board[i]=new Array();
-
-		for (var j = 0; j < y; j++) {
-
-			var tile = new Tile();
-			board[i][j] = tile;
-			tile.x=i;
-			tile.y=j;
-		};
-	};
-};
 
 //sets random tiles to isBomb=true (game.numberOfBombs)
 var insertBombs=function(){
@@ -132,7 +134,7 @@ var insertBombs=function(){
 		} else {
 			tile.isBomb = true;
 		}
-	};
+	}
 };
 
 
@@ -153,13 +155,13 @@ var printBoard=function(){
 			
 			str += tile.toString();
 			
-			if(!tile.isUncovered){ hiddenTiles++; };
+			if(!tile.isUncovered){ hiddenTiles++; }
 		
-		};
+		}
 
 		str += "\n";
 
-	};
+	}
 	console.log(str);
 	if (game.over){
 		console.log("Game Over!".red);
@@ -205,4 +207,4 @@ prompt.get(['xTile', 'yTile'], function (err, result) {
 prompt.start();
 };
 
-ask();
+ask();*/

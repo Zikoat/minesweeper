@@ -1,0 +1,596 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"prin",
+				"printThis"
+			],
+			[
+				"mine",
+				"mineArray"
+			],
+			[
+				"min",
+				"mineArray"
+			],
+			[
+				"mines",
+				"minesweeper"
+			],
+			[
+				"pl",
+				"playerMovement"
+			],
+			[
+				"pla",
+				"Player"
+			],
+			[
+				"rota",
+				"rotationSpeed"
+			],
+			[
+				"ro",
+				"rotate"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "README.md",
+			"settings":
+			{
+				"buffer_size": 403,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "package.json",
+			"settings":
+			{
+				"buffer_size": 587,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"contents": "var prompt = require('prompt');\nvar minesweeper = require('minesweeper');\nvar chalk = require('chalk');\n\nvar mineArray = minesweeper.generateMineArray({\n	rows: 9,\n	cols: 9,\n	mines: 10\n});\n\nvar board = new minesweeper.Board(mineArray);\nvar grid = board.grid();\n\n\n/*\nvar board = [];\nvar game = {};\ngame.over = false;\n\nfunction Tile() {\n	this.isUncovered = false;\n	this.isBomb = false;\n}\n\nTile.prototype.toString = function() {\n	if(this.isUncovered) {\n\n		if (this.isBomb) {\n			game.over = true;\n			return \" ¤ \".bgRed;\n		} else {\n			return (\" \" + this.getNeighbouringBombs() + \" \");\n		}\n\n	} else {\n		//unknown\n		return \"[ ]\";\n	}\n};\n\n//returns amount of bomb neighbours, and sets\nTile.prototype.getNeighbouringBombs = function(){\n\n	var bombNeighbours = 0;\n\n	for (var i = -1; i <= 1; i++) {\n		for (var j = -1; j <= 1; j++) {\n\n			var x=this.x+i;\n			var y=this.y+j;\n\n			if (x>=0 && x<game.x && y>=0 && y<game.y) {\n				var neighbour = board[this.x + i][this.y + j];\n\n				if(this!==neighbour && neighbour.isBomb){\n					bombNeighbours++;\n				}\n			}\n		}\n	}\n	var str = bombNeighbours.toString();\n	switch(bombNeighbours) {\n		case 0:\n			str = \" \";\n			break;\n\n		case 1:\n			str = str.bold.blue;\n			break;\n\n		case 2:\n			str = str.green;\n			break;\n\n		case 3:\n			str = str.red;\n			break;\n\n		case 4:\n			str = str.blue;\n			break;\n\n		case 5:\n			str = str.yellow;\n			break;\n\n		case 6:\n			str = str.cyan;\n			break;\n\n		case 7:\n			str = str.bgWhite.black;\n			break;\n\n		case 8:\n			str = str.grey;\n	}\n	return str;\n};\n\n//sets variables(saves), and prints title\nvar newGame=function(x,y,bombs){\n	game.x = x;\n	game.y = y;\n	console.log(\"newGame \" + x + \",\" + y + \" (\"+ bombs+\")\");\n	game.numberOfBombs = bombs;\n	if(x*y<=bombs){\n		throw new Error('Not enough tiles!');\n		//console.log(\"error not enough tiles\");\n	}\n};\n\n\n\n//sets random tiles to isBomb=true (game.numberOfBombs)\nvar insertBombs=function(){\n	bombsHaveBeenPlanted = true;\n	var amount=game.numberOfBombs;\n\n	for (var i = 0; i < amount; i++) {\n		var x = Math.floor(Math.random() * game.x);\n		var y = Math.floor(Math.random() * game.y);\n\n		var tile = board[x][y];\n\n		if(tile.isBomb || tile.isUncovered) {\n			i--;\n\n		} else {\n			tile.isBomb = true;\n		}\n	}\n};\n\n\n\n//prints board, chooses printing format\nvar printBoard=function(){\n	var str = \"\";\n\n	var x = game.x;\n	var y = game.y;\n\n	var hiddenTiles = 0;\n	for (var i = 0; i < y; i++) {\n\n		for (var j = 0; j < x; j++) {\n\n			var tile = board[j][i];\n			\n			str += tile.toString();\n			\n			if(!tile.isUncovered){ hiddenTiles++; }\n		\n		}\n\n		str += \"\\n\";\n\n	}\n	console.log(str);\n	if (game.over){\n		console.log(\"Game Over!\".red);\n		process.exit();\n	}\n\n	if(hiddenTiles==game.numberOfBombs){\n		console.log(\"You Win!\".green);\n		process.exit();\n	}\n};\n\n\n//gameplay\n\nnewGame(process.argv[2], process.argv[3], process.argv[4]);\n\n\ncreateBoard(game.x, game.y);\n\n\nprintBoard();\n\nvar bombsHaveBeenPlanted = false;\n\nvar ask=function(){\n\nprompt.get(['xTile', 'yTile'], function (err, result) {\n	console.log('x: ' + result.xTile);\n	console.log('y: ' + result.yTile);\n	var tile = board[result.xTile][result.yTile];\n	tile.isUncovered = true;\n	if(!bombsHaveBeenPlanted) {\n		insertBombs();\n	}\n\n\n    printBoard();\n    ask();\n});\n\n\nprompt.start();\n};\n\nask();*/",
+			"file": "main.js",
+			"file_size": 3514,
+			"file_write_time": 131123652835184930,
+			"settings":
+			{
+				"buffer_size": 3201,
+				"line_ending": "Windows"
+			}
+		}
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 319.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"tasks ne",
+				"Tasks: New document"
+			],
+			[
+				"ins",
+				"Package Control: Install Package"
+			],
+			[
+				"list",
+				"Preferences: SublimeLinter Settings – User"
+			],
+			[
+				"inst",
+				"Package Control: Install Package"
+			],
+			[
+				"sublim",
+				"SublimeLinter: Enable Linter"
+			],
+			[
+				"insta",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 446.0
+	},
+	"console":
+	{
+		"height": 126.0,
+		"history":
+		[
+			"import urllib.request,os,hashlib; h = '2915d1851351e5ee549c20394736b442' + '8bc59f460fa1548d1514676163dafc88'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://packagecontrol.io/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/C/Workspace/minesweeper"
+	],
+	"file_history":
+	[
+		"/C/Users/xXCancerBoyieXz '/AppData/Roaming/Sublime Text 3/Packages/Terminal/Terminal.sublime-settings",
+		"/C/Users/xXCancerBoyieXz '/AppData/Roaming/Sublime Text 3/Packages/User/Terminal.sublime-settings",
+		"/C/Users/xXCancerBoyieXz '/AppData/Roaming/Sublime Text 3/Packages/User/SideBarEnhancements/Open With/Side Bar.sublime-menu",
+		"/C/Workspace/minesweeper/package.json",
+		"/C/Workspace/socketio/node_modules/socket.io-client/socket.io.js",
+		"/C/Workspace/ten hundred common words.txt",
+		"/C/Workspace/test/boids processing.java",
+		"/C/Workspace/socketio/public/assets/8 Bit Space Groove! by HeatleyBros.wav",
+		"/C/Workspace/socketio/public/jquery.js",
+		"/C/Workspace/flock/game.js",
+		"/C/Users/xXCancerBoyieXz '/AppData/Roaming/Sublime Text 3/Packages/PlainTasks/messages/Tutorial.todo",
+		"/C/Workspace/socketio/todo.todo",
+		"/C/Users/xXCancerBoyieXz '/AppData/Roaming/Sublime Text 3/Packages/User/Preferences.sublime-settings",
+		"/C/Workspace/socketio/socketio.sublime-project"
+	],
+	"find":
+	{
+		"height": 70.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"color",
+			"global",
+			"socket"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 2,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "README.md",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 403,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								101,
+								101
+							]
+						],
+						"settings":
+						{
+							"bracket_highlighter.busy": false,
+							"bracket_highlighter.locations":
+							{
+								"close":
+								{
+									"1":
+									[
+										105,
+										106
+									]
+								},
+								"open":
+								{
+									"1":
+									[
+										98,
+										99
+									]
+								},
+								"unmatched":
+								{
+								}
+							},
+							"bracket_highlighter.regions":
+							[
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content"
+							],
+							"syntax": "Packages/Markdown/Markdown.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "package.json",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 587,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								249,
+								249
+							]
+						],
+						"settings":
+						{
+							"auto_complete": true,
+							"bracket_highlighter.busy": false,
+							"bracket_highlighter.locations":
+							{
+								"close":
+								{
+									"1":
+									[
+										585,
+										586
+									]
+								},
+								"open":
+								{
+									"1":
+									[
+										0,
+										1
+									]
+								},
+								"unmatched":
+								{
+								}
+							},
+							"bracket_highlighter.regions":
+							[
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content"
+							],
+							"syntax": "Packages/Materialize/Langs/npm JSON.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "main.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3201,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								260,
+								260
+							]
+						],
+						"settings":
+						{
+							"auto_complete": false,
+							"bracket_highlighter.busy": false,
+							"bracket_highlighter.locations":
+							{
+								"close":
+								{
+								},
+								"open":
+								{
+								},
+								"unmatched":
+								{
+								}
+							},
+							"bracket_highlighter.regions":
+							[
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content"
+							],
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 32.0
+	},
+	"input":
+	{
+		"height": 0.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "",
+	"project": "minesweeper.sublime-project",
+	"replace":
+	{
+		"height": 60.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 500.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"",
+				"C:\\Workspace\\flock\\flock.sublime-project"
+			]
+		],
+		"width": 380.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 131.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}
