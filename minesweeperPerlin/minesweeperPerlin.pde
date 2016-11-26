@@ -1,5 +1,5 @@
 float z = 0;
-int scl = 20;
+int scl = 10;
 int xCenter = 1000;// these 2 are for the perlin noise
 int yCenter = 1000;
 boolean updateMap = false;
@@ -7,7 +7,7 @@ boolean[][] mineField;
 float probability;
 
 void setup(){
-  size(100,100);
+  size(1000,1000);
   noStroke();
   noFill();
   
@@ -17,34 +17,30 @@ void setup(){
   
   for (float x = 0; x < width/scl; x++) {
     for (float y = 0; y < height/scl; y++) {
-      boolean isMine = constrain(noise(x/10, y/10)*10-10/2+0.5 ,0,1)*random(1)*-1 + 1 < probability;
+      boolean isMine = constrain(noise(x/20, y/20)*20-20/2+0.5 ,0,1)*random(1)*-1 + 1 < probability;
       mineField[floor(x)][floor(y)] = isMine;
+    }
+  }
+  
+  stroke(0);
+  for (int x = 0; x <= mineField.length-1; x++){
+    for (int y = 0; y <= mineField[1].length-1; y++){
+      boolean isMine = mineField[x][y];
+      // showTile(x, y);
+      //fill(50, 50, 50); //  normal
+      if(isMine){ 
+        fill(255, 0, 0);
+        rect(x*scl,y*scl,scl,scl);
+      } else {
+        fill(200);
+        rect(x*scl,y*scl,scl,scl);
+      }
     }
   }
 }
 
 void draw() {
-  if(updateMap){
-    
-    for (float x = 0; x < width/scl; x++) {
-      for (float y = 0; y < height/scl; y++) {
-        boolean isMine = constrain(noise(x/10, y/10)*10-10/2+0.5 ,0,1)*random(1)*-1 + 1 < probability;
-        mineField[floor(x)][floor(y)] = isMine;
-      }
-    }
-    stroke(0);
-    for (int x = 0; x <= mineField.length-1; x++){
-      for (int y = 0; y <= mineField[1].length-1; y++){
-        boolean isMine = mineField[x][y];
-        
-        fill(50, 50, 50); //  normal
-        if(isMine) fill(0); // mine      
-        
-        rect(x*scl,y*scl,scl,scl);
-      }
-    }
-    updateMap = false;
-  }
+
 }
 
 void mouseDragged(){
@@ -95,7 +91,7 @@ void showTile(int x, int y){
       fill(0);
       break;
     case 0:
-      fill(255);//recursiveOpen
+      fill(200);//recursiveOpen
       break;
     case 1:
       fill(0, 0, 255);
