@@ -1,0 +1,18 @@
+minesweeper game, with probabilites tied to the underlying noise function
+make world scrollable ->
+function screenToWorld
+laoding/saving chunks, saving progress
+	chunk class
+	worldToChunk
+
+being able to navigate large world
+oceans(maybe, but not really, boat)
+generating tiles as i go
+flood fill
+	test with tile.isopen var
+
+update screen, check in draw
+	find upper and lor points, for loop through all within
+update tile
+
+tile.clickOn()

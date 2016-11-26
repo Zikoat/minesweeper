@@ -1,6 +1,6 @@
 float z = 0;
 int scl = 20;
-int xCenter = 1000;
+int xCenter = 1000;// these 2 are for the perlin noise
 int yCenter = 1000;
 boolean updateMap = false;
 boolean[][] mineField;
