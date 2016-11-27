@@ -78,10 +78,10 @@ function activateField(cell)
 		}
 		return;
 	}
-	if (cell.ms.isMine) 
+	if (cell.ms.isMine) // game over
 	{
 		if (cell.ms.marked) return;
-		alert('BANG!\nYou found '+score+' mines!');
+		cell.style.backgroundColor='red';
 		var divs=document.getElementsByTagName('div');
 		for(var i=0;i<divs.length;i++)
 		{
@@ -97,22 +97,50 @@ function activateField(cell)
 		return;
 	}
 	var minesAround=0;
-	for(var i=0;i<8;i++)
+	 // find how many minesAround
+	for(var i=0;i<8;i++) // for all the cells
 	{
-		if (!cell.ms.neighbors[i])
+		if (!cell.ms.neighbors[i]) // if one of the cells around, is not inthe neighbor array
 		{
 			var isMine=(Math.random()<CHANCE) && (minesAround<cell.ms.maxMinesAround);
 			var newCell=createField(cell.ms.position[0]+NeighborRelativeCoords[i][0]*CELLSIZE,cell.ms.position[1]+NeighborRelativeCoords[i][1]*CELLSIZE,8,isMine);
 		}
-		if (cell.ms.neighbors[i].ms.isMine) minesAround++;
+		if (cell.ms.neighbors[i].ms.isMine) minesAround++; // if it is a mine, add it to minesAround
 	}
 	cell.ms.activated=true;
 	cell.ms.minesAround=minesAround;
 	if (minesAround) 
 	{
 		cell.innerHTML=minesAround;
+		switch(minesAround){
+			case 1:
+				cell.style.color= "#0000FF"
+			break;
+			case 2:
+				cell.style.color= "#008000"
+			break;
+			case 3:
+				cell.style.color= "#ff0000"
+			break;
+			case 4:
+				cell.style.color= "#000080"
+			break;
+			case 5:
+				cell.style.color= "#800000"
+			break;
+			case 6:
+				cell.style.color= "#008080"
+			break;
+			case 7:
+				cell.style.color= "#000000"
+			break;
+			case 8:
+				cell.style.color= "#808080"
+			break;
+		}
+
 	}
-	else
+	else // means if there are 0 minesAround
 	{
 		// open all neighbors if no mines around
 		for(var i=0;i<8;i++)
@@ -121,10 +149,8 @@ function activateField(cell)
 				activateField(cell.ms.neighbors[i]);
 		}
 	}
-	cell.style.backgroundColor='green';
-	
-	
-	
+
+	cell.style.backgroundColor='#bbbbbb';
 }
 
 function createField(x,y,maxMinesAround,isMine)
@@ -149,11 +175,15 @@ function createField(x,y,maxMinesAround,isMine)
 		'activated':false
 	};
 	div.onclick=function(){activateField(div);};
-	cellIndex[x+';'+y]=div;
-	for(var i=0;i<8;i++)
+	cellIndex[x+';'+y]=div; // add the cell to the index
+
+	for(var i=0;i<8;i++)// for all neighbors
 	{
-		var divInIndex=cellIndex[(x+NeighborRelativeCoords[i][0]*CELLSIZE)+';'+(y+NeighborRelativeCoords[i][1]*CELLSIZE)];
-		if (divInIndex)
+		var divInIndex=cellIndex[
+			(x+NeighborRelativeCoords[i][0]*CELLSIZE)
+			+';'+
+			(y+NeighborRelativeCoords[i][1]*CELLSIZE)];
+		if (divInIndex) // if the neighbor is in the cellindex, add it to cell.ms.neighbors
 		{
 			div.ms.neighbors[i]=divInIndex;
 			divInIndex.ms.neighbors[(i+4)%8]=div;
