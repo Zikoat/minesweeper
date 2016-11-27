@@ -102,8 +102,21 @@ function activateField(cell)
 	{
 		if (!cell.ms.neighbors[i]) // if one of the cells around, is not inthe neighbor array
 		{
-			var isMine=(Math.random()<CHANCE) && (minesAround<cell.ms.maxMinesAround);
-			var newCell=createField(cell.ms.position[0]+NeighborRelativeCoords[i][0]*CELLSIZE,cell.ms.position[1]+NeighborRelativeCoords[i][1]*CELLSIZE,8,isMine);
+			var posX = cell.ms.position[0]+NeighborRelativeCoords[i][0]*CELLSIZE;
+			var posY = cell.ms.position[1]+NeighborRelativeCoords[i][1]*CELLSIZE;
+
+			var rand = Math.random()*2;
+			var steep = 5;
+			var simplex= Math.min( Math.max( (((noise.simplex2(posX/500,posY/500)+1)/2)*steep-steep/2+0.5), 0), 1) /2 ;
+			console.log(simplex);
+			var determineBomb = rand * simplex;
+
+			var isMine=(determineBomb<CHANCE) && (minesAround<cell.ms.maxMinesAround); // determine if it is a mine
+			var newCell=createField( // and create the cell
+				posX,
+				posY,
+				8,
+				isMine);
 		}
 		if (cell.ms.neighbors[i].ms.isMine) minesAround++; // if it is a mine, add it to minesAround
 	}
@@ -212,6 +225,7 @@ function viewInstructions()
 
 function initGame()
 {
+	noise.seed(Math.random());
 	mainDiv=document.getElementById('maindiv');
 	var newField=createField(mainDiv.offsetWidth/2,mainDiv.offsetHeight/2,0,false);
 	activateField(newField);
