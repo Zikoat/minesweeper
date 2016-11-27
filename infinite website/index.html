@@ -1,0 +1,36 @@
+
+<!DOCTYPE HTML>
+<html>
+	<!-- This work is licensed under the Creative Commons BY-SA 3.0 license. For more information, visit: http://creativecommons.org/licenses/by-sa/3.0/
+	You may:
+	- Share this
+	- Reuse this (even for commerical works)
+	You must:
+	- Attribute me: put my nick and my website URL (Calmarius and http://calmarius.net) in your work if you reuse my work.
+	- Share alike: Your work must be licensed under a similar or compatible license.
+	-->
+	<head>
+		<title>Minesweeper infinite</title>
+		<link rel="stylesheet" href="main.css">
+		<script>
+			var CHANCE=0.33;
+		</script>
+		<script src="game.js" type="text/javascript"></script>
+	</head>
+	<body onload="initGame()">
+		<div style="position:fixed; left:0; top:0; z-index:100; border: 1px solid blue">
+			<h1>Minesweeper Infinite</h1>
+			<h2>Score: <span id="scorespan">0</span></h2>
+			<h3>
+				<a href="javascript:(function(){var e=document.getElementById('maindiv'); e.style.left=parseInt(e.style.left)+100+'px'; e.style.top=parseInt(e.style.top)+100+'px';})()">Scroll up</a> | 
+				<a href="javascript:viewInstructions();">Instructions</a> | 
+				<a href="?">[NEW GAME]</a><br>
+			</h3>
+			<h3 style="display:none" id="gameover">Game over.</h3>
+		</div>
+		<div id="maindiv" style="position:absolute; left:0; top:0; width:100%; height:100%">
+				</div>
+		<div class="signature">by Calmarius</div>
+		<div class="signature">by zikoat</div>
+	</body>
+</html>
