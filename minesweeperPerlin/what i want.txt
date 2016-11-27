@@ -6,7 +6,6 @@ laoding/saving chunks, saving progress
 	worldToChunk
 
 being able to navigate large world
-oceans(maybe, but not really, boat)
 generating tiles as i go
 flood fill
 	test with tile.isopen var
@@ -16,3 +15,13 @@ update screen, check in draw
 update tile
 
 tile.clickOn()
+
+fantasizing:
+oceans, boat to travel from island to island
+get global points from conquering large islands
+if you dont finish an island(continents can get large) all the non-water tiles you have opened will be marked as yours, with your color. these will earn you points. if you take all the land around lake, lake will be yours. 
+you can only travel through land that is open.
+
+story: when you free the land, there will settle new people on your land
+
+on minimap: show 
