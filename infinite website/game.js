@@ -7,9 +7,10 @@
 	- Attribute me: put my nick and my website URL (Calmarius and http://calmarius.net) in your work if you reuse my work.
 	- Share alike: Your work must be licensed under a similar or compatible license.
 */
+//import "chunkmanager";
 var mainDiv=null;
 
-var CELLSIZE=30;
+var CELLSIZE=28;
 var score=0;
 var gameOver=false;
 
@@ -105,11 +106,9 @@ function activateField(cell)
 			var posX = cell.ms.position[0]+NeighborRelativeCoords[i][0]*CELLSIZE;
 			var posY = cell.ms.position[1]+NeighborRelativeCoords[i][1]*CELLSIZE;
 
-			var rand = Math.random()*2;
-			var steep = 5;
-			var simplex= Math.min( Math.max( (((noise.simplex2(posX/500,posY/500)+1)/2)*steep-steep/2+0.5), 0), 1) /2 ;
-			console.log(simplex);
-			var determineBomb = rand * simplex;
+			var rand = Math.random();
+			// noise.simplex2(posX/100,posY/100) < 0 ? 1 : 0; // i need another noise function, this has way too high frequency 
+			var determineBomb = rand;// rand * simplex;
 
 			var isMine=(determineBomb<CHANCE) && (minesAround<cell.ms.maxMinesAround); // determine if it is a mine
 			var newCell=createField( // and create the cell
@@ -124,7 +123,7 @@ function activateField(cell)
 	cell.ms.minesAround=minesAround;
 	if (minesAround) 
 	{
-		cell.innerHTML=minesAround;
+		cell.innerHTML = minesAround;
 		switch(minesAround){
 			case 1:
 				cell.style.color= "#0000FF"
@@ -174,7 +173,7 @@ function createField(x,y,maxMinesAround,isMine)
 	div.style.top=y+'px';
 	div.style.width=CELLSIZE+'px';
 	div.style.height=CELLSIZE+'px';
-	div.style.backgroundColor='gray';//'rgb('+parseInt(Math.random()*256)+','+parseInt(Math.random()*256)+','+parseInt(Math.random()*256)+')';
+	div.style.backgroundColor='gray';
 	div.style.border='1px solid black';
 	div.style.textAlign='center';
 	div.style.fontSize=CELLSIZE-5+'px';
