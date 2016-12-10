@@ -14,5 +14,28 @@ submap rules
 different modes
 actual procedure
 
+
+
+
+alternative infinite rules
 from @minefield_game
 @garblefart actually now it's a random number from 50 till 100 for a 20x20 square. I just checked if its possible to play when 150-200
+
+definitions
+	regions
+	maps
+	submaps
+	border
+	islands
+intro to submaps
+	max/min/absolute
+	reference stackoverflow
+creating submaps
+
+submap rules
+we dont have to create region, as the mines will be found, and new submaps will be created.
+we only (possibly) need the region when
+
+different modes
+
+actual procedure
