@@ -1,0 +1,18 @@
+contents:
+alternative infinite rules
+definitions
+	regions
+	maps
+	submaps
+	border
+	islands
+intro to submaps
+	max/min/absolute
+	reference stackoverflow
+creating submaps-
+submap rules
+different modes
+actual procedure
+
+from @minefield_game
+@garblefart actually now it's a random number from 50 till 100 for a 20x20 square. I just checked if its possible to play when 150-200
