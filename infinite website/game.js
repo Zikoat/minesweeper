@@ -224,9 +224,24 @@ function viewInstructions()
 	);
 }
 
+function saveGame() {
+	localStorage.setItem("mainDiv", JSON.stringify(mainDiv));
+	localStorage.setItem("cellIndex", JSON.stringify(cellIndex));
+}
+
+function loadGame() {
+	mainDiv = localStorage.getItem("mainDiv");
+	// document.getElementById('maindiv') = mainDiv; 
+	cellIndex = localStorage.getItem("cellIndex");
+	render(cellIndex);
+}
+
+
 function initGame()
 {
 	mainDiv=document.getElementById('maindiv');
 	var newField=createCell(mainDiv.offsetWidth/2,mainDiv.offsetHeight/2,0,false);
 	activateCell(newField);
+	localStorage.setItem("mainDiv", JSON.stringify(mainDiv));
+	localStorage.setItem("cellIndex", JSON.stringify(cellIndex));	
 }
