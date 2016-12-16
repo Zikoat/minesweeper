@@ -6,6 +6,7 @@
   "dependencies": {
     "chalk": "^1.1.3",
     "minesweeper": "^1.0.5",
+    "minesweeper-engine": "^0.3.3",
     "prompt": "^0.2.14"
   },
   "devDependencies": {},

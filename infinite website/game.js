@@ -7,7 +7,6 @@
 	- Attribute me: put my nick and my website URL (Calmarius and http://calmarius.net) in your work if you reuse my work.
 	- Share alike: Your work must be licensed under a similar or compatible license.
 */
-//import "chunkmanager";
 var mainDiv=null;
 
 var CELLSIZE=28;
@@ -40,7 +39,7 @@ NeighborRelativeCoords=
 	[-1,0],
 ];
 
-function activateField(cell)
+function activateCell(cell)
 {
 	if (gameOver) return;
 	if (cell.ms.activated)
@@ -73,7 +72,7 @@ function activateField(cell)
 			{
 				if (!cell.ms.neighbors[i].ms.activated && !cell.ms.neighbors[i].ms.marked)
 				{
-					activateField(cell.ms.neighbors[i]);
+					activateCell(cell.ms.neighbors[i]);
 				}
 			}
 		}
@@ -83,8 +82,9 @@ function activateField(cell)
 	{
 		if (cell.ms.marked) return;
 		cell.style.backgroundColor='red';
-		var divs=document.getElementsByTagName('div');
-		for(var i=0;i<divs.length;i++)
+		cell.innerHTML='<img class="stretch" src="mine.png">'
+		/*var divs=document.getElementsByTagName('div');
+		for(var i=0;i<divs.length;i++) // show all not flagged mines
 		{
 			var div=divs[i];
 			if (div.ms)
@@ -94,7 +94,7 @@ function activateField(cell)
 			}
 		}
 		gameOver=true;
-		document.getElementById('gameover').style.display='block';
+		document.getElementById('gameover').style.display='block';*/
 		return;
 	}
 	var minesAround=0;
@@ -111,7 +111,7 @@ function activateField(cell)
 			var determineBomb = rand;// rand * simplex;
 
 			var isMine=(determineBomb<CHANCE) && (minesAround<cell.ms.maxMinesAround); // determine if it is a mine
-			var newCell=createField( // and create the cell
+			var newCell=createCell( // and create the cell
 				posX,
 				posY,
 				8,
@@ -121,7 +121,7 @@ function activateField(cell)
 	}
 	cell.ms.activated=true;
 	cell.ms.minesAround=minesAround;
-	if (minesAround) 
+	if (minesAround) // add colors
 	{
 		cell.innerHTML = minesAround;
 		switch(minesAround){
@@ -158,15 +158,16 @@ function activateField(cell)
 		for(var i=0;i<8;i++)
 		{
 			if (!cell.ms.neighbors[i].ms.activated)
-				activateField(cell.ms.neighbors[i]);
+				activateCell(cell.ms.neighbors[i]);
 		}
 	}
 
-	cell.style.backgroundColor='#bbbbbb';
+	cell.style.backgroundColor='#bbbbbb'; // part of render
 }
 
-function createField(x,y,maxMinesAround,isMine)
+function createCell(x,y,maxMinesAround,isMine)
 {
+	// part of render
 	var div=document.createElement('div');
 	div.style.position='absolute';
 	div.style.left=x+'px';
@@ -178,7 +179,8 @@ function createField(x,y,maxMinesAround,isMine)
 	div.style.textAlign='center';
 	div.style.fontSize=CELLSIZE-5+'px';
 	div.style.cursor='pointer';
-	div.ms=
+
+	div.ms= //initiator
 	{
 		'position':[x,y],
 		'maxMinesAround':maxMinesAround,
@@ -186,7 +188,7 @@ function createField(x,y,maxMinesAround,isMine)
 		'neighbors':[undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined],
 		'activated':false
 	};
-	div.onclick=function(){activateField(div);};
+	div.onclick=function(){activateCell(div);}; // technically not a part of renderer, but should be there
 	cellIndex[x+';'+y]=div; // add the cell to the index
 
 	for(var i=0;i<8;i++)// for all neighbors
@@ -195,14 +197,14 @@ function createField(x,y,maxMinesAround,isMine)
 			(x+NeighborRelativeCoords[i][0]*CELLSIZE)
 			+';'+
 			(y+NeighborRelativeCoords[i][1]*CELLSIZE)];
-		if (divInIndex) // if the neighbor is in the cellindex, add it to cell.ms.neighbors
+		if (divInIndex) // if the neighbor is in the cellIndex, add it to cell.ms.neighbors
 		{
 			div.ms.neighbors[i]=divInIndex;
 			divInIndex.ms.neighbors[(i+4)%8]=div;
 		}
 	}
 	
-	mainDiv.appendChild(div);
+	mainDiv.appendChild(div); // render
 	return div;
 }
 
@@ -224,8 +226,7 @@ function viewInstructions()
 
 function initGame()
 {
-	noise.seed(Math.random());
 	mainDiv=document.getElementById('maindiv');
-	var newField=createField(mainDiv.offsetWidth/2,mainDiv.offsetHeight/2,0,false);
-	activateField(newField);
+	var newField=createCell(mainDiv.offsetWidth/2,mainDiv.offsetHeight/2,0,false);
+	activateCell(newField);
 }
