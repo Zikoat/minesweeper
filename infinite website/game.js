@@ -7,6 +7,73 @@
 	- Attribute me: put my nick and my website URL (Calmarius and http://calmarius.net) in your work if you reuse my work.
 	- Share alike: Your work must be licensed under a similar or compatible license.
 */
+// class cell blueprint
+class Cell {
+	constructor(x,y,maxMinesAround,isMine){
+		/*
+	for(var i=0;i<8;i++)// for all neighbors
+	{
+		var divInIndex=cellIndex[
+			(x+NeighborRelativeCoords[i][0]*CELLSIZE)
+			+';'+
+			(y+NeighborRelativeCoords[i][1]*CELLSIZE)];
+		if (divInIndex) // if the neighbor is in the cellIndex, add it to cell.ms.neighbors
+		{
+			div.ms.neighbors[i]=divInIndex;
+			divInIndex.ms.neighbors[(i+4)%8]=div;
+		}
+	}
+	*/
+
+		this.position = [x,y];
+		this.maxMinesAround = maxMinesAround;
+		this.isMine = isMine;
+		this.neighbors = [undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined];
+		this.activated = false;
+	
+		cellIndex[x+';'+y]=this; // add the cell to the index
+		
+		for(var i=0;i<8;i++) // populate neighbour array
+		{// for all neighbors
+			var neighbor = this.neighbor(i);
+			if (neighbor) // if the neighbor is in the cellIndex, add it to cell.neighbors
+			{
+				this.neighbors[i]=neighbor;
+				neighbor.neighbors[(i+4)%8]=this; // and add this cell to the other cell's neighbor array
+			}
+		}
+		
+
+	}
+	render(){
+		// part of render
+		var div=document.createElement('div');
+		div.style.position='absolute';
+		div.style.left=x+'px';
+		div.style.top=y+'px';
+		div.style.width=CELLSIZE+'px';
+		div.style.height=CELLSIZE+'px';
+		div.style.backgroundColor='gray';
+		div.style.border='1px solid black';
+		div.style.textAlign='center';
+		div.style.fontSize=CELLSIZE-5+'px';
+		div.style.cursor='pointer';
+		div.onclick=function(){activateCell(div);}; // technically not a part of renderer, but should be there
+		// div.onclick=function(){activateCell(div);};
+
+	}
+	neighbor(i){
+		return cellIndex[
+				(this.x+NeighborRelativeCoords[i][0]*CELLSIZE)
+				+';'+
+				(this.y+NeighborRelativeCoords[i][1]*CELLSIZE)];
+		//return this.neighbors[] // we have to dive into the cellindex to get the cell, store neighbors as indexes in this array
+	}
+	index(){
+		return this.x +';'+ this.y;
+	}
+}
+
 var mainDiv=null;
 
 var CELLSIZE=28;
@@ -236,6 +303,11 @@ function loadGame() {
 	render(cellIndex);
 }
 
+function render(cellIndex){
+	for(cell in cellIndex){
+		cell.render();
+	}
+}
 
 function initGame()
 {
