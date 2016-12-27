@@ -70,7 +70,7 @@
     if (!isValid) {
       throw new Error('The mine array supplied to Board constructor was not valid');
     }
-
+    // all these have their own getters
     this._state = BoardStateEnum.PRISTINE;
     this._numRows = mineArray.length;
     this._numCols = mineArray[0].length;
@@ -95,20 +95,11 @@
   };
 
   Board.prototype.grid = function () {
-    var i, j, clone = [];
-
-    for (i = 0; i < this._numRows; i++) {
-      clone.push([]);
-      for (j = 0; j < this._numCols; j++) {
-        // push a copy of the grid cell
-        clone[i].push(this.cell(j, i));
-      }
-    }
-
     return this._grid;
+  }
   };
 
-  Board.prototype._cell = function (x, y) {
+  Board.prototype._cell = function (x, y) { // check if in bounds, and return from this._grid[][]
     if (x >= 0 && y >= 0 && y < this._numRows && x < this._numCols) {
       return this._grid[y][x];
     }
