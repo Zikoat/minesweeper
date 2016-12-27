@@ -302,10 +302,10 @@
         maxY = mineArray.length,
         mineCount = 0;
 
-    for (idxY = y - 1; idxY <= endY; idxY++) {
-      for (idxX = x - 1; idxX <= endX; idxX++) {
-        if (idxY !== y || idxX !== x) {
-          if (idxY >= 0 && idxX >= 0 && idxY < maxY && idxX < maxX) {
+    for (idxY = y - 1; idxY <= endY; idxY++) { // cycle from one less than this position to one after it
+      for (idxX = x - 1; idxX <= endX; idxX++) { 
+        if (idxY !== y || idxX !== x) { // if we arent on the center cell
+          if (idxY >= 0 && idxX >= 0 && idxY < maxY && idxX < maxX) { // if we arent outside the border
             if (mineArray[idxY][idxX] === 1) {
               mineCount++;
             }
