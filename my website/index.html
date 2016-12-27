@@ -1,0 +1,129 @@
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>minesweeper</title>
+	<style>
+		body { 
+			background-color: #555;
+			margin: 0px;
+			/*display: block;*/
+
+		}
+		canvas { 
+			background-color: #444; 
+			/*display: block;*/
+		}
+	</style>
+</head>
+<body onload="init(); update();	/*setInterval(()=>{update();}, 20);*/">
+	<script src="minesweeper.js"></script>
+	<script src="stats.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.3.0/pixi.js"></script>
+	<script>
+
+		var renderer = PIXI.autoDetectRenderer(100, 100);
+		document.body.appendChild(renderer.view);
+		stage = new PIXI.Container();
+
+		var textures = {};
+		textures.closed = new PIXI.Texture.fromImage("assets/closed.png");
+		textures.flag = new PIXI.Texture.fromImage("assets/flag.png");
+		textures.mine = new PIXI.Texture.fromImage("assets/mine.png");
+		textures.mineClicked = new PIXI.Texture.fromImage("assets/mineClicked.png");
+
+		for (var i = 0; i <= 8; i++) {
+			textures["open" + i] = new PIXI.Texture.fromImage("assets/open" + i + ".png");
+		}
+
+		var Minesweeper = window.minesweeper;
+
+		var stats = new Stats();
+		stats.showPanel( 1 ); // 0: fps, 1: ms, 2: mb, 3+: custom
+		document.body.appendChild( stats.dom );
+
+
+		renderer.backgroundColor = 0x707070;
+		var scl = 20;
+		renderer.resize(window.innerWidth, window.innerHeight);
+
+		function init () {
+			for (var i = stage.children.length - 1; i >= 0; i--) {
+				stage.removeChild(stage.children[i]);
+			};
+			window.mineArray = Minesweeper.generateMineArray({
+				rows: 11,
+				//cols: 21,
+				mines: 25
+			});
+			window.board = new Minesweeper.Board(mineArray);
+			window.grid = board.grid();
+
+			for (let x = 0; x < board.numCols(); x++) {
+				for (let y = 0; y < board.numRows(); y++) {
+
+					let cell = grid[x][y];
+
+					if(!cell.sprite){
+						cell.sprite = new PIXI.Sprite(textures.closed);
+						cell.sprite.position.x = x*scl;
+						cell.sprite.position.y = y*scl;
+						cell.sprite.width = scl;
+						cell.sprite.height = scl;
+						stage.addChild(cell.sprite);
+					}
+				}
+			}
+			renderer.resize(board.numCols()*scl, board.numRows()*scl);
+		}
+
+		function update () {
+			stats.begin();
+
+			board.openCell(
+				Math.floor(Math.random()*board.numCols()),
+				Math.floor(Math.random()*board.numRows()));
+			updateGame();
+			renderer.render(stage);
+
+			if (board.state() === Minesweeper.BoardStateEnum.LOST) {
+				init();
+			}
+
+			requestAnimationFrame(update);
+			stats.end();
+
+		}
+
+		function updateGame () {
+			grid = window.board.grid();
+
+			for (let x = 0; x < board.numCols(); x++) {
+				for (let y = 0; y < board.numRows(); y++) {
+
+					let cell = grid[x][y];
+
+					let isOpen = cell.state === Minesweeper.CellStateEnum.OPEN;
+					let isFlagged = cell.flag === Minesweeper.CellFlagEnum.EXCLAMATION;
+					let isMine = cell.isMine;
+
+					if (isOpen){
+						if (isMine){
+							cell.sprite.texture = textures.mineClicked;
+
+						} else {
+							cell.sprite.texture = textures["open" + cell.numAdjacentMines];
+
+						}
+					} else if (!isOpen){
+						if (isFlagged){
+							cell.sprite.texture = textures.flag;
+						} else {
+							cell.sprite.texture = textures.closed;
+						}
+					}
+				}
+			}
+		}
+	</script>
+</body>
+</html>
