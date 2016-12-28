@@ -96,7 +96,6 @@
 
   Board.prototype.grid = function () {
     return this._grid;
-  }
   };
 
   Board.prototype._cell = function (x, y) { // check if in bounds, and return from this._grid[][]
@@ -166,6 +165,45 @@
     // and check if we've entered a WIN / LOSE scenario
     this._updateState();
   };
+
+  Board.prototype.getPerimeter = function (x, y) {
+    // the perimeter consists of the closed tiles that are surrounded by atleast 1 open cell
+    for (let row of grid) {
+      row.filter(cell=>!cell.isOpen)
+    }
+    /*grid.forEach(row=>{
+      .filter(isclosed) // get all closed tiles (returns array)
+      .getneighbours // (returns array)
+      .filter(isopen) // (returns array)
+      .length > 0;
+    });*/
+    for (y = 0; y < this._numRows; y++) {
+      for (x = 0; x < this._numCols; x++) {
+        cell = this._cell(x,y);
+        if(!cell.isOpen){
+          if(getNeigbours.filter("isopen").length >= 1){
+
+          }
+        }
+        // loop through neidhboring cells
+        // if this cell is closed, and has a neighbor cell that is open,
+        // add this to the returning array
+
+        /*if (getNeigbours.filter("isopen").length > 0) {
+          // statement
+        }*/
+      }
+    }
+    // ways to get a cell;
+    this._grid[y][x];
+    // ---
+    let a = this.grid(); // simply returns this._grid;
+    a[x][y];
+    // --
+    this._cell(x, y);// this._grid[][] + out of bounds check
+
+    this.cell(j, i);// this._cell with int conversion using unary operator
+  }
 
   // open-up the board using four-way flood-fill algorithm
   // https://en.wikipedia.org/wiki/Flood_fill
