@@ -104,16 +104,30 @@
   };
 
   Board.prototype.cell = function (x, y) {
-    // console.log(x, y, this._grid[x][y])
-    
+    // console.log("getcell called");
     if (this._grid[x] == undefined){
       this.generateCell(x, y);
+      console.log('the cell and row was generated', this._grid[x][y]);
     } else if (this._grid[x][y] == undefined) {
       this.generateCell(x, y);
+      console.log('the cell was generated', this._grid[x][y]);
     }
       
     return this._grid[x][y];
-  };
+  }
+
+  Board.prototype.generateCell = function (x, y) {
+    if(this._grid[x] == undefined) {
+      this._grid[x] = {};
+    }
+    this._grid[x][y] = new Cell(
+      x,
+      y,
+      true, // isMine
+      getNumAdjacentMineCount(mineArray, x, y)
+    );
+    console.log(this._grid[x][y].isMine);
+  }
 
   Board.prototype.cycleCellFlag = function (x, y) {
     var cell = this.cell(x, y), updated = true; // note ---
@@ -263,15 +277,10 @@
       this._state = BoardStateEnum.WON;
     }
   };
-  Board.prototype.generateCell = function (x, y) {
-    if(this._grid[y] == undefined) this._grid[y] = {};
 
-    this._grid[y][x] = new Cell(
-      x,
-      y,
-      mineArray[y][x] === 1 ? true : false, // replace with random
-      getNumAdjacentMineCount(mineArray, x, y)
-    ); 
+
+  Board.prototype.getRange = function (x1, y1, x2, y2) {
+
   }
 
   /**
