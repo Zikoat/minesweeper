@@ -15,15 +15,20 @@
 		}
 	</style>
 </head>
-<body onload="init(); update();	/*setInterval(()=>{update();}, 20);*/">
+<body onload="init(); update();	/*setInterval(()=>{update();}, 20);*/" onclick="update();">
 	<script src="minesweeper.js"></script>
 	<script src="stats.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.3.0/pixi.js"></script>
 	<script>
 
 		var renderer = PIXI.autoDetectRenderer(100, 100);
+		//renderer.view.id = "viewport";
+		//renderer.view.onclick = update();
 		document.body.appendChild(renderer.view);
 		stage = new PIXI.Container();
+
+		//stage.interactive = true;
+		//stage.click = update();
 
 		var textures = {};
 		textures.closed = new PIXI.Texture.fromImage("assets/closed.png");
@@ -38,8 +43,8 @@
 		var Minesweeper = window.minesweeper;
 
 		var stats = new Stats();
-		stats.showPanel( 1 ); // 0: fps, 1: ms, 2: mb, 3+: custom
-		document.body.appendChild( stats.dom );
+		//stats.showPanel( 1 ); // 0: fps, 1: ms, 2: mb, 3+: custom
+		//document.body.appendChild( stats.dom );
 
 
 		renderer.backgroundColor = 0x707070;
@@ -89,9 +94,8 @@
 				init();
 			}
 
-			requestAnimationFrame(update);
+			//requestAnimationFrame(update);
 			stats.end();
-
 		}
 
 		function updateGame () {
