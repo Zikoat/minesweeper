@@ -54,6 +54,10 @@
     this.flag = CellFlagEnum.NONE;
   };
 
+  Cell.prototype.getNeigbours = function () {
+    
+  };
+
   /**
    *  Board
    */
@@ -99,18 +103,20 @@
     return this._grid;
   };
 
-  Board.prototype._cell = function (x, y) { // check if in bounds, and return from this._grid[][]
-    if (x >= 0 && y >= 0 && y < this._numRows && x < this._numCols) {
-      return this._grid[y][x];
-    }
-  };
-
   Board.prototype.cell = function (x, y) {
-    return extend({}, this._cell(+x, +y));
+    // console.log(x, y, this._grid[x][y])
+    
+    if (this._grid[x] == undefined){
+      this.generateCell(x, y);
+    } else if (this._grid[x][y] == undefined) {
+      this.generateCell(x, y);
+    }
+      
+    return this._grid[x][y];
   };
 
   Board.prototype.cycleCellFlag = function (x, y) {
-    var cell = this._cell(+x, +y), updated = true;
+    var cell = this.cell(x, y), updated = true; // note ---
 
     if (!cell || cell.state === CellStateEnum.OPEN || 
          this._state === BoardStateEnum.WON || this._state === BoardStateEnum.LOST) {
@@ -137,7 +143,7 @@
   };
 
   Board.prototype.openCell = function (x, y) {
-    var cell = this._cell(x, y);
+    var cell = this.cell(x, y);
 
     if (!cell || cell.state === CellStateEnum.OPEN || cell.flag !== CellFlagEnum.NONE ||
          this._state === BoardStateEnum.WON || this._state === BoardStateEnum.LOST) {
@@ -165,6 +171,8 @@
 
     // and check if we've entered a WIN / LOSE scenario
     this._updateState();
+
+
   };
 
   Board.prototype.getPerimeter = function (x, y) {
@@ -209,7 +217,7 @@
   // open-up the board using four-way flood-fill algorithm
   // https://en.wikipedia.org/wiki/Flood_fill
   Board.prototype._floodFill = function (x, y) {
-    var cell = this._cell(x, y);
+    var cell = this.cell(x, y);
 
     if (cell && !cell.isMine && cell.state === CellStateEnum.CLOSED && cell.flag === CellFlagEnum.NONE) {
       cell.state = CellStateEnum.OPEN;
@@ -232,7 +240,7 @@
 
     for (y = 0; y < this._numRows; y++) {
       for (x = 0; x < this._numCols; x++) {
-        cell = this._cell(x,y);
+        cell = this.cell(x,y);
 
         if(cell.state === CellStateEnum.OPEN) {
           if (cell.isMine) {
@@ -255,6 +263,16 @@
       this._state = BoardStateEnum.WON;
     }
   };
+  Board.prototype.generateCell = function (x, y) {
+    if(this._grid[y] == undefined) this._grid[y] = {};
+
+    this._grid[y][x] = new Cell(
+      x,
+      y,
+      mineArray[y][x] === 1 ? true : false, // replace with random
+      getNumAdjacentMineCount(mineArray, x, y)
+    ); 
+  }
 
   /**
    *  generateMineArray
@@ -283,6 +301,7 @@
     return mineArray;
   };
 
+
   /**
    *  Helpers
    */
@@ -290,10 +309,10 @@
   var generateGridFromMineArray = function (mineArray, numRows, numCols) {
     var x,
         y,
-        grid = [];
+        grid = {};
 
     for (y = 0; y < numRows; y++) {
-      grid[y] = [];
+      grid[y] = {};
       for (x = 0; x < numCols; x++) {
         grid[y][x] = new Cell(
           x,

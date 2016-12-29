@@ -4,6 +4,14 @@
 		"selected_items":
 		[
 			[
+				"fore",
+				"forEach"
+			],
+			[
+				"filter",
+				"filter( callbackfn: Function, thisArg?: any ): Array\tArray"
+			],
+			[
 				"up",
 				"update"
 			],
@@ -159,16 +167,19 @@
 			"file": "my website/index.html",
 			"settings":
 			{
-				"buffer_size": 3119,
+				"buffer_size": 3182,
 				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
 		},
 		{
+			"contents": "/*!\n * Library for making Minesweeper clones\n * https://github.com/binaryluke/Minesweeper\n *\n * Copyright 2015, Luke Howard (@binaryluke)\n *\n * Released under the MIT license\n * http://lukehoward.name/project/minesweeper/license\n */\n\n(function() {\n  'use strict';\n\n  /**\n   *  CellStateEnum\n   */\n\n  var CellStateEnum = {\n    CLOSED: 0,\n    OPEN: 1\n  };\n\n  /**\n   *  CellFlagEnum\n   */\n\n  var CellFlagEnum = {\n    NONE: 0,\n    EXCLAMATION: 1,\n    QUESTION: 2\n  };\n\n  /**\n   *  BoardStateEnum\n   */\n\n  var BoardStateEnum = {\n    PRISTINE: 0,\n    IN_PROGRESS: 1,\n    LOST: 2,\n    WON: 3\n  };\n\n  /**\n   *  Cell\n   */\n    \n  var Cell = function (x, y, isMine, numAdjacentMines) {\n    this.x = x || 0;\n    this.y = y || 0;\n    this.isMine = isMine ? true : false;\n    this.numAdjacentMines = numAdjacentMines || 0;\n    this.state = CellStateEnum.CLOSED;\n    this.flag = CellFlagEnum.NONE;\n  };\n\n  Cell.prototype.getNeigbours = function () {\n    \n  };\n\n  /**\n   *  Board\n   */\n\n  var Board = function (mineArray) {\n    var isValid;\n\n    try {\n      isValid = isMineArrayValid(mineArray);\n    } catch (e) {\n      isValid = false;\n    }\n    \n    if (!isValid) {\n      throw new Error('The mine array supplied to Board constructor was not valid');\n    }\n    // all these have their own getters\n    this._state = BoardStateEnum.PRISTINE;\n    this._numRows = mineArray.length;\n    this._numCols = mineArray[0].length;\n    this._numMines = getNumMinesFromMineArray(mineArray, this._numRows, this._numCols);\n    this._grid = generateGridFromMineArray(mineArray, this._numRows, this._numCols);\n  };\n\n  Board.prototype.state = function () {\n    return this._state;\n  };\n\n  Board.prototype.numRows = function () {\n    return this._numRows;\n  };\n\n  Board.prototype.numCols = function () {\n    return this._numCols;\n  };\n\n  Board.prototype.numMines = function () {\n    return this._numMines;\n  };\n\n  Board.prototype.grid = function () {\n    return this._grid;\n  };\n\n  Board.prototype._cell = function (x, y) { // check if in bounds, and return from this._grid[][]\n    if (x >= 0 && y >= 0 && y < this._numRows && x < this._numCols) {\n      return this._grid[y][x];\n    }\n  };\n\n  Board.prototype.cell = function (x, y) {\n    return extend({}, this._cell(+x, +y));\n  };\n\n  Board.prototype.cycleCellFlag = function (x, y) {\n    var cell = this._cell(+x, +y), updated = true;\n\n    if (!cell || cell.state === CellStateEnum.OPEN || \n         this._state === BoardStateEnum.WON || this._state === BoardStateEnum.LOST) {\n      return;\n    }\n    \n    if (cell.flag === CellFlagEnum.NONE) {\n      cell.flag = CellFlagEnum.EXCLAMATION;\n    } else if (cell.flag === CellFlagEnum.EXCLAMATION) {\n      cell.flag = CellFlagEnum.QUESTION;\n    } else if (cell.flag === CellFlagEnum.QUESTION) {\n      cell.flag = CellFlagEnum.NONE;\n    } else {\n      updated = false;\n    }\n\n    // change board state to IN_PROGRESS if we were on a PRISTINE board\n    if (updated && this._state === BoardStateEnum.PRISTINE) {\n      this._state = BoardStateEnum.IN_PROGRESS;\n    }\n\n    // and check if we've entered a WIN / LOSE scenario\n    this._updateState();\n  };\n\n  Board.prototype.openCell = function (x, y) {\n    var cell = this._cell(x, y);\n\n    if (!cell || cell.state === CellStateEnum.OPEN || cell.flag !== CellFlagEnum.NONE ||\n         this._state === BoardStateEnum.WON || this._state === BoardStateEnum.LOST) {\n      return;\n    }\n\n    cell.state = CellStateEnum.OPEN;\n\n    // flood-fill the board\n    if (!cell.isMine) {\n      this._floodFill(x + 1, y);\n      this._floodFill(x - 1, y);\n      this._floodFill(x, y + 1);\n      this._floodFill(x, y - 1);\n      this._floodFill(x + 1, y + 1);\n      this._floodFill(x - 1, y - 1);\n      this._floodFill(x - 1, y + 1);\n      this._floodFill(x + 1, y - 1);\n    }\n\n    // change board state to IN_PROGRESS if we were on a PRISTINE board\n    if (this._state === BoardStateEnum.PRISTINE) {\n      this._state = BoardStateEnum.IN_PROGRESS;\n    }\n\n    // and check if we've entered a WIN / LOSE scenario\n    this._updateState();\n  };\n\n  Board.prototype.getPerimeter = function (x, y) {\n    // the perimeter consists of the closed tiles that are surrounded by atleast 1 open cell\n    for (let row of grid) {\n      row.filter(cell=>!cell.isOpen)\n    }\n    /*grid.forEach(row=>{\n      .filter(isclosed) // get all closed tiles (returns array)\n      .getneighbours // (returns array)\n      .filter(isopen) // (returns array)\n      .length > 0;\n    });*/\n    for (y = 0; y < this._numRows; y++) {\n      for (x = 0; x < this._numCols; x++) {\n        cell = this._cell(x,y);\n        if(!cell.isOpen){\n          if(getNeigbours.filter(\"isopen\").length >= 1){\n\n          }\n        }\n        // loop through neidhboring cells\n        // if this cell is closed, and has a neighbor cell that is open,\n        // add this to the returning array\n\n        /*if (getNeigbours.filter(\"isopen\").length > 0) {\n          // statement\n        }*/\n      }\n    }\n    // ways to get a cell;\n    this._grid[y][x];\n    // ---\n    let a = this.grid(); // simply returns this._grid;\n    a[x][y];\n    // --\n    this._cell(x, y);// this._grid[][] + out of bounds check\n\n    this.cell(j, i);// this._cell with int conversion using unary operator\n  }\n\n  // open-up the board using four-way flood-fill algorithm\n  // https://en.wikipedia.org/wiki/Flood_fill\n  Board.prototype._floodFill = function (x, y) {\n    var cell = this._cell(x, y);\n\n    if (cell && !cell.isMine && cell.state === CellStateEnum.CLOSED && cell.flag === CellFlagEnum.NONE) {\n      cell.state = CellStateEnum.OPEN;\n\n      if (cell.numAdjacentMines === 0) {\n        this._floodFill(x + 1, y);\n        this._floodFill(x - 1, y);\n        this._floodFill(x, y + 1);\n        this._floodFill(x, y - 1);\n        this._floodFill(x + 1, y + 1);\n        this._floodFill(x - 1, y - 1);\n        this._floodFill(x - 1, y + 1);\n        this._floodFill(x + 1, y - 1);\n      }\n    }\n  };\n\n  Board.prototype._updateState = function () {\n    var x, y, cell, isWin = true;\n\n    for (y = 0; y < this._numRows; y++) {\n      for (x = 0; x < this._numCols; x++) {\n        cell = this._cell(x,y);\n\n        if(cell.state === CellStateEnum.OPEN) {\n          if (cell.isMine) {\n            this._state = BoardStateEnum.LOST;\n            return;\n          }\n        } else if (cell.state === CellStateEnum.CLOSED) {\n          if (cell.isMine) {\n            if(cell.flag !== CellFlagEnum.EXCLAMATION) {\n              isWin = false;\n            }\n          } else {\n            isWin = false;\n          }\n        }\n      }\n    }\n\n    if (isWin) {\n      this._state = BoardStateEnum.WON;\n    }\n  };\n\n  /**\n   *  generateMineArray\n   */\n\n  var generateMineArray = function (options) {\n    var i, j, length, rows, cols, mines, mineArray = [];\n\n    options = options || {};\n    rows = options.rows || 10;\n    cols = options.cols || options.rows || 10;\n    mines = options.mines || parseInt((rows * cols) * 0.15, 10) || 0;\n    length = rows * cols;\n\n    for (i = 0; i < length; i++) {\n      if (i < mines) {\n        mineArray.push(1);\n      } else {\n        mineArray.push(0);\n      }\n    }\n\n    mineArray = fisherYatesShuffle(mineArray);\n    mineArray = singleToMultiDimensionalArray(mineArray, cols);\n    \n    return mineArray;\n  };\n\n  /**\n   *  Helpers\n   */\n\n  var generateGridFromMineArray = function (mineArray, numRows, numCols) {\n    var x,\n        y,\n        grid = [];\n\n    for (y = 0; y < numRows; y++) {\n      grid[y] = [];\n      for (x = 0; x < numCols; x++) {\n        grid[y][x] = new Cell(\n          x,\n          y,\n          mineArray[y][x] === 1 ? true : false,\n          getNumAdjacentMineCount(mineArray, x, y)\n        );\n      }\n    }\n\n    return grid;\n  };\n\n  var getNumMinesFromMineArray = function (mineArray, numRows, numCols) {\n    var x,\n        y,\n        mineCount = 0;\n\n    for (y = 0; y < numRows; y++) {\n      for (x = 0; x < numCols; x++) {\n        if (mineArray[y][x] === 1) {\n          mineCount++;\n        }\n      }\n    }\n\n    return mineCount;\n  };\n\n  var getNumAdjacentMineCount = function (mineArray, x, y) {\n    var idxX,\n        idxY,\n        endX = x + 1,\n        endY = y + 1,\n        maxX = mineArray[0].length,\n        maxY = mineArray.length,\n        mineCount = 0;\n\n    for (idxY = y - 1; idxY <= endY; idxY++) { // cycle from one less than this position to one after it\n      for (idxX = x - 1; idxX <= endX; idxX++) { \n        if (idxY !== y || idxX !== x) { // if we arent on the center cell\n          if (idxY >= 0 && idxX >= 0 && idxY < maxY && idxX < maxX) { // if we arent outside the border\n            if (mineArray[idxY][idxX] === 1) {\n              mineCount++;\n            }\n          }\n        }\n      }\n    }\n\n    return mineCount;\n  };\n\n  var isMineArrayValid = function (mineArray) {\n    var rowIdx, colIdx, rows, columns, isValid = true;\n\n    if (mineArray && mineArray.length) {\n      rows = mineArray.length;\n      columns = mineArray[0] ? mineArray[0].length : 0;\n\n      if (columns === 0) {\n        isValid = false;\n      }\n      \n      for (rowIdx = 0; rowIdx < rows; rowIdx++) {\n        if (mineArray[rowIdx].length !== columns) {\n          isValid = false;\n        } else {\n          for (colIdx = 0; colIdx < columns; colIdx++) {\n            if (mineArray[rowIdx][colIdx] !== 0 && mineArray[rowIdx][colIdx] !== 1) {\n              isValid = false;\n            }\n          }\n        }\n      }  \n    } else {\n      isValid = false;\n    }\n    \n    return isValid;\n  };\n\n  // Credit:\n  // http://bost.ocks.org/mike/shuffle/\n  var fisherYatesShuffle = function (array) {\n    var m = array.length, t, i;\n\n    // While there remain elements to shuffle…\n    while (m) {\n\n      // Pick a remaining element…\n      i = Math.floor(Math.random() * m--);\n\n      // And swap it with the current element.\n      t = array[m];\n      array[m] = array[i];\n      array[i] = t;\n    }\n\n    return array;\n  };\n\n  var singleToMultiDimensionalArray = function (array, numCols) {\n    var i,\n        rows = array.length / numCols,\n        multi = [];\n\n    for (i = 0; i < rows; i++) {\n      multi.push(array.splice(0, numCols));\n    }\n\n    return multi;\n  };\n\n  var extend = function ( defaults, options ) {\n    var extended = {};\n    var prop;\n    for (prop in defaults) {\n      if (Object.prototype.hasOwnProperty.call(defaults, prop)) {\n        extended[prop] = defaults[prop];\n      }\n    }\n    for (prop in options) {\n      if (Object.prototype.hasOwnProperty.call(options, prop)) {\n        extended[prop] = options[prop];\n      }\n    }\n    return extended;\n  };\n\n  /**\n   *  Create exportable object\n   */\n\n  var minesweeper = {\n    Cell: Cell,\n    CellStateEnum: CellStateEnum,\n    CellFlagEnum: CellFlagEnum,\n    Board: Board,\n    BoardStateEnum: BoardStateEnum,\n    generateMineArray: generateMineArray\n  };\n\n  /**\n   *  Export this module\n   */\n\n  if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {\n    module.exports = minesweeper;\n  }\n  else {\n    if (typeof define === 'function' && define.amd) {\n      define([], function() {\n        return minesweeper;\n      });\n    }\n    else {\n      window.minesweeper = minesweeper;\n    }\n  }\n})();",
 			"file": "my website/minesweeper.js",
+			"file_size": 11069,
+			"file_write_time": 131273428390065775,
 			"settings":
 			{
-				"buffer_size": 9890,
+				"buffer_size": 11122,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -285,7 +296,6 @@
 	[
 		"/C/Workspace/minesweeper",
 		"/C/Workspace/minesweeper/my website",
-		"/C/Workspace/minesweeper/my website/assets",
 		"/C/Workspace/minesweeper/resources"
 	],
 	"file_history":
@@ -345,6 +355,22 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"_cell",
+			"this._g",
+			"._cell",
+			".cell",
+			"this._gri",
+			"_cell",
+			"return grid",
+			"this._grid",
+			"generateGridFromMineArray",
+			"getNumAdjacentMineCount",
+			"Cell",
+			"getNumAdjacentMineCount",
+			"generateGridFromMineArray",
+			"mineArray",
+			"generateGridFromMineArray",
+			"getNumMinesFromMineArray",
 			"updateGame",
 			"update",
 			"maindiv",
@@ -384,7 +410,7 @@
 	"groups":
 	[
 		{
-			"selected": 0,
+			"selected": 1,
 			"sheets":
 			[
 				{
@@ -393,7 +419,7 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 3119,
+						"buffer_size": 3182,
 						"regions":
 						{
 							"mark":
@@ -403,8 +429,8 @@
 								"regions":
 								[
 									[
-										2315,
-										2315
+										2378,
+										2378
 									]
 								],
 								"scope": "mark"
@@ -413,8 +439,8 @@
 						"selection":
 						[
 							[
-								2031,
-								2031
+								3151,
+								3151
 							]
 						],
 						"settings":
@@ -426,8 +452,8 @@
 								{
 									"1":
 									[
-										2030,
-										2031
+										3150,
+										3151
 									]
 								},
 								"icon":
@@ -442,8 +468,8 @@
 								{
 									"1":
 									[
-										1683,
-										1684
+										2539,
+										2540
 									]
 								},
 								"unmatched":
@@ -452,26 +478,31 @@
 							},
 							"bracket_highlighter.regions":
 							[
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
 								"bh_square",
 								"bh_square_center",
 								"bh_square_open",
 								"bh_square_close",
 								"bh_square_content",
-								"bh_default",
-								"bh_default_center",
-								"bh_default_open",
-								"bh_default_close",
-								"bh_default_content",
-								"bh_single_quote",
-								"bh_single_quote_center",
-								"bh_single_quote_open",
-								"bh_single_quote_close",
-								"bh_single_quote_content",
-								"bh_round",
-								"bh_round_center",
-								"bh_round_open",
-								"bh_round_close",
-								"bh_round_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
 								"bh_angle",
 								"bh_angle_center",
 								"bh_angle_open",
@@ -482,47 +513,36 @@
 								"bh_tag_open",
 								"bh_tag_close",
 								"bh_tag_content",
-								"bh_double_quote",
-								"bh_double_quote_center",
-								"bh_double_quote_open",
-								"bh_double_quote_close",
-								"bh_double_quote_content",
-								"bh_regex",
-								"bh_regex_center",
-								"bh_regex_open",
-								"bh_regex_close",
-								"bh_regex_content",
-								"bh_c_define",
-								"bh_c_define_center",
-								"bh_c_define_open",
-								"bh_c_define_close",
-								"bh_c_define_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
 								"bh_unmatched",
 								"bh_unmatched_center",
 								"bh_unmatched_open",
 								"bh_unmatched_close",
 								"bh_unmatched_content",
-								"bh_curly",
-								"bh_curly_center",
-								"bh_curly_open",
-								"bh_curly_close",
-								"bh_curly_content"
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content"
 							],
 							"syntax": "Packages/HTML/HTML.sublime-syntax",
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 766.0,
+						"translation.y": 1792.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 0,
+					"stack_index": 1,
 					"type": "text"
-				},
-				{
-					"file": "my website/assets/mineClicked.png",
-					"semi_transient": true,
-					"stack_index": 2,
-					"type": "image"
 				},
 				{
 					"buffer": 1,
@@ -530,15 +550,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 9890,
+						"buffer_size": 11122,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1548,
-								1548
+								2520,
+								2520
 							]
 						],
 						"settings":
@@ -550,8 +570,8 @@
 								{
 									"1":
 									[
-										1556,
-										1557
+										3112,
+										3113
 									]
 								},
 								"icon":
@@ -566,8 +586,8 @@
 								{
 									"1":
 									[
-										1528,
-										1529
+										2301,
+										2302
 									]
 								},
 								"unmatched":
@@ -576,26 +596,31 @@
 							},
 							"bracket_highlighter.regions":
 							[
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
 								"bh_square",
 								"bh_square_center",
 								"bh_square_open",
 								"bh_square_close",
 								"bh_square_content",
-								"bh_default",
-								"bh_default_center",
-								"bh_default_open",
-								"bh_default_close",
-								"bh_default_content",
-								"bh_single_quote",
-								"bh_single_quote_center",
-								"bh_single_quote_open",
-								"bh_single_quote_close",
-								"bh_single_quote_content",
-								"bh_round",
-								"bh_round_center",
-								"bh_round_open",
-								"bh_round_close",
-								"bh_round_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
 								"bh_angle",
 								"bh_angle_center",
 								"bh_angle_open",
@@ -606,41 +631,36 @@
 								"bh_tag_open",
 								"bh_tag_close",
 								"bh_tag_content",
-								"bh_double_quote",
-								"bh_double_quote_center",
-								"bh_double_quote_open",
-								"bh_double_quote_close",
-								"bh_double_quote_content",
-								"bh_regex",
-								"bh_regex_center",
-								"bh_regex_open",
-								"bh_regex_close",
-								"bh_regex_content",
-								"bh_c_define",
-								"bh_c_define_center",
-								"bh_c_define_open",
-								"bh_c_define_close",
-								"bh_c_define_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
 								"bh_unmatched",
 								"bh_unmatched_center",
 								"bh_unmatched_open",
 								"bh_unmatched_close",
 								"bh_unmatched_content",
-								"bh_curly",
-								"bh_curly_center",
-								"bh_curly_open",
-								"bh_curly_close",
-								"bh_curly_content"
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content"
 							],
 							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
 							"tab_size": 2,
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 1013.0,
+						"translation.y": 1892.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 1,
+					"stack_index": 0,
 					"type": "text"
 				}
 			]
