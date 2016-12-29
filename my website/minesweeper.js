@@ -76,6 +76,7 @@
     this._numCols = mineArray[0].length;
     this._numMines = getNumMinesFromMineArray(mineArray, this._numRows, this._numCols);
     this._grid = generateGridFromMineArray(mineArray, this._numRows, this._numCols);
+    this.probability = this._numMines / (this._numRows * this._numCols);
   };
 
   Board.prototype.state = function () {
