@@ -55,8 +55,8 @@
     this.flag = CellFlagEnum.NONE;
   };
 
-  Cell.prototype.getNeigbours = function () {
-    
+  Cell.getNeigbours = function () {
+    return 8;
   };
 
   /**
@@ -72,6 +72,7 @@
     this._state = BoardStateEnum.PRISTINE;
     this._grid = {} //initializeGrid(mineArray, this._numRows, this._numCols);
     this.probability = this._numMines / (this._numRows * this._numCols);
+    this.failSwitch = 0;
   };
 
   Board.prototype.state = function () {
@@ -98,10 +99,8 @@
     // console.log("getcell called");
     if (this._grid[x] == undefined){
       this.generateCell(x, y);
-      console.log('the cell and row was generated', this._grid[x][y]);
     } else if (this._grid[x][y] == undefined) {
       this.generateCell(x, y);
-      console.log('the cell was generated', this._grid[x][y]);
     }
       
     return this._grid[x][y];
@@ -114,10 +113,15 @@
     this._grid[x][y] = new Cell(
       x,
       y,
-      true, // isMine
-      getNumAdjacentMineCount(mineArray, x, y)
+      true,//Math.random() < this.probability, // isMine
+      8//getNumAdjacentMineCount(mineArray, x, y)
     );
-    console.log(this._grid[x][y].isMine);
+    console.log('generated: ', x, y, this._grid[x][y].isMine);
+    this.failSwitch++;
+    if(this.failSwitch > 500){
+      throw new Error("Failswitch activated!");
+    }
+
   }
 
   Board.prototype.cycleCellFlag = function (x, y) {

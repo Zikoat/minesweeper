@@ -131,6 +131,9 @@
 					} else if (!isOpen){
 						if (isFlagged){
 							cell.sprite.texture = textures.flag;
+						} else if (isMine) {
+							cell.sprite.texture = textures.mineClicked;
+
 						} else {
 							cell.sprite.texture = textures.closed;
 						}
