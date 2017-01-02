@@ -75,7 +75,7 @@
 			for (let x = 0; x < viewport.numRows; x++) {
 				for (let y = 0; y < viewport.numCols; y++) {
 
-					let cell = grid[x][y];
+					let cell = board.cell(x, y);
 
 					if(!cell.sprite){
 						cell.sprite = new PIXI.Sprite(textures.closed);

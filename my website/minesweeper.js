@@ -62,24 +62,14 @@
    *  Board
    */
 
-  var Board = function (mineArray) {
-    var isValid;
+  var Board = function (probability) {
+    if(probability < 0.1 || probability > 0.9){
+      console.log("probability out of range, setting to 0.25");
+      probability = 0.25;
+    }
 
-    try {
-      isValid = isMineArrayValid(mineArray);
-    } catch (e) {
-      isValid = false;
-    }
-    
-    if (!isValid) {
-      throw new Error('The mine array supplied to Board constructor was not valid');
-    }
-    // all these have their own getters
     this._state = BoardStateEnum.PRISTINE;
-    this._numRows = mineArray.length;
-    this._numCols = mineArray[0].length;
-    this._numMines = getNumMinesFromMineArray(mineArray, this._numRows, this._numCols);
-    this._grid = generateGridFromMineArray(mineArray, this._numRows, this._numCols);
+    this._grid = initializeGrid(mineArray, this._numRows, this._numCols);
     this.probability = this._numMines / (this._numRows * this._numCols);
   };
 
@@ -315,22 +305,13 @@
    *  Helpers
    */
 
-  var generateGridFromMineArray = function (mineArray, numRows, numCols) {
-    var x,
-        y,
+  var initializeGrid = function (probability) { //todo
+    var x = 1,
+        y = 1,
         grid = {};
 
-    for (y = 0; y < numRows; y++) {
-      grid[y] = {};
-      for (x = 0; x < numCols; x++) {
-        grid[y][x] = new Cell(
-          x,
-          y,
-          mineArray[y][x] === 1 ? true : false,
-          getNumAdjacentMineCount(mineArray, x, y)
-        );
-      }
-    }
+    grid[y] = {};
+    grid[y][x] = new Cell(x, y, false, 0);
 
     return grid;
   };
