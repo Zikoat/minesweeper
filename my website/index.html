@@ -51,6 +51,15 @@
 		var scl = 20;
 		renderer.resize(window.innerWidth, window.innerHeight);
 
+		var viewport = {
+			numRows: 10,
+			numCols: 10,
+			xOff: 0,
+			yOff: 0
+		};
+		viewport.width = scl*viewport.numRows;
+		viewport.height = scl*viewport.numCols;
+
 		function init () {
 			for (var i = stage.children.length - 1; i >= 0; i--) {
 				stage.removeChild(stage.children[i]);
@@ -63,8 +72,8 @@
 			window.board = new Minesweeper.Board(mineArray);
 			window.grid = board.grid();
 
-			for (let x = 0; x < board.numCols(); x++) {
-				for (let y = 0; y < board.numRows(); y++) {
+			for (let x = 0; x < viewport.numRows; x++) {
+				for (let y = 0; y < viewport.numCols; y++) {
 
 					let cell = grid[x][y];
 
@@ -78,15 +87,15 @@
 					}
 				}
 			}
-			renderer.resize(board.numCols()*scl, board.numRows()*scl);
+			renderer.resize(viewport.width, viewport.height);
 		}
 
 		function update () {
 			stats.begin();
 
 			board.openCell(
-				Math.floor(Math.random()*board.numCols()),
-				Math.floor(Math.random()*board.numRows()));
+				Math.floor(Math.random()*viewport.numCols),
+				Math.floor(Math.random()*viewport.numRows));
 			updateGame();
 			renderer.render(stage);
 
@@ -101,8 +110,8 @@
 		function updateGame () {
 			grid = window.board.grid();
 
-			for (let x = 0; x < board.numCols(); x++) {
-				for (let y = 0; y < board.numRows(); y++) {
+			for (let x = 0; x < viewport.numCols; x++) {
+				for (let y = 0; y < viewport.numRows; y++) {
 
 					let cell = grid[x][y];
 
