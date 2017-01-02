@@ -20,12 +20,13 @@
 	<script src="stats.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.3.0/pixi.js"></script>
 	<script>
+		"use strict";
 
 		var renderer = PIXI.autoDetectRenderer(100, 100);
 		//renderer.view.id = "viewport";
 		//renderer.view.onclick = update();
 		document.body.appendChild(renderer.view);
-		stage = new PIXI.Container();
+		var stage = new PIXI.Container();
 
 		//stage.interactive = true;
 		//stage.click = update();
@@ -64,12 +65,12 @@
 			for (var i = stage.children.length - 1; i >= 0; i--) {
 				stage.removeChild(stage.children[i]);
 			};
-			window.mineArray = Minesweeper.generateMineArray({
+			/*window.mineArray = Minesweeper.generateMineArray({
 				rows: 11,
 				//cols: 21,
 				mines: 50
-			});
-			window.board = new Minesweeper.Board(mineArray);
+			});*/
+			window.board = new Minesweeper.Board(0.25);
 			window.grid = board.grid();
 
 			for (let x = 0; x < viewport.numRows; x++) {
@@ -102,7 +103,7 @@
 			if (board.state() === Minesweeper.BoardStateEnum.LOST) {
 				init();
 			}
-
+			console.log('updated');
 			//requestAnimationFrame(update);
 			stats.end();
 		}

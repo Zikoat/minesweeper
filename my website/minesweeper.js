@@ -51,6 +51,7 @@
     this.isMine = isMine ? true : false;
     this.numAdjacentMines = numAdjacentMines || 0;
     this.state = CellStateEnum.CLOSED;
+    this.isOpen = false;
     this.flag = CellFlagEnum.NONE;
   };
 
@@ -69,7 +70,7 @@
     }
 
     this._state = BoardStateEnum.PRISTINE;
-    this._grid = initializeGrid(mineArray, this._numRows, this._numCols);
+    this._grid = {} //initializeGrid(mineArray, this._numRows, this._numCols);
     this.probability = this._numMines / (this._numRows * this._numCols);
   };
 
@@ -122,7 +123,7 @@
   Board.prototype.cycleCellFlag = function (x, y) {
     var cell = this.cell(x, y), updated = true; // note ---
 
-    if (!cell || cell.state === CellStateEnum.OPEN || 
+    if (!cell || cell.isOpen || 
          this._state === BoardStateEnum.WON || this._state === BoardStateEnum.LOST) {
       return;
     }
@@ -149,12 +150,12 @@
   Board.prototype.openCell = function (x, y) {
     var cell = this.cell(x, y);
 
-    if (!cell || cell.state === CellStateEnum.OPEN || cell.flag !== CellFlagEnum.NONE ||
+    if (!cell || cell.isOpen || cell.flag !== CellFlagEnum.NONE ||
          this._state === BoardStateEnum.WON || this._state === BoardStateEnum.LOST) {
       return;
     }
 
-    cell.state = CellStateEnum.OPEN;
+    cell.isOpen = true;
 
     // flood-fill the board
     if (!cell.isMine) {

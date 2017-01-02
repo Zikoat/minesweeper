@@ -1,0 +1,988 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="cache-control" content="max-age=0" />
+		<meta http-equiv="cache-control" content="no-cache" />
+		<meta http-equiv="expires" content="0" />
+		<meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
+		<meta http-equiv="pragma" content="no-cache" />
+		<title>Timed Minesweeper</title>
+		<style>
+			body {
+				position: relative;
+				-webkit-touch-callout: none;
+				-webkit-user-select: none;
+				-khtml-user-select: none;
+				-moz-user-select: none;
+				-ms-user-select: none;
+				user-select: none;
+			}
+			#myCanvas {
+				left: 0;
+				top: 0;
+			}
+			#overlay {
+				position: absolute;
+				left: 0;
+				top: 0;
+				width: 2000px;
+				height: 720px;
+				display: none;
+			}
+			#overlay #bg {
+				width: inherit;
+				height: inherit;
+				background: black;
+				opacity: 0.5;
+			}
+			#overlay #window {
+				width: 300px;
+				height: 100px;
+				background: white;
+				position: absolute;
+				left: 50%;
+				top: 50%;
+				margin-left: -150px;
+				margin-top: -50px;
+			}
+			audio, video {
+				display: none;
+			}
+		</style>
+	</head>
+	<body>
+		<canvas id="myCanvas" width="2000" height="720"></canvas>
+		<div id="overlay">
+			<div id="bg"></div>
+			<div id="window">
+				<h2>Enter your name.</h2>
+				<input type="text" id="name" />
+				<input type="button" value="Enter" id="close"/>
+				<input type="button" value="Cancel" id="cancel"/>
+			</div>
+		</div>
+		<audio id="beginSound" src="begin.wav" preload="auto"></audio>
+		<audio id="winSound" src="win.wav" preload="auto"></audio>
+		<audio id="clickSound0" src="click0.wav" preload="auto"></audio>
+		<audio id="clickSound1" src="click1.wav" preload="auto"></audio>
+		<audio id="clickSound2" src="click2.wav" preload="auto"></audio>
+		<audio id="clickSound3" src="click3.wav" preload="auto"></audio>
+		<audio id="chordSound" src="chord.wav" preload="auto"></audio>
+		<audio id="selectSound" src="select.wav" preload="auto"></audio>
+		<audio id="loseSound" src="lose.wav" preload="auto"></audio>
+		<audio id="flagSound" src="flag.wav" preload="auto"></audio>
+		<audio id="cantSound" src="cant.wav" preload="auto"></audio>
+		<script language="javascript" type="text/javascript">
+			var channel_max = 10;										// number of channels
+			audiochannels = new Array();
+			for (a=0; a<channel_max; a++){									// prepare the channels
+				audiochannels[a] = new Array();
+				audiochannels[a]['channel'] = new Audio();						// create a new audio object
+				audiochannels[a]['finished'] = -1;							// expected end time for this channel
+			}
+			function playSound(s) {
+				for (a=0; a<audiochannels.length; a++){
+					thistime = new Date();
+					if (audiochannels[a]['finished'] < thistime.getTime()){			// is this channel finished?
+						audiochannels[a]['finished'] = thistime.getTime()+document.getElementById(s).duration*1000;
+						audiochannels[a]['channel'].src = document.getElementById(s).src;
+						audiochannels[a]['channel'].load();
+						audiochannels[a]['channel'].play();
+						break;
+					}
+				}
+			}
+
+			var c=document.getElementById("myCanvas");
+			var ctx=c.getContext("2d");
+			
+			var bgColor = "#AADCFF";
+			var tileColor = "#A0A0A0";
+			var textColors = ["#8094A8","#000000","#C00000","#00A000"];
+			var buttonColor = "#50A0B4";
+			var deathColor = "#FF0000";
+			var numberColors = [tileColor, "#0040FF","#008000","#FF0000","#000080","#800080","#008080","#606060","#000000"];
+			
+			var boardSizes = [[9,9,10,"Beginner"],[16,8,22,"Calculator"],[16,16,40,"Intermediate"],
+			[30,16,99,"Expert"],[60,40,400,"Insanity"]];
+			var neighborPatterns = [
+				[[-1,-1,1],[-1,0,1],[-1,1,1],[0,-1,1],[0,1,1],[1,-1,1],[1,0,1],[1,1,1],"Normal"],
+				[[2,1,1],[2,-1,1],[-2,1,1],[-2,-1,1],[1,2,1],[1,-2,1],[-1,2,1],[-1,-2,1],"Knight"],
+				[[-1,-1,1],[-1,0,1],[-1,1,1],[0,1,1],[1,-1,1],[1,0,1],[1,1,1],"No Up"],
+				[[-1,-1,1],[-1,0,1],[-1,1,1],[1,-1,1],[1,0,1],[1,1,1],"No Vert"],
+				[[0,1,1],[0,-1,1],[1,0,1],[-1,0,1],"Orth"],
+				[[0,1,1],[0,2,1],[0,-1,1],[0,-2,1],[1,0,1],[2,0,1],[-1,0,1],[-2,0,1],"Far Orth"],
+
+				[[-2,-2,1],[-2,-1,1],[-2,0,1],[-2,1,1],[-2,2,1],
+				[-1,-2,1],[-1,-1,1],[-1,0,1],[-1,1,1],[-1,2,1],
+				[0,-2,1],[0,-1,1],[0,1,1],[0,2,1],
+				[1,-2,1],[1,-1,1],[1,0,1],[1,1,1],[1,2,1],
+				[2,-2,1],[2,-1,1],[2,0,1],[2,1,1],[2,2,1],"Swath"],
+				[[-1,-1,1],[-1,0,2],[-1,1,1],[0,-1,2],[0,1,2],[1,-1,1],[1,0,2],[1,1,1],"Doubled"],
+
+				[[-2,0,1],
+				[-1,-1,1],[-1,0,2],[-1,1,1],
+				[0,-2,1],[0,-1,2],[0,1,2],[0,2,1],
+				[1,-1,1],[1,0,2],[1,1,1],
+				[2,0,1],"Taxicab"],
+
+				[[1,-1,1],[-1,0,1],[0,-1,1],[0,1,1],[1,0,1],[-1,1,1],"Hexagon"],
+
+				[[1,-1,1],[-1,0,1],[0,-1,1],[0,1,1],[1,0,1],[-1,1,1],[1,-2,1],
+				[-1,-1,1],[2,-1,1],[1,1,1],[-2,1,1],[-1,2,1],"Diaghex"],
+
+				[[1,-1,2],[-1,0,2],[0,-1,2],[0,1,2],[1,0,2],[-1,1,2],[1,-2,1],
+				[-1,-1,1],[2,-1,1],[1,1,1],[-2,1,1],[-1,2,1],"Doubhex"],
+
+				[[1,0,1],[2,0,1],[-1,0,1],[-2,0,1],"Horiz"],
+
+				[[0,-1,2],[1,-1,2],[-1,-1,2],[0,-2,1],"Pawn"]
+
+			];
+			var BOARD_WIDTH = 9;
+			var BOARD_HEIGHT = 9;
+			var MINE_COUNT = 10;
+			
+			var tileSize = 60;
+			var tileMargin = 3;
+			var overallMargin = 30;
+			var screenWidth = 1280;
+			var screenHeight = 720;
+			
+			var gameDifficulty = 0;
+			var gamePattern = 0;
+			var gameBoard;
+			var gameOutcome = 0;
+			var gameStartTime = 0;
+			var gameEndTime = -1;
+			var gameTotalTime = 0;
+			var uncoveredTileCount = 0;
+			var tilesToClear = new Array(0);
+			var flagCount = 0;
+			var goalToUncover = 0;
+			var lastFiveTimes = new Array(neighborPatterns.length);
+			for(var i = 0 ; i < neighborPatterns.length; i++){
+				lastFiveTimes[i] = new Array(boardSizes.length);
+				for(var j = 0 ; j < boardSizes.length; j++){
+					lastFiveTimes[i][j] = [-1,-1,-1,-1,-1];
+				}
+			}
+
+			var timesAverage = -1;
+			var recordLowHolder = -1;
+			var recordHighHolder = -1;
+			var minePunishment = 0;
+			var neighboringMineCount = 0;
+			var listOfQuakedTiles = [];
+			var quakeCount = 0;
+			var lastClickX = -1;
+			var lastClickY = -1;
+			var yourName = "";
+			var leaderBoardOutput = new Array(0);
+			var leaderBoardType = 0;
+			var showDuplicates = true;
+			var allTime = 3;
+			if (localStorage["yourName"]){
+				yourName = localStorage["yourName"];
+				minePunishment = localStorage["yourMinePunishment"]*1;
+				gamePattern = localStorage["yourGamePattern"]*1;
+				gameDifficulty = localStorage["yourGameDifficulty"]*1;
+			}else{
+				localStorage["yourName"] = yourName;
+				localStorage["yourMinePunishment"] = minePunishment;
+				localStorage["yourGamePattern"] = gamePattern;
+				localStorage["yourGameDifficulty"] = gameDifficulty;
+			}
+			var clickCount = 0;
+
+			var imageNames = ["mine","flag","tile","cursor"];
+
+			var img = new Array(imageNames.length);
+			for(var i = 0 ; i < imageNames.length; i++){
+				img[i] = new Image();
+				img[i].src = "http://htwins.net/minesweeper/"+imageNames[i]+".png?";
+			}
+			
+			c.onmousedown = onClick;
+			c.oncontextmenu = onRightClick;
+			document.onkeydown = keyDown;
+			document.getElementById("close").onclick = closeTextBox;
+			document.getElementById("cancel").onclick = cancelTextBox;
+
+			function onClick(e){
+				var mX = e.offsetX;
+				var mY = e.offsetY;
+				var boardY = Math.floor((mY-overallMargin)/tileSize);
+				var boardX = Math.floor((mX-overallMargin)/tileSize-boardY*getShift());
+				var openedGates = false;
+				if(inBounds(boardX,boardY) && gameOutcome <= 0){
+					if(gameOutcome == -1){
+						placeMines(boardX,boardY);
+						gameOutcome = 0;
+						openedGates = true;
+					}
+					lastClickX = boardX;
+					lastClickY = boardY;
+					if(e.which == 3){
+						if(gameBoard[boardX][boardY].exposedLevel <= 0){
+							gameBoard[boardX][boardY].exposedLevel = 1;
+							flagCount++;
+							playSound("flagSound");
+						}else if(gameBoard[boardX][boardY].exposedLevel == 1){
+							gameBoard[boardX][boardY].exposedLevel = 0;
+							flagCount--;
+							playSound("flagSound");
+						}
+					}else if(e.which == 1){
+						if(gameBoard[boardX][boardY].exposedLevel <= 0){
+							if(!openedGates){
+								playSound("clickSound"+Math.floor(Math.random()*4));
+							}
+							clearTile(boardX,boardY,true);
+						}else if(gameBoard[boardX][boardY].exposedLevel == 2){
+							var neighborFlagCount = 0;
+							for(var neighbor = 0; neighbor < neighborPatterns[gamePattern].length-1; neighbor++){
+								var neighborX = boardX+neighborPatterns[gamePattern][neighbor][0];
+								var neighborY = boardY+neighborPatterns[gamePattern][neighbor][1];
+								if(inBounds(neighborX,neighborY) && gameBoard[neighborX][neighborY].exposedLevel == 1){
+									neighborFlagCount += neighborPatterns[gamePattern][neighbor][2];
+								}
+							}
+							if(neighborFlagCount >= gameBoard[boardX][boardY].mineNeighbors){
+								var chordedTiles = 0;
+								for(var neighbor = 0; neighbor < neighborPatterns[gamePattern].length-1; neighbor++){
+									var neighborX = boardX+neighborPatterns[gamePattern][neighbor][0];
+									var neighborY = boardY+neighborPatterns[gamePattern][neighbor][1];
+									if(inBounds(neighborX,neighborY)){
+										if(gameBoard[neighborX][neighborY].exposedLevel <= 0){
+											chordedTiles++;
+										}
+										clearTile(neighborX,neighborY,(chordedTiles <= 1));
+									}
+								}
+								if(chordedTiles >= 1){
+									playSound("chordSound");
+								}else{
+									playSound("cantSound");
+								}
+							}else{
+								playSound("cantSound");
+							}
+						}
+					}
+				}else{
+					if(e.which == 1){
+						if(mX >= 1280){
+							if(mY >= screenHeight-100){
+								loadLeaderBoard(Math.floor((mX-1280)/240));
+							}else if(mY < 100){
+								var regionClicked = Math.floor((mX-1280)/240);
+								if(regionClicked == 0){
+									showDuplicates = !showDuplicates;
+									loadLeaderBoard(leaderBoardType);
+								}else if(regionClicked == 1){
+									allTime = (allTime+1)%4;
+									loadLeaderBoard(leaderBoardType);
+								}
+							}
+						}else if(Math.abs(mX-(screenWidth*0.875)) <= screenWidth*0.125-overallMargin){
+							if(Math.abs(mY-(overallMargin+30)) <= 30){
+								if(mX >= screenWidth*7/8){
+									openTextBox();
+									playSound("selectSound");
+								}else{
+									if(gameOutcome == 0){
+										endGame(1,false);
+									}
+									initializeBoard(gameDifficulty,gamePattern);
+									playSound("selectSound");
+								}
+							}else if(Math.abs(mY-(overallMargin+100)) <= 30){
+								clearFiveTimes();
+								initializeBoard(gameDifficulty,(gamePattern+1)%neighborPatterns.length);
+								leaderBoardOutput = new Array(0);
+								playSound("selectSound");
+							}else if(Math.abs(mY-(overallMargin+170)) <= 30){
+								if(mX >= screenWidth*7/8){
+									if(gameStartTime < 0){
+										minePunishment = (minePunishment+1)%2;
+										localStorage["yourMinePunishment"] = minePunishment;
+										playSound("selectSound");
+									}else{
+										playSound("cantSound");
+									}
+								}else{
+									clearFiveTimes();
+									initializeBoard((gameDifficulty+1)%boardSizes.length,gamePattern);
+									leaderBoardOutput = new Array(0);
+									playSound("selectSound");
+								}
+							}
+						}
+					}
+				}
+			}
+			function loadLeaderBoard(region){
+				leaderBoardOutput = new Array(0);
+				leaderBoardType = region;
+				var sd = "0";
+				if(showDuplicates){
+					sd = "1";
+				}
+				var collectedData = httpGet("http://htwins.net/minesweeper/getData.php?datatype="+leaderBoardType+"&pattern="+getPatternName()+"&difficulty="+gameDifficulty+"&showDuplicates="+sd+"&allTime="+allTime+"&rand="+Math.floor(Math.random()*100000000));
+				var bigParts = collectedData.split("&&");
+				leaderBoardOutput = new Array(bigParts.length+1);
+				if(leaderBoardType <= 1){
+					if(leaderBoardType == 0){
+						leaderBoardOutput[0] = [getPatternName()+" "+boardSizes[gameDifficulty][boardSizes[gameDifficulty].length-1]+" singles leaderboard"];
+					}else{
+						leaderBoardOutput[0] = [getPatternName()+" "+boardSizes[gameDifficulty][boardSizes[gameDifficulty].length-1]+" averages leaderboard"];
+					}
+					for(var i = 0; i < bigParts.length; i++){
+						if(i == 0){
+							leaderBoardOutput[i+1] = ["","Sweeper","Time","Date","ME","Clicks"];
+						}else{
+							var parts = bigParts[i].split("&");
+							var me = "D";
+							if(parts[3] == 1){
+								me = "E";
+							}
+							leaderBoardOutput[i+1] = [rankify(i-1),decodeURIComponent(parts[0]),timeText(parts[1]*1),numToShortString(parts[2]*1),me,parts[4]];
+							if(leaderBoardType == 1){
+								leaderBoardOutput[i+1][4] = "-";
+								leaderBoardOutput[i+1][5] = "-";
+							}
+						}
+					}
+				}else{
+					leaderBoardOutput[0] = ["Most recent Top 5 entries across all events"];
+					for(var i = 0; i < bigParts.length; i++){
+						if(i == 0){
+							leaderBoardOutput[i+1] = ["Pattern","Difficulty","Type","Rank","Sweeper","Time","Date"];
+						}else{
+							var parts = bigParts[i].split("&");
+							var entryType = "Single";
+							if(parts[6] == 1){
+								entryType = "Average";
+							}
+							leaderBoardOutput[i+1] = [parts[4],boardSizes[parts[5]][boardSizes[parts[5]].length-1],
+							entryType,rankify(parts[3]*1-1),decodeURIComponent(parts[0]),timeText(parts[1]*1),numToShortString(parts[2]*1)];
+						}
+					}
+				}
+			}
+			function addZero(n){
+				if(n >= 10){
+					return ""+n;
+				}else{
+					return "0"+n;
+				}
+			}
+			function numToDate(n){
+				var d = new Date();
+				d.setTime(n*1000);
+				return d;
+			}
+			function numToShortString(n){
+				var d = numToDate(n);
+				return d.getUTCFullYear()+"-"+addZero(d.getUTCMonth()+1)+"-"+addZero(d.getUTCDate())+" "+addZero(d.getUTCHours()) + ":"
+                + addZero(d.getUTCMinutes()) + ":"+ addZero(d.getUTCSeconds());
+			}
+			function rankify(n){
+				if(n%10 >= 3 || Math.floor(n/10)%10 == 1){
+					return (n+1)+"th";
+				}else{
+					if(n%10 == 0) return (n+1)+"st";
+					if(n%10 == 1) return (n+1)+"nd";
+				}
+				return (n+1)+"rd";
+			}
+			function clearTile(x, y, canCount){
+				if(gameBoard[x][y].exposedLevel <= 0){
+					if(gameBoard[x][y].hasMine){
+						clickCount++;
+						lastClickX = x;
+						lastClickY = y;
+						if(minePunishment == 0){
+							endGame(1,true);
+						}else if(minePunishment == 1){
+							earthQuake(x,y);
+						}
+					}else{
+						if(canCount){
+							clickCount++;
+						}
+						gameBoard[x][y].exposedLevel = 2;
+						uncoveredTileCount++;
+						tilesToClear = [[x,y]];
+						while(tilesToClear.length >= 1){
+							if(gameBoard[tilesToClear[0][0]][tilesToClear[0][1]].mineNeighbors == 0){
+								for(var neighbor = 0; neighbor < neighborPatterns[gamePattern].length-1; neighbor++){
+									var neighborX = tilesToClear[0][0]+neighborPatterns[gamePattern][neighbor][0];
+									var neighborY = tilesToClear[0][1]+neighborPatterns[gamePattern][neighbor][1];
+									if(inBounds(neighborX,neighborY) && gameBoard[neighborX][neighborY].exposedLevel <= 0){
+										gameBoard[neighborX][neighborY].exposedLevel = 2;
+										uncoveredTileCount++;
+										tilesToClear.push([neighborX,neighborY]);
+									}
+								}
+							}
+							tilesToClear.shift();
+						}
+						if(uncoveredTileCount >= goalToUncover){
+							endGame(2,false);
+						}
+					}
+				}
+			}
+			function earthQuake(clickX,clickY){
+				neighboringMineCount = 0;
+				listOfQuakedTiles = [];
+				addToListOfQuakedTiles(clickX,clickY);
+				for(var neighbor = 0; neighbor < neighborPatterns[gamePattern].length-1; neighbor++){
+					var neighborX = clickX+neighborPatterns[gamePattern][neighbor][0];
+					var neighborY = clickY+neighborPatterns[gamePattern][neighbor][1];
+					if(inBounds(neighborX,neighborY)){
+						addToListOfQuakedTiles(neighborX,neighborY);
+					}
+				}
+				for(var i = 0; i < listOfQuakedTiles.length; i++){
+					quakify(listOfQuakedTiles[i][0],listOfQuakedTiles[i][1],true);
+				}
+				for(var mine = 0; mine < neighboringMineCount; mine++){
+					var choiceIndex = -1;
+					var x = -1;
+					var y = -1;
+					while(choiceIndex < 0 || gameBoard[x][y].hasMine || gameBoard[x][y].exposedLevel == -1){
+						choiceIndex = Math.floor(Math.random()*listOfQuakedTiles.length);
+						x = listOfQuakedTiles[choiceIndex][0];
+						y = listOfQuakedTiles[choiceIndex][1];
+					}
+					gameBoard[x][y].hasMine = true;
+				}
+				for(var neighbor = 0; neighbor < neighborPatterns[gamePattern].length-1; neighbor++){
+					var neighborX = clickX+neighborPatterns[gamePattern][neighbor][0];
+					var neighborY = clickY+neighborPatterns[gamePattern][neighbor][1];
+					if(inBounds(neighborX,neighborY)){
+						for(var secondNeighbor = 0; secondNeighbor < neighborPatterns[gamePattern].length-1; secondNeighbor++){
+							var secondNeighborX = neighborX+neighborPatterns[gamePattern][secondNeighbor][0];
+							var secondNeighborY = neighborY+neighborPatterns[gamePattern][secondNeighbor][1];
+							if(inBounds(secondNeighborX,secondNeighborY)){
+								addToListOfQuakedTiles(secondNeighborX,secondNeighborY);
+							}
+						}
+					}
+				}
+				for(var i = 0; i < listOfQuakedTiles.length; i++){
+					var x = listOfQuakedTiles[i][0];
+					var y = listOfQuakedTiles[i][1];
+					quakify(x,y,false);
+					setMineNeighbors(x,y);
+				}
+				quakeCount++;
+				playSound("loseSound");
+			}
+			function addToListOfQuakedTiles(x,y){
+				if(gameBoard[x][y].mostRecentQuake < quakeCount){
+					listOfQuakedTiles.push([x,y]);
+					gameBoard[x][y].mostRecentQuake = quakeCount;
+				}
+			}
+			function quakify(x,y,removeMines){
+				if(gameBoard[x][y].exposedLevel == 2){
+					uncoveredTileCount--;
+				}else if(gameBoard[x][y].exposedLevel == 1){
+					flagCount--;
+				}
+				gameBoard[x][y].exposedLevel = 0;
+				if(gameBoard[x][y].hasMine && removeMines){
+					neighboringMineCount++;
+					gameBoard[x][y].hasMine = false;
+				}
+			}
+			function onRightClick(e){
+				return false;
+			}
+			function endGame(outcome, lost){
+				gameEndTime = rightNow();
+				gameOutcome = outcome;
+				for(var i = 4; i >= 1; i--){
+					lastFiveTimes[gamePattern][gameDifficulty][i] = lastFiveTimes[gamePattern][gameDifficulty][i-1];
+				}
+				if(outcome == 2){
+					var gameTime = gameEndTime-gameStartTime;
+					post('http://htwins.net/minesweeper/postScore.php', "username="+encodeURIComponent(yourName)+"&gametime="+gameTime+"&gamedate="+rightNow()+"&punishment="+minePunishment+"&clicks="+clickCount
+				+"&pattern="+getPatternName()+"&difficulty="+gameDifficulty+"&solveType=0");
+					playSound("winSound");
+					lastFiveTimes[gamePattern][gameDifficulty][i] = gameTime;
+				}else{
+					if(lost){
+						playSound("loseSound");
+					}
+					lastFiveTimes[gamePattern][gameDifficulty][i] = -1;
+				}
+				calculateTimesAverage(true);
+			}
+			function isHigher(a,b){
+				if(a <= -0.5){
+					return true;
+				}else if(b <= -0.5){
+					return false;
+				}else{
+					return (a >= b);
+				}
+			}
+			function calculateTimesAverage(canPostThisScore){
+				recordLowHolder = 0;
+				var recordLow = lastFiveTimes[gamePattern][gameDifficulty][0];
+				recordHighHolder = 0;
+				var recordHigh = lastFiveTimes[gamePattern][gameDifficulty][0];
+				for(var i = 1; i < 5; i++){
+					if(!isHigher(lastFiveTimes[gamePattern][gameDifficulty][i],recordLow)){
+						recordLow = lastFiveTimes[gamePattern][gameDifficulty][i];
+						recordLowHolder = i;
+					}
+					if(isHigher(lastFiveTimes[gamePattern][gameDifficulty][i],recordHigh)){
+						recordHigh = lastFiveTimes[gamePattern][gameDifficulty][i];
+						recordHighHolder = i;
+					}
+				}
+				var average = 0;
+				var twoDNFs = false;
+				for(var i = 0; i < 5; i++){
+					if(i != recordLowHolder && i != recordHighHolder){
+						if(lastFiveTimes[gamePattern][gameDifficulty][i] == -1){
+							twoDNFs = true;
+						}
+						average += lastFiveTimes[gamePattern][gameDifficulty][i];
+					}
+				}
+				if(twoDNFs){
+					timesAverage = -1;
+				}else{
+					timesAverage = Math.round(average/3);
+					if(canPostThisScore){
+						post('http://htwins.net/minesweeper/postScore.php', "username="+encodeURIComponent(yourName)+"&gametime="+timesAverage+"&gamedate="+rightNow()+"&punishment="+minePunishment+"&clicks="+clickCount
+						+"&pattern="+getPatternName()+"&difficulty="+gameDifficulty+"&solveType=1");
+					}
+				}
+			}
+			function clearFiveTimes(){
+				for(var i = 0; i < 5; i++){
+					lastFiveTimes[gamePattern][gameDifficulty][i] = -1;
+				}
+				calculateTimesAverage(false);
+			}
+			var channel_max = 10;										// number of channels
+			audiochannels = new Array();
+			for (a=0; a<channel_max; a++){									// prepare the channels
+				audiochannels[a] = new Array();
+				audiochannels[a]['channel'] = new Audio();						// create a new audio object
+				audiochannels[a]['finished'] = -1;							// expected end time for this channel
+			}
+
+			function Tile (exposedLevel,hasMine,mineNeighbors,mostRecentQuake) {
+			    this.exposedLevel = exposedLevel;
+			    this.hasMine = hasMine;
+				this.mineNeighbors = mineNeighbors;
+				this.mostRecentQuake = mostRecentQuake;
+			}
+			function drawBoard(){
+				ctx.fillStyle = bgColor;
+				ctx.fillRect(0,0,myCanvas.width,myCanvas.height);
+				ctx.font = Math.round(tileSize*0.7)+"px Arial";
+				ctx.textAlign = "center";
+
+				for(var x = 0; x < BOARD_WIDTH; x++){
+					for(var y = 0; y < BOARD_HEIGHT; y++){
+						var apX = overallMargin+x*tileSize+getShift()*y*tileSize;
+						var apY = overallMargin+y*tileSize;
+						if(gameOutcome == 1 && x == lastClickX && y == lastClickY){
+							ctx.fillStyle = deathColor;
+						}else{
+							ctx.fillStyle = tileColor;
+						}
+						ctx.fillRect(apX+tileMargin, apY+tileMargin, tileSize-2*tileMargin, tileSize-2*tileMargin);
+						if(gameBoard[x][y].hasMine && gameOutcome == 1){
+							ctx.drawImage(img[0], apX+tileMargin, apY+tileMargin, tileSize-2*tileMargin, tileSize-2*tileMargin);
+							if(gameBoard[x][y].exposedLevel == 1){
+								ctx.drawImage(img[1], apX+tileMargin, apY+tileMargin, tileSize-2*tileMargin, tileSize-2*tileMargin);
+							}
+						}else{
+							if(gameBoard[x][y].exposedLevel <= 1){
+								ctx.drawImage(img[2], apX+tileMargin, apY+tileMargin, tileSize-2*tileMargin, tileSize-2*tileMargin);
+							}
+							if(gameBoard[x][y].exposedLevel == 1){
+								ctx.drawImage(img[1], apX+tileMargin, apY+tileMargin, tileSize-2*tileMargin, tileSize-2*tileMargin);
+							}else if(gameBoard[x][y].exposedLevel == 2){
+								var neighborCount = gameBoard[x][y].mineNeighbors;
+								if(neighborCount >= 1){
+									ctx.fillStyle = numberColors[Math.min(neighborCount,numberColors.length-1)];
+									ctx.fillText(neighborCount, apX+tileSize/2, apY+tileSize*0.75);
+								}
+							}
+						}
+					}
+				}
+			}
+			function getShift(){
+				if(getPatternName().toLowerCase().indexOf("hex") >= 0){
+					return 0.5;
+				}else{
+					return 0;
+				}
+			}
+			function getPatternName(){
+				return neighborPatterns[gamePattern][neighborPatterns[gamePattern].length-1];
+			}
+			function drawTimes(){
+				var timeToShow = 0;
+				if(gameOutcome == -1){
+					timeToShow = 0;
+				}else if(gameOutcome == 0){
+					timeToShow = rightNow()-gameStartTime;
+				}else{
+					timeToShow = gameEndTime-gameStartTime;
+				}
+
+				var s = timeText(timeToShow);
+				ctx.fillStyle = textColors[Math.min(gameOutcome+1,textColors.length-1)];
+				ctx.textAlign = "right";
+				var fontSize = 550/s.length;
+				ctx.font = fontSize+"px Arial";
+				ctx.fillText(s, screenWidth-overallMargin, screenHeight-overallMargin);
+
+				ctx.fillStyle = textColors[1];
+				ctx.font = "30px Arial";
+				for(var i = 0; i < 5; i++){
+					var s = timeText(lastFiveTimes[gamePattern][gameDifficulty][i]);
+					if(i == recordLowHolder || i == recordHighHolder){
+						s = "("+s+")";
+					}
+					ctx.fillText(s, screenWidth-overallMargin, screenHeight-overallMargin-182-30*i);
+				}
+				ctx.fillText("= "+timeText(timesAverage)+" ao5", screenWidth-overallMargin, screenHeight-overallMargin-135);
+			}
+			function drawButtons(){
+				ctx.textAlign = "right";
+				ctx.font = "16px Arial";
+				ctx.fillStyle = textColors[1];
+				ctx.fillText("\"Timed Minesweeper\" v1.32 by Cary Huang 2016",screenWidth-overallMargin,overallMargin-9);
+
+				ctx.fillStyle = buttonColor;
+
+				var smallButtonWidth = (screenWidth*0.125-overallMargin)-5;
+				ctx.fillRect(screenWidth*0.75+overallMargin,overallMargin,smallButtonWidth,60);
+				ctx.fillRect(screenWidth*0.875+5,overallMargin,smallButtonWidth,60);
+
+				ctx.fillRect(screenWidth*0.75+overallMargin,overallMargin+70,screenWidth*0.25-overallMargin*2,60);
+				ctx.fillRect(screenWidth*0.75+overallMargin,overallMargin+140,smallButtonWidth,60);
+				if(gameStartTime >= 0){
+					ctx.fillStyle = "#304050";
+				}
+				ctx.fillRect(screenWidth*0.875+5,overallMargin+140,smallButtonWidth,60);
+
+				ctx.textAlign = "left";
+				ctx.font = "38px Arial";
+				ctx.fillStyle = textColors[1];
+				ctx.fillText(neighborPatterns[gamePattern][neighborPatterns[gamePattern].length-1],screenWidth*0.75+overallMargin+10,overallMargin+113);
+
+				ctx.textAlign = "center";
+				ctx.font = "20px Arial";
+				ctx.fillText("Reset",screenWidth*13/16+12,overallMargin+23);
+				ctx.fillText("(or press R)",screenWidth*13/16+12,overallMargin+49);
+				ctx.fillText("Your name:",screenWidth*15/16-12,overallMargin+23);
+				ctx.fillText(yourName,screenWidth*15/16-12,overallMargin+49);
+
+				ctx.fillText(boardSizes[gameDifficulty][3],screenWidth*13/16+12,overallMargin+163);
+				ctx.fillText(BOARD_WIDTH+" x "+BOARD_HEIGHT,screenWidth*13/16+12,overallMargin+189);
+
+				var minePunishments = ["DNFing","Earthquake"];
+
+				ctx.fillText("Mine Effect:",screenWidth*15/16-12,overallMargin+163);
+				ctx.fillText(minePunishments[minePunishment],screenWidth*15/16-12,overallMargin+189);
+
+			  ctx.fillStyle = "#FFFFFF";
+				drawEllipse(ctx,screenWidth*0.94+1,overallMargin+95,10,10);
+
+				ctx.textAlign = "center";
+				ctx.font = "11px Arial";
+				for(var neighbor = 0; neighbor < neighborPatterns[gamePattern].length-1; neighbor++){
+					var neighborY = neighborPatterns[gamePattern][neighbor][1];
+					var neighborX = neighborPatterns[gamePattern][neighbor][0]+getShift()*neighborY;
+					ctx.fillStyle = textColors[1];
+					ctx.fillRect(screenWidth*0.94+neighborX*12+1,overallMargin+95+neighborY*12,10,10);
+					var c = neighborPatterns[gamePattern][neighbor][2];
+					if(c >= 2){
+						ctx.fillStyle = "#FFFFFF";
+						ctx.fillText(c,screenWidth*0.94+neighborX*12+6,overallMargin+104+neighborY*12);
+					}
+				}
+				ctx.fillStyle = textColors[1];
+				ctx.font = "30px Arial";
+				ctx.textAlign = "left";
+				var x = screenWidth*0.75+overallMargin+40;
+				ctx.fillText(flagCount+" / "+MINE_COUNT,x,overallMargin+237);
+				ctx.fillText(uncoveredTileCount+" / "+goalToUncover,x,overallMargin+273);
+				ctx.fillText(clickCount,x,overallMargin+309);
+				ctx.drawImage(img[1], screenWidth*0.75+overallMargin,overallMargin+211,30,30);
+				ctx.drawImage(img[2], screenWidth*0.75+overallMargin,overallMargin+247,30,30);
+				ctx.drawImage(img[3], screenWidth*0.75+overallMargin,overallMargin+283,30,30);
+
+				var labels = ["Display","just PBs","Display","all time","Scrolling","doesn't work.",
+					"Get single","leaderboard","Get average","leaderboard","Get","news"];
+				if(showDuplicates){
+					labels[1] = "all entries";
+				}
+				if(allTime == 0){
+					labels[3] = "last 24 hours";
+				}else if(allTime == 1){
+					labels[3] = "last 7 days";
+				}else if(allTime == 2){
+					labels[3] = "last 30 days";
+				}
+				ctx.font = "22px Arial";
+				ctx.textAlign = "center";
+				for(var i = 0; i < 3; i++){
+					ctx.fillStyle = buttonColor;
+					ctx.fillRect(screenWidth+5+240*i,5,230,90);
+					if(i == leaderBoardType){
+						ctx.fillStyle = "#FFFFFF";
+					}else{
+						ctx.fillStyle = buttonColor;
+					}
+					ctx.fillRect(screenWidth+5+240*i,screenHeight-95,230,90);
+					ctx.fillStyle = textColors[1];
+					ctx.fillText(labels[i*2],screenWidth+120+240*i,44);
+					ctx.fillText(labels[i*2+1],screenWidth+120+240*i,70);
+					ctx.fillText(labels[6+i*2],screenWidth+120+240*i,screenHeight-56);
+					ctx.fillText(labels[6+i*2+1],screenWidth+120+240*i,screenHeight-30);
+				}
+				ctx.fillStyle = textColors[1];
+				ctx.textAlign = "left";
+				var extras = [[0,60,250,350,540,590],[0,60,250,350,540,590],[0,90,175,245,295,435,540]];
+				for(var i = 0; i < leaderBoardOutput.length; i++){
+					for(var j = 0; j < leaderBoardOutput[i].length; j++){
+						var ay = overallMargin+100+18*i;
+						if(i >= 2){
+							ay += 9;
+						}
+						if(i == 0){
+							ctx.font = "28px Arial";
+						}else{
+							ctx.font = "16px Arial";
+						}
+						ctx.fillText(leaderBoardOutput[i][j],screenWidth+extras[leaderBoardType][j],ay);
+					}
+				}
+			}
+			function drawEllipse(ctx, x, y, w, h) {
+			  var kappa = .5522848,
+				  ox = (w / 2) * kappa, // control point offset horizontal
+				  oy = (h / 2) * kappa, // control point offset vertical
+				  xe = x + w,           // x-end
+				  ye = y + h,           // y-end
+				  xm = x + w / 2,       // x-middle
+				  ym = y + h / 2;       // y-middle
+
+			  ctx.beginPath();
+			  ctx.moveTo(x, ym);
+			  ctx.bezierCurveTo(x, ym - oy, xm - ox, y, xm, y);
+			  ctx.bezierCurveTo(xm + ox, y, xe, ym - oy, xe, ym);
+			  ctx.bezierCurveTo(xe, ym + oy, xm + ox, ye, xm, ye);
+			  ctx.bezierCurveTo(xm - ox, ye, x, ym + oy, x, ym);
+			  ctx.closePath();
+			  ctx.fill();
+			}
+			function initializeBoard(dif,pat){
+				gamePattern = pat;
+				gameDifficulty = dif;
+				localStorage["yourGamePattern"] = gamePattern*1;
+				localStorage["yourGameDifficulty"] = gameDifficulty*1;
+				BOARD_WIDTH = boardSizes[dif][0];
+				BOARD_HEIGHT = boardSizes[dif][1];
+				MINE_COUNT = boardSizes[dif][2];
+				tileSize = Math.min((screenWidth*0.75-overallMargin*2)/(BOARD_WIDTH+getShift()*BOARD_HEIGHT),(screenHeight-overallMargin*2)/BOARD_HEIGHT);
+				tileMargin = tileSize*0.00;
+				gameBoard = new Array(BOARD_WIDTH);
+				for(var x = 0; x < BOARD_WIDTH; x++){
+					gameBoard[x] = new Array(BOARD_HEIGHT);
+					for(var y = 0; y < BOARD_HEIGHT; y++){
+						gameBoard[x][y] = new Tile(0,false,0,-1);
+					}
+				}
+				gameOutcome = -1;
+				uncoveredTileCount = 0;
+				flagCount = 0;
+				goalToUncover = BOARD_WIDTH*BOARD_HEIGHT-MINE_COUNT;
+				quakeCount = 0;
+				gameStartTime = -1;
+				lastClickX = -1;
+				lastClickY = -1;
+				clickCount = 0;
+				calculateTimesAverage(false);
+			}
+			function placeMines(clickX, clickY){
+				gameBoard[clickX][clickY].exposedLevel = -1;
+				for(var neighbor = 0; neighbor < neighborPatterns[gamePattern].length-1; neighbor++){
+					var neighborX = clickX+neighborPatterns[gamePattern][neighbor][0];
+					var neighborY = clickY+neighborPatterns[gamePattern][neighbor][1];
+					if(inBounds(neighborX,neighborY)){
+						gameBoard[neighborX][neighborY].exposedLevel = -1;
+					}
+				}
+				for(var mine = 0; mine < MINE_COUNT; mine++){
+					var choiceX = -1;
+					var choiceY = -1;
+					while(choiceX < 0 || gameBoard[Math.max(0,choiceX)][choiceY].hasMine ||
+					gameBoard[Math.max(0,choiceX)][choiceY].exposedLevel == -1){
+						choiceX = Math.floor(Math.random()*BOARD_WIDTH);
+						if(getPatternName() == "Pawn"){
+							choiceY = Math.floor(Math.random()*(BOARD_HEIGHT-1));
+						}else{
+							choiceY = Math.floor(Math.random()*BOARD_HEIGHT);
+						}
+					}
+					gameBoard[choiceX][choiceY].hasMine = true;
+				}
+				for(var x = 0; x < BOARD_WIDTH; x++){
+					for(var y = 0; y < BOARD_HEIGHT; y++){
+						setMineNeighbors(x,y);
+					}
+				}
+				gameEndTime = gameStartTime = rightNow();
+				playSound("beginSound");
+			}
+			function setMineNeighbors(x,y){
+				gameBoard[x][y].mineNeighbors = 0;
+				for(var neighbor = 0; neighbor < neighborPatterns[gamePattern].length-1; neighbor++){
+					var neighborX = x+neighborPatterns[gamePattern][neighbor][0];
+					var neighborY = y+neighborPatterns[gamePattern][neighbor][1];
+					if(inBounds(neighborX,neighborY) && gameBoard[neighborX][neighborY].hasMine){
+						gameBoard[x][y].mineNeighbors += neighborPatterns[gamePattern][neighbor][2];
+					}
+				}
+			}
+			function inBounds(x,y){
+				return (x >= 0 && x < BOARD_WIDTH && y >= 0 && y < BOARD_HEIGHT);
+			}
+			function rightNow(){
+				var currentTime = new Date();
+				return currentTime.getTime();
+			}
+			function timeText(f){
+				if(f == -1){
+					return "DNF";
+				}
+				var digit = new Array(7);
+				digit[0] = Math.floor(f/10)%10;
+				digit[1] = Math.floor(f/100)%10;
+				digit[2] = Math.floor(f/1000)%10; //seconds
+				digit[3] = Math.floor(f/10000)%6; //10 seconds
+				digit[4] = Math.floor(f/60000)%10; //minutes
+				digit[5] = Math.floor(f/600000)%6; //10 minutes
+				digit[6] = Math.floor(f/3600000)%10; //hours
+				digit[7] = Math.floor(f/36000000)%10; //10 hours
+				var begin = false;
+				var textie = "";
+				for(var i = 7; i >= 0; i--){
+					if((digit[i] >= 1 || i <= 2) && !begin){
+						begin = true;
+					}
+					if(begin){
+						textie += digit[i];
+						if(i == 2) textie += ".";
+						if(i == 4 || i == 6) textie += ":";
+					}
+				}
+				return textie;
+			}
+			function post(path, params) {
+				var xhr = new XMLHttpRequest();
+				xhr.open("POST", path, true);
+				xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				xhr.send(params);
+				xhr.onload = function () {
+				};
+			}
+			function httpGet(path){
+			  var xmlHttp = new XMLHttpRequest();
+			  xmlHttp.open( "GET", path, false ); // false for synchronous request
+			  xmlHttp.send( null );
+			  return xmlHttp.responseText;
+			}
+			function openTextBox(){
+				var o = document.getElementById ("overlay");
+				o.style.display = "block";
+				c.onmousedown = null;
+				c.oncontextmenu = null;
+				document.onkeydown = null;
+			}
+			function closeTextBox(){
+				if((document.getElementById("name").value).length >= 2){
+					var o = document.getElementById ("overlay");
+					o.style.display = "none";
+					c.onmousedown = onClick;
+					c.oncontextmenu = onRightClick;
+					playSound("beginSound");
+					clearFiveTimes();
+					initializeBoard(gameDifficulty,gamePattern);
+					setName (document.getElementById("name").value);
+					document.onkeydown = keyDown;
+				}
+			}
+			function cancelTextBox(){
+				if((document.getElementById("name").value).length >= 2 || yourName.length >= 2){
+					var o = document.getElementById ("overlay");
+					o.style.display = "none";
+					c.onmousedown = onClick;
+					c.oncontextmenu = onRightClick;
+					playSound("cantSound");
+					document.onkeydown = keyDown;
+				}
+			}
+			function keyDown(){
+				event = event || window.event;
+				var e = event.keyCode;
+				if(e == 82){
+					if(gameOutcome == 0){
+						endGame(1,false);
+					}
+					initializeBoard(gameDifficulty,gamePattern);
+				}
+			}
+			function setName (name) {
+				name = name.replace("&", "and");
+				yourName = name.substr(0,50);
+				localStorage["yourName"] = yourName;
+			}
+
+			endGame(1,false);
+			initializeBoard(gameDifficulty,gamePattern);
+			if(yourName.length < 2){
+				openTextBox();
+			}
+			var int=self.setInterval(function(){run()},1000/60);
+			function run(){
+				drawBoard();
+				drawTimes();
+				drawButtons();
+			}
+		</script>
+		<noscript>
+			<h3>Poopoo</h3>
+		</noscript>
+	<div id="infix">
+	<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+	<!-- HTwins.net footer -->
+	<ins class="adsbygoogle"
+		 style="display:inline-block;width:728px;height:90px"
+		 data-ad-client="ca-pub-8441223715044524"
+		 data-ad-slot="0403053471"></ins>
+	<script>
+	(adsbygoogle = window.adsbygoogle || []).push({});
+	</script>
+	</div>
+	</body>
+</html>
