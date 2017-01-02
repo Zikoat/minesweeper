@@ -199,7 +199,7 @@
 			"file": "my website/index.html",
 			"settings":
 			{
-				"buffer_size": 3479,
+				"buffer_size": 3505,
 				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
@@ -223,17 +223,6 @@
 			}
 		},
 		{
-			"contents": "Package Control Messages\n========================\n\nTheme - Spacegray\n-----------------\n\n  Fixes in Spacegray 1.3.2:\n  \n    - Fixed red-heavy syntax in JS\n    - Fixed text input field alignment\n    - Fixed image link color highlighting in Markdown\n    - Fixed Oceanic Theme input field backgorund color\n",
-			"settings":
-			{
-				"buffer_size": 302,
-				"line_ending": "Windows",
-				"name": "Package Control Messages",
-				"read_only": true,
-				"scratch": true
-			}
-		},
-		{
 			"contents": "\n<!DOCTYPE html>\n<html>\n\t<head>\n\t\t<meta http-equiv=\"cache-control\" content=\"max-age=0\" />\n\t\t<meta http-equiv=\"cache-control\" content=\"no-cache\" />\n\t\t<meta http-equiv=\"expires\" content=\"0\" />\n\t\t<meta http-equiv=\"expires\" content=\"Tue, 01 Jan 1980 1:00:00 GMT\" />\n\t\t<meta http-equiv=\"pragma\" content=\"no-cache\" />\n\t\t<title>Timed Minesweeper</title>\n\t\t<style>\n\t\t\tbody {\n\t\t\t\tposition: relative;\n\t\t\t\t-webkit-touch-callout: none;\n\t\t\t\t-webkit-user-select: none;\n\t\t\t\t-khtml-user-select: none;\n\t\t\t\t-moz-user-select: none;\n\t\t\t\t-ms-user-select: none;\n\t\t\t\tuser-select: none;\n\t\t\t}\n\t\t\t#myCanvas {\n\t\t\t\tleft: 0;\n\t\t\t\ttop: 0;\n\t\t\t}\n\t\t\t#overlay {\n\t\t\t\tposition: absolute;\n\t\t\t\tleft: 0;\n\t\t\t\ttop: 0;\n\t\t\t\twidth: 2000px;\n\t\t\t\theight: 720px;\n\t\t\t\tdisplay: none;\n\t\t\t}\n\t\t\t#overlay #bg {\n\t\t\t\twidth: inherit;\n\t\t\t\theight: inherit;\n\t\t\t\tbackground: black;\n\t\t\t\topacity: 0.5;\n\t\t\t}\n\t\t\t#overlay #window {\n\t\t\t\twidth: 300px;\n\t\t\t\theight: 100px;\n\t\t\t\tbackground: white;\n\t\t\t\tposition: absolute;\n\t\t\t\tleft: 50%;\n\t\t\t\ttop: 50%;\n\t\t\t\tmargin-left: -150px;\n\t\t\t\tmargin-top: -50px;\n\t\t\t}\n\t\t\taudio, video {\n\t\t\t\tdisplay: none;\n\t\t\t}\n\t\t</style>\n\t</head>\n\t<body>\n\t\t<canvas id=\"myCanvas\" width=\"2000\" height=\"720\"></canvas>\n\t\t<div id=\"overlay\">\n\t\t\t<div id=\"bg\"></div>\n\t\t\t<div id=\"window\">\n\t\t\t\t<h2>Enter your name.</h2>\n\t\t\t\t<input type=\"text\" id=\"name\" />\n\t\t\t\t<input type=\"button\" value=\"Enter\" id=\"close\"/>\n\t\t\t\t<input type=\"button\" value=\"Cancel\" id=\"cancel\"/>\n\t\t\t</div>\n\t\t</div>\n\t\t<audio id=\"beginSound\" src=\"begin.wav\" preload=\"auto\"></audio>\n\t\t<audio id=\"winSound\" src=\"win.wav\" preload=\"auto\"></audio>\n\t\t<audio id=\"clickSound0\" src=\"click0.wav\" preload=\"auto\"></audio>\n\t\t<audio id=\"clickSound1\" src=\"click1.wav\" preload=\"auto\"></audio>\n\t\t<audio id=\"clickSound2\" src=\"click2.wav\" preload=\"auto\"></audio>\n\t\t<audio id=\"clickSound3\" src=\"click3.wav\" preload=\"auto\"></audio>\n\t\t<audio id=\"chordSound\" src=\"chord.wav\" preload=\"auto\"></audio>\n\t\t<audio id=\"selectSound\" src=\"select.wav\" preload=\"auto\"></audio>\n\t\t<audio id=\"loseSound\" src=\"lose.wav\" preload=\"auto\"></audio>\n\t\t<audio id=\"flagSound\" src=\"flag.wav\" preload=\"auto\"></audio>\n\t\t<audio id=\"cantSound\" src=\"cant.wav\" preload=\"auto\"></audio>\n\t\t<script language=\"javascript\" type=\"text/javascript\">\n\t\t\tvar channel_max = 10;\t\t\t\t\t\t\t\t\t\t// number of channels\n\t\t\taudiochannels = new Array();\n\t\t\tfor (a=0; a<channel_max; a++){\t\t\t\t\t\t\t\t\t// prepare the channels\n\t\t\t\taudiochannels[a] = new Array();\n\t\t\t\taudiochannels[a]['channel'] = new Audio();\t\t\t\t\t\t// create a new audio object\n\t\t\t\taudiochannels[a]['finished'] = -1;\t\t\t\t\t\t\t// expected end time for this channel\n\t\t\t}\n\t\t\tfunction playSound(s) {\n\t\t\t\tfor (a=0; a<audiochannels.length; a++){\n\t\t\t\t\tthistime = new Date();\n\t\t\t\t\tif (audiochannels[a]['finished'] < thistime.getTime()){\t\t\t// is this channel finished?\n\t\t\t\t\t\taudiochannels[a]['finished'] = thistime.getTime()+document.getElementById(s).duration*1000;\n\t\t\t\t\t\taudiochannels[a]['channel'].src = document.getElementById(s).src;\n\t\t\t\t\t\taudiochannels[a]['channel'].load();\n\t\t\t\t\t\taudiochannels[a]['channel'].play();\n\t\t\t\t\t\tbreak;\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t}\n\n\t\t\tvar c=document.getElementById(\"myCanvas\");\n\t\t\tvar ctx=c.getContext(\"2d\");\n\t\t\t\n\t\t\tvar bgColor = \"#AADCFF\";\n\t\t\tvar tileColor = \"#A0A0A0\";\n\t\t\tvar textColors = [\"#8094A8\",\"#000000\",\"#C00000\",\"#00A000\"];\n\t\t\tvar buttonColor = \"#50A0B4\";\n\t\t\tvar deathColor = \"#FF0000\";\n\t\t\tvar numberColors = [tileColor, \"#0040FF\",\"#008000\",\"#FF0000\",\"#000080\",\"#800080\",\"#008080\",\"#606060\",\"#000000\"];\n\t\t\t\n\t\t\tvar boardSizes = [[9,9,10,\"Beginner\"],[16,8,22,\"Calculator\"],[16,16,40,\"Intermediate\"],\n\t\t\t[30,16,99,\"Expert\"],[60,40,400,\"Insanity\"]];\n\t\t\tvar neighborPatterns = [\n\t\t\t\t[[-1,-1,1],[-1,0,1],[-1,1,1],[0,-1,1],[0,1,1],[1,-1,1],[1,0,1],[1,1,1],\"Normal\"],\n\t\t\t\t[[2,1,1],[2,-1,1],[-2,1,1],[-2,-1,1],[1,2,1],[1,-2,1],[-1,2,1],[-1,-2,1],\"Knight\"],\n\t\t\t\t[[-1,-1,1],[-1,0,1],[-1,1,1],[0,1,1],[1,-1,1],[1,0,1],[1,1,1],\"No Up\"],\n\t\t\t\t[[-1,-1,1],[-1,0,1],[-1,1,1],[1,-1,1],[1,0,1],[1,1,1],\"No Vert\"],\n\t\t\t\t[[0,1,1],[0,-1,1],[1,0,1],[-1,0,1],\"Orth\"],\n\t\t\t\t[[0,1,1],[0,2,1],[0,-1,1],[0,-2,1],[1,0,1],[2,0,1],[-1,0,1],[-2,0,1],\"Far Orth\"],\n\n\t\t\t\t[[-2,-2,1],[-2,-1,1],[-2,0,1],[-2,1,1],[-2,2,1],\n\t\t\t\t[-1,-2,1],[-1,-1,1],[-1,0,1],[-1,1,1],[-1,2,1],\n\t\t\t\t[0,-2,1],[0,-1,1],[0,1,1],[0,2,1],\n\t\t\t\t[1,-2,1],[1,-1,1],[1,0,1],[1,1,1],[1,2,1],\n\t\t\t\t[2,-2,1],[2,-1,1],[2,0,1],[2,1,1],[2,2,1],\"Swath\"],\n\t\t\t\t[[-1,-1,1],[-1,0,2],[-1,1,1],[0,-1,2],[0,1,2],[1,-1,1],[1,0,2],[1,1,1],\"Doubled\"],\n\n\t\t\t\t[[-2,0,1],\n\t\t\t\t[-1,-1,1],[-1,0,2],[-1,1,1],\n\t\t\t\t[0,-2,1],[0,-1,2],[0,1,2],[0,2,1],\n\t\t\t\t[1,-1,1],[1,0,2],[1,1,1],\n\t\t\t\t[2,0,1],\"Taxicab\"],\n\n\t\t\t\t[[1,-1,1],[-1,0,1],[0,-1,1],[0,1,1],[1,0,1],[-1,1,1],\"Hexagon\"],\n\n\t\t\t\t[[1,-1,1],[-1,0,1],[0,-1,1],[0,1,1],[1,0,1],[-1,1,1],[1,-2,1],\n\t\t\t\t[-1,-1,1],[2,-1,1],[1,1,1],[-2,1,1],[-1,2,1],\"Diaghex\"],\n\n\t\t\t\t[[1,-1,2],[-1,0,2],[0,-1,2],[0,1,2],[1,0,2],[-1,1,2],[1,-2,1],\n\t\t\t\t[-1,-1,1],[2,-1,1],[1,1,1],[-2,1,1],[-1,2,1],\"Doubhex\"],\n\n\t\t\t\t[[1,0,1],[2,0,1],[-1,0,1],[-2,0,1],\"Horiz\"],\n\n\t\t\t\t[[0,-1,2],[1,-1,2],[-1,-1,2],[0,-2,1],\"Pawn\"]\n\n\t\t\t];\n\t\t\tvar BOARD_WIDTH = 9;\n\t\t\tvar BOARD_HEIGHT = 9;\n\t\t\tvar MINE_COUNT = 10;\n\t\t\t\n\t\t\tvar tileSize = 60;\n\t\t\tvar tileMargin = 3;\n\t\t\tvar overallMargin = 30;\n\t\t\tvar screenWidth = 1280;\n\t\t\tvar screenHeight = 720;\n\t\t\t\n\t\t\tvar gameDifficulty = 0;\n\t\t\tvar gamePattern = 0;\n\t\t\tvar gameBoard;\n\t\t\tvar gameOutcome = 0;\n\t\t\tvar gameStartTime = 0;\n\t\t\tvar gameEndTime = -1;\n\t\t\tvar gameTotalTime = 0;\n\t\t\tvar uncoveredTileCount = 0;\n\t\t\tvar tilesToClear = new Array(0);\n\t\t\tvar flagCount = 0;\n\t\t\tvar goalToUncover = 0;\n\t\t\tvar lastFiveTimes = new Array(neighborPatterns.length);\n\t\t\tfor(var i = 0 ; i < neighborPatterns.length; i++){\n\t\t\t\tlastFiveTimes[i] = new Array(boardSizes.length);\n\t\t\t\tfor(var j = 0 ; j < boardSizes.length; j++){\n\t\t\t\t\tlastFiveTimes[i][j] = [-1,-1,-1,-1,-1];\n\t\t\t\t}\n\t\t\t}\n\n\t\t\tvar timesAverage = -1;\n\t\t\tvar recordLowHolder = -1;\n\t\t\tvar recordHighHolder = -1;\n\t\t\tvar minePunishment = 0;\n\t\t\tvar neighboringMineCount = 0;\n\t\t\tvar listOfQuakedTiles = [];\n\t\t\tvar quakeCount = 0;\n\t\t\tvar lastClickX = -1;\n\t\t\tvar lastClickY = -1;\n\t\t\tvar yourName = \"\";\n\t\t\tvar leaderBoardOutput = new Array(0);\n\t\t\tvar leaderBoardType = 0;\n\t\t\tvar showDuplicates = true;\n\t\t\tvar allTime = 3;\n\t\t\tif (localStorage[\"yourName\"]){\n\t\t\t\tyourName = localStorage[\"yourName\"];\n\t\t\t\tminePunishment = localStorage[\"yourMinePunishment\"]*1;\n\t\t\t\tgamePattern = localStorage[\"yourGamePattern\"]*1;\n\t\t\t\tgameDifficulty = localStorage[\"yourGameDifficulty\"]*1;\n\t\t\t}else{\n\t\t\t\tlocalStorage[\"yourName\"] = yourName;\n\t\t\t\tlocalStorage[\"yourMinePunishment\"] = minePunishment;\n\t\t\t\tlocalStorage[\"yourGamePattern\"] = gamePattern;\n\t\t\t\tlocalStorage[\"yourGameDifficulty\"] = gameDifficulty;\n\t\t\t}\n\t\t\tvar clickCount = 0;\n\n\t\t\tvar imageNames = [\"mine\",\"flag\",\"tile\",\"cursor\"];\n\n\t\t\tvar img = new Array(imageNames.length);\n\t\t\tfor(var i = 0 ; i < imageNames.length; i++){\n\t\t\t\timg[i] = new Image();\n\t\t\t\timg[i].src = \"http://htwins.net/minesweeper/\"+imageNames[i]+\".png?\";\n\t\t\t}\n\t\t\t\n\t\t\tc.onmousedown = onClick;\n\t\t\tc.oncontextmenu = onRightClick;\n\t\t\tdocument.onkeydown = keyDown;\n\t\t\tdocument.getElementById(\"close\").onclick = closeTextBox;\n\t\t\tdocument.getElementById(\"cancel\").onclick = cancelTextBox;\n\n\t\t\tfunction onClick(e){\n\t\t\t\tvar mX = e.offsetX;\n\t\t\t\tvar mY = e.offsetY;\n\t\t\t\tvar boardY = Math.floor((mY-overallMargin)/tileSize);\n\t\t\t\tvar boardX = Math.floor((mX-overallMargin)/tileSize-boardY*getShift());\n\t\t\t\tvar openedGates = false;\n\t\t\t\tif(inBounds(boardX,boardY) && gameOutcome <= 0){\n\t\t\t\t\tif(gameOutcome == -1){\n\t\t\t\t\t\tplaceMines(boardX,boardY);\n\t\t\t\t\t\tgameOutcome = 0;\n\t\t\t\t\t\topenedGates = true;\n\t\t\t\t\t}\n\t\t\t\t\tlastClickX = boardX;\n\t\t\t\t\tlastClickY = boardY;\n\t\t\t\t\tif(e.which == 3){\n\t\t\t\t\t\tif(gameBoard[boardX][boardY].exposedLevel <= 0){\n\t\t\t\t\t\t\tgameBoard[boardX][boardY].exposedLevel = 1;\n\t\t\t\t\t\t\tflagCount++;\n\t\t\t\t\t\t\tplaySound(\"flagSound\");\n\t\t\t\t\t\t}else if(gameBoard[boardX][boardY].exposedLevel == 1){\n\t\t\t\t\t\t\tgameBoard[boardX][boardY].exposedLevel = 0;\n\t\t\t\t\t\t\tflagCount--;\n\t\t\t\t\t\t\tplaySound(\"flagSound\");\n\t\t\t\t\t\t}\n\t\t\t\t\t}else if(e.which == 1){\n\t\t\t\t\t\tif(gameBoard[boardX][boardY].exposedLevel <= 0){\n\t\t\t\t\t\t\tif(!openedGates){\n\t\t\t\t\t\t\t\tplaySound(\"clickSound\"+Math.floor(Math.random()*4));\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\tclearTile(boardX,boardY,true);\n\t\t\t\t\t\t}else if(gameBoard[boardX][boardY].exposedLevel == 2){\n\t\t\t\t\t\t\tvar neighborFlagCount = 0;\n\t\t\t\t\t\t\tfor(var neighbor = 0; neighbor < neighborPatterns[gamePattern].length-1; neighbor++){\n\t\t\t\t\t\t\t\tvar neighborX = boardX+neighborPatterns[gamePattern][neighbor][0];\n\t\t\t\t\t\t\t\tvar neighborY = boardY+neighborPatterns[gamePattern][neighbor][1];\n\t\t\t\t\t\t\t\tif(inBounds(neighborX,neighborY) && gameBoard[neighborX][neighborY].exposedLevel == 1){\n\t\t\t\t\t\t\t\t\tneighborFlagCount += neighborPatterns[gamePattern][neighbor][2];\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\tif(neighborFlagCount >= gameBoard[boardX][boardY].mineNeighbors){\n\t\t\t\t\t\t\t\tvar chordedTiles = 0;\n\t\t\t\t\t\t\t\tfor(var neighbor = 0; neighbor < neighborPatterns[gamePattern].length-1; neighbor++){\n\t\t\t\t\t\t\t\t\tvar neighborX = boardX+neighborPatterns[gamePattern][neighbor][0];\n\t\t\t\t\t\t\t\t\tvar neighborY = boardY+neighborPatterns[gamePattern][neighbor][1];\n\t\t\t\t\t\t\t\t\tif(inBounds(neighborX,neighborY)){\n\t\t\t\t\t\t\t\t\t\tif(gameBoard[neighborX][neighborY].exposedLevel <= 0){\n\t\t\t\t\t\t\t\t\t\t\tchordedTiles++;\n\t\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t\t\tclearTile(neighborX,neighborY,(chordedTiles <= 1));\n\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\tif(chordedTiles >= 1){\n\t\t\t\t\t\t\t\t\tplaySound(\"chordSound\");\n\t\t\t\t\t\t\t\t}else{\n\t\t\t\t\t\t\t\t\tplaySound(\"cantSound\");\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t}else{\n\t\t\t\t\t\t\t\tplaySound(\"cantSound\");\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t}\n\t\t\t\t\t}\n\t\t\t\t}else{\n\t\t\t\t\tif(e.which == 1){\n\t\t\t\t\t\tif(mX >= 1280){\n\t\t\t\t\t\t\tif(mY >= screenHeight-100){\n\t\t\t\t\t\t\t\tloadLeaderBoard(Math.floor((mX-1280)/240));\n\t\t\t\t\t\t\t}else if(mY < 100){\n\t\t\t\t\t\t\t\tvar regionClicked = Math.floor((mX-1280)/240);\n\t\t\t\t\t\t\t\tif(regionClicked == 0){\n\t\t\t\t\t\t\t\t\tshowDuplicates = !showDuplicates;\n\t\t\t\t\t\t\t\t\tloadLeaderBoard(leaderBoardType);\n\t\t\t\t\t\t\t\t}else if(regionClicked == 1){\n\t\t\t\t\t\t\t\t\tallTime = (allTime+1)%4;\n\t\t\t\t\t\t\t\t\tloadLeaderBoard(leaderBoardType);\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t}else if(Math.abs(mX-(screenWidth*0.875)) <= screenWidth*0.125-overallMargin){\n\t\t\t\t\t\t\tif(Math.abs(mY-(overallMargin+30)) <= 30){\n\t\t\t\t\t\t\t\tif(mX >= screenWidth*7/8){\n\t\t\t\t\t\t\t\t\topenTextBox();\n\t\t\t\t\t\t\t\t\tplaySound(\"selectSound\");\n\t\t\t\t\t\t\t\t}else{\n\t\t\t\t\t\t\t\t\tif(gameOutcome == 0){\n\t\t\t\t\t\t\t\t\t\tendGame(1,false);\n\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t\tinitializeBoard(gameDifficulty,gamePattern);\n\t\t\t\t\t\t\t\t\tplaySound(\"selectSound\");\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t}else if(Math.abs(mY-(overallMargin+100)) <= 30){\n\t\t\t\t\t\t\t\tclearFiveTimes();\n\t\t\t\t\t\t\t\tinitializeBoard(gameDifficulty,(gamePattern+1)%neighborPatterns.length);\n\t\t\t\t\t\t\t\tleaderBoardOutput = new Array(0);\n\t\t\t\t\t\t\t\tplaySound(\"selectSound\");\n\t\t\t\t\t\t\t}else if(Math.abs(mY-(overallMargin+170)) <= 30){\n\t\t\t\t\t\t\t\tif(mX >= screenWidth*7/8){\n\t\t\t\t\t\t\t\t\tif(gameStartTime < 0){\n\t\t\t\t\t\t\t\t\t\tminePunishment = (minePunishment+1)%2;\n\t\t\t\t\t\t\t\t\t\tlocalStorage[\"yourMinePunishment\"] = minePunishment;\n\t\t\t\t\t\t\t\t\t\tplaySound(\"selectSound\");\n\t\t\t\t\t\t\t\t\t}else{\n\t\t\t\t\t\t\t\t\t\tplaySound(\"cantSound\");\n\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t}else{\n\t\t\t\t\t\t\t\t\tclearFiveTimes();\n\t\t\t\t\t\t\t\t\tinitializeBoard((gameDifficulty+1)%boardSizes.length,gamePattern);\n\t\t\t\t\t\t\t\t\tleaderBoardOutput = new Array(0);\n\t\t\t\t\t\t\t\t\tplaySound(\"selectSound\");\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t}\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t}\n\t\t\tfunction loadLeaderBoard(region){\n\t\t\t\tleaderBoardOutput = new Array(0);\n\t\t\t\tleaderBoardType = region;\n\t\t\t\tvar sd = \"0\";\n\t\t\t\tif(showDuplicates){\n\t\t\t\t\tsd = \"1\";\n\t\t\t\t}\n\t\t\t\tvar collectedData = httpGet(\"http://htwins.net/minesweeper/getData.php?datatype=\"+leaderBoardType+\"&pattern=\"+getPatternName()+\"&difficulty=\"+gameDifficulty+\"&showDuplicates=\"+sd+\"&allTime=\"+allTime+\"&rand=\"+Math.floor(Math.random()*100000000));\n\t\t\t\tvar bigParts = collectedData.split(\"&&\");\n\t\t\t\tleaderBoardOutput = new Array(bigParts.length+1);\n\t\t\t\tif(leaderBoardType <= 1){\n\t\t\t\t\tif(leaderBoardType == 0){\n\t\t\t\t\t\tleaderBoardOutput[0] = [getPatternName()+\" \"+boardSizes[gameDifficulty][boardSizes[gameDifficulty].length-1]+\" singles leaderboard\"];\n\t\t\t\t\t}else{\n\t\t\t\t\t\tleaderBoardOutput[0] = [getPatternName()+\" \"+boardSizes[gameDifficulty][boardSizes[gameDifficulty].length-1]+\" averages leaderboard\"];\n\t\t\t\t\t}\n\t\t\t\t\tfor(var i = 0; i < bigParts.length; i++){\n\t\t\t\t\t\tif(i == 0){\n\t\t\t\t\t\t\tleaderBoardOutput[i+1] = [\"\",\"Sweeper\",\"Time\",\"Date\",\"ME\",\"Clicks\"];\n\t\t\t\t\t\t}else{\n\t\t\t\t\t\t\tvar parts = bigParts[i].split(\"&\");\n\t\t\t\t\t\t\tvar me = \"D\";\n\t\t\t\t\t\t\tif(parts[3] == 1){\n\t\t\t\t\t\t\t\tme = \"E\";\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\tleaderBoardOutput[i+1] = [rankify(i-1),decodeURIComponent(parts[0]),timeText(parts[1]*1),numToShortString(parts[2]*1),me,parts[4]];\n\t\t\t\t\t\t\tif(leaderBoardType == 1){\n\t\t\t\t\t\t\t\tleaderBoardOutput[i+1][4] = \"-\";\n\t\t\t\t\t\t\t\tleaderBoardOutput[i+1][5] = \"-\";\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t}\n\t\t\t\t\t}\n\t\t\t\t}else{\n\t\t\t\t\tleaderBoardOutput[0] = [\"Most recent Top 5 entries across all events\"];\n\t\t\t\t\tfor(var i = 0; i < bigParts.length; i++){\n\t\t\t\t\t\tif(i == 0){\n\t\t\t\t\t\t\tleaderBoardOutput[i+1] = [\"Pattern\",\"Difficulty\",\"Type\",\"Rank\",\"Sweeper\",\"Time\",\"Date\"];\n\t\t\t\t\t\t}else{\n\t\t\t\t\t\t\tvar parts = bigParts[i].split(\"&\");\n\t\t\t\t\t\t\tvar entryType = \"Single\";\n\t\t\t\t\t\t\tif(parts[6] == 1){\n\t\t\t\t\t\t\t\tentryType = \"Average\";\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\tleaderBoardOutput[i+1] = [parts[4],boardSizes[parts[5]][boardSizes[parts[5]].length-1],\n\t\t\t\t\t\t\tentryType,rankify(parts[3]*1-1),decodeURIComponent(parts[0]),timeText(parts[1]*1),numToShortString(parts[2]*1)];\n\t\t\t\t\t\t}\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t}\n\t\t\tfunction addZero(n){\n\t\t\t\tif(n >= 10){\n\t\t\t\t\treturn \"\"+n;\n\t\t\t\t}else{\n\t\t\t\t\treturn \"0\"+n;\n\t\t\t\t}\n\t\t\t}\n\t\t\tfunction numToDate(n){\n\t\t\t\tvar d = new Date();\n\t\t\t\td.setTime(n*1000);\n\t\t\t\treturn d;\n\t\t\t}\n\t\t\tfunction numToShortString(n){\n\t\t\t\tvar d = numToDate(n);\n\t\t\t\treturn d.getUTCFullYear()+\"-\"+addZero(d.getUTCMonth()+1)+\"-\"+addZero(d.getUTCDate())+\" \"+addZero(d.getUTCHours()) + \":\"\n                + addZero(d.getUTCMinutes()) + \":\"+ addZero(d.getUTCSeconds());\n\t\t\t}\n\t\t\tfunction rankify(n){\n\t\t\t\tif(n%10 >= 3 || Math.floor(n/10)%10 == 1){\n\t\t\t\t\treturn (n+1)+\"th\";\n\t\t\t\t}else{\n\t\t\t\t\tif(n%10 == 0) return (n+1)+\"st\";\n\t\t\t\t\tif(n%10 == 1) return (n+1)+\"nd\";\n\t\t\t\t}\n\t\t\t\treturn (n+1)+\"rd\";\n\t\t\t}\n\t\t\tfunction clearTile(x, y, canCount){\n\t\t\t\tif(gameBoard[x][y].exposedLevel <= 0){\n\t\t\t\t\tif(gameBoard[x][y].hasMine){\n\t\t\t\t\t\tclickCount++;\n\t\t\t\t\t\tlastClickX = x;\n\t\t\t\t\t\tlastClickY = y;\n\t\t\t\t\t\tif(minePunishment == 0){\n\t\t\t\t\t\t\tendGame(1,true);\n\t\t\t\t\t\t}else if(minePunishment == 1){\n\t\t\t\t\t\t\tearthQuake(x,y);\n\t\t\t\t\t\t}\n\t\t\t\t\t}else{\n\t\t\t\t\t\tif(canCount){\n\t\t\t\t\t\t\tclickCount++;\n\t\t\t\t\t\t}\n\t\t\t\t\t\tgameBoard[x][y].exposedLevel = 2;\n\t\t\t\t\t\tuncoveredTileCount++;\n\t\t\t\t\t\ttilesToClear = [[x,y]];\n\t\t\t\t\t\twhile(tilesToClear.length >= 1){\n\t\t\t\t\t\t\tif(gameBoard[tilesToClear[0][0]][tilesToClear[0][1]].mineNeighbors == 0){\n\t\t\t\t\t\t\t\tfor(var neighbor = 0; neighbor < neighborPatterns[gamePattern].length-1; neighbor++){\n\t\t\t\t\t\t\t\t\tvar neighborX = tilesToClear[0][0]+neighborPatterns[gamePattern][neighbor][0];\n\t\t\t\t\t\t\t\t\tvar neighborY = tilesToClear[0][1]+neighborPatterns[gamePattern][neighbor][1];\n\t\t\t\t\t\t\t\t\tif(inBounds(neighborX,neighborY) && gameBoard[neighborX][neighborY].exposedLevel <= 0){\n\t\t\t\t\t\t\t\t\t\tgameBoard[neighborX][neighborY].exposedLevel = 2;\n\t\t\t\t\t\t\t\t\t\tuncoveredTileCount++;\n\t\t\t\t\t\t\t\t\t\ttilesToClear.push([neighborX,neighborY]);\n\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\ttilesToClear.shift();\n\t\t\t\t\t\t}\n\t\t\t\t\t\tif(uncoveredTileCount >= goalToUncover){\n\t\t\t\t\t\t\tendGame(2,false);\n\t\t\t\t\t\t}\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t}\n\t\t\tfunction earthQuake(clickX,clickY){\n\t\t\t\tneighboringMineCount = 0;\n\t\t\t\tlistOfQuakedTiles = [];\n\t\t\t\taddToListOfQuakedTiles(clickX,clickY);\n\t\t\t\tfor(var neighbor = 0; neighbor < neighborPatterns[gamePattern].length-1; neighbor++){\n\t\t\t\t\tvar neighborX = clickX+neighborPatterns[gamePattern][neighbor][0];\n\t\t\t\t\tvar neighborY = clickY+neighborPatterns[gamePattern][neighbor][1];\n\t\t\t\t\tif(inBounds(neighborX,neighborY)){\n\t\t\t\t\t\taddToListOfQuakedTiles(neighborX,neighborY);\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t\tfor(var i = 0; i < listOfQuakedTiles.length; i++){\n\t\t\t\t\tquakify(listOfQuakedTiles[i][0],listOfQuakedTiles[i][1],true);\n\t\t\t\t}\n\t\t\t\tfor(var mine = 0; mine < neighboringMineCount; mine++){\n\t\t\t\t\tvar choiceIndex = -1;\n\t\t\t\t\tvar x = -1;\n\t\t\t\t\tvar y = -1;\n\t\t\t\t\twhile(choiceIndex < 0 || gameBoard[x][y].hasMine || gameBoard[x][y].exposedLevel == -1){\n\t\t\t\t\t\tchoiceIndex = Math.floor(Math.random()*listOfQuakedTiles.length);\n\t\t\t\t\t\tx = listOfQuakedTiles[choiceIndex][0];\n\t\t\t\t\t\ty = listOfQuakedTiles[choiceIndex][1];\n\t\t\t\t\t}\n\t\t\t\t\tgameBoard[x][y].hasMine = true;\n\t\t\t\t}\n\t\t\t\tfor(var neighbor = 0; neighbor < neighborPatterns[gamePattern].length-1; neighbor++){\n\t\t\t\t\tvar neighborX = clickX+neighborPatterns[gamePattern][neighbor][0];\n\t\t\t\t\tvar neighborY = clickY+neighborPatterns[gamePattern][neighbor][1];\n\t\t\t\t\tif(inBounds(neighborX,neighborY)){\n\t\t\t\t\t\tfor(var secondNeighbor = 0; secondNeighbor < neighborPatterns[gamePattern].length-1; secondNeighbor++){\n\t\t\t\t\t\t\tvar secondNeighborX = neighborX+neighborPatterns[gamePattern][secondNeighbor][0];\n\t\t\t\t\t\t\tvar secondNeighborY = neighborY+neighborPatterns[gamePattern][secondNeighbor][1];\n\t\t\t\t\t\t\tif(inBounds(secondNeighborX,secondNeighborY)){\n\t\t\t\t\t\t\t\taddToListOfQuakedTiles(secondNeighborX,secondNeighborY);\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t}\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t\tfor(var i = 0; i < listOfQuakedTiles.length; i++){\n\t\t\t\t\tvar x = listOfQuakedTiles[i][0];\n\t\t\t\t\tvar y = listOfQuakedTiles[i][1];\n\t\t\t\t\tquakify(x,y,false);\n\t\t\t\t\tsetMineNeighbors(x,y);\n\t\t\t\t}\n\t\t\t\tquakeCount++;\n\t\t\t\tplaySound(\"loseSound\");\n\t\t\t}\n\t\t\tfunction addToListOfQuakedTiles(x,y){\n\t\t\t\tif(gameBoard[x][y].mostRecentQuake < quakeCount){\n\t\t\t\t\tlistOfQuakedTiles.push([x,y]);\n\t\t\t\t\tgameBoard[x][y].mostRecentQuake = quakeCount;\n\t\t\t\t}\n\t\t\t}\n\t\t\tfunction quakify(x,y,removeMines){\n\t\t\t\tif(gameBoard[x][y].exposedLevel == 2){\n\t\t\t\t\tuncoveredTileCount--;\n\t\t\t\t}else if(gameBoard[x][y].exposedLevel == 1){\n\t\t\t\t\tflagCount--;\n\t\t\t\t}\n\t\t\t\tgameBoard[x][y].exposedLevel = 0;\n\t\t\t\tif(gameBoard[x][y].hasMine && removeMines){\n\t\t\t\t\tneighboringMineCount++;\n\t\t\t\t\tgameBoard[x][y].hasMine = false;\n\t\t\t\t}\n\t\t\t}\n\t\t\tfunction onRightClick(e){\n\t\t\t\treturn false;\n\t\t\t}\n\t\t\tfunction endGame(outcome, lost){\n\t\t\t\tgameEndTime = rightNow();\n\t\t\t\tgameOutcome = outcome;\n\t\t\t\tfor(var i = 4; i >= 1; i--){\n\t\t\t\t\tlastFiveTimes[gamePattern][gameDifficulty][i] = lastFiveTimes[gamePattern][gameDifficulty][i-1];\n\t\t\t\t}\n\t\t\t\tif(outcome == 2){\n\t\t\t\t\tvar gameTime = gameEndTime-gameStartTime;\n\t\t\t\t\tpost('http://htwins.net/minesweeper/postScore.php', \"username=\"+encodeURIComponent(yourName)+\"&gametime=\"+gameTime+\"&gamedate=\"+rightNow()+\"&punishment=\"+minePunishment+\"&clicks=\"+clickCount\n\t\t\t\t+\"&pattern=\"+getPatternName()+\"&difficulty=\"+gameDifficulty+\"&solveType=0\");\n\t\t\t\t\tplaySound(\"winSound\");\n\t\t\t\t\tlastFiveTimes[gamePattern][gameDifficulty][i] = gameTime;\n\t\t\t\t}else{\n\t\t\t\t\tif(lost){\n\t\t\t\t\t\tplaySound(\"loseSound\");\n\t\t\t\t\t}\n\t\t\t\t\tlastFiveTimes[gamePattern][gameDifficulty][i] = -1;\n\t\t\t\t}\n\t\t\t\tcalculateTimesAverage(true);\n\t\t\t}\n\t\t\tfunction isHigher(a,b){\n\t\t\t\tif(a <= -0.5){\n\t\t\t\t\treturn true;\n\t\t\t\t}else if(b <= -0.5){\n\t\t\t\t\treturn false;\n\t\t\t\t}else{\n\t\t\t\t\treturn (a >= b);\n\t\t\t\t}\n\t\t\t}\n\t\t\tfunction calculateTimesAverage(canPostThisScore){\n\t\t\t\trecordLowHolder = 0;\n\t\t\t\tvar recordLow = lastFiveTimes[gamePattern][gameDifficulty][0];\n\t\t\t\trecordHighHolder = 0;\n\t\t\t\tvar recordHigh = lastFiveTimes[gamePattern][gameDifficulty][0];\n\t\t\t\tfor(var i = 1; i < 5; i++){\n\t\t\t\t\tif(!isHigher(lastFiveTimes[gamePattern][gameDifficulty][i],recordLow)){\n\t\t\t\t\t\trecordLow = lastFiveTimes[gamePattern][gameDifficulty][i];\n\t\t\t\t\t\trecordLowHolder = i;\n\t\t\t\t\t}\n\t\t\t\t\tif(isHigher(lastFiveTimes[gamePattern][gameDifficulty][i],recordHigh)){\n\t\t\t\t\t\trecordHigh = lastFiveTimes[gamePattern][gameDifficulty][i];\n\t\t\t\t\t\trecordHighHolder = i;\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t\tvar average = 0;\n\t\t\t\tvar twoDNFs = false;\n\t\t\t\tfor(var i = 0; i < 5; i++){\n\t\t\t\t\tif(i != recordLowHolder && i != recordHighHolder){\n\t\t\t\t\t\tif(lastFiveTimes[gamePattern][gameDifficulty][i] == -1){\n\t\t\t\t\t\t\ttwoDNFs = true;\n\t\t\t\t\t\t}\n\t\t\t\t\t\taverage += lastFiveTimes[gamePattern][gameDifficulty][i];\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t\tif(twoDNFs){\n\t\t\t\t\ttimesAverage = -1;\n\t\t\t\t}else{\n\t\t\t\t\ttimesAverage = Math.round(average/3);\n\t\t\t\t\tif(canPostThisScore){\n\t\t\t\t\t\tpost('http://htwins.net/minesweeper/postScore.php', \"username=\"+encodeURIComponent(yourName)+\"&gametime=\"+timesAverage+\"&gamedate=\"+rightNow()+\"&punishment=\"+minePunishment+\"&clicks=\"+clickCount\n\t\t\t\t\t\t+\"&pattern=\"+getPatternName()+\"&difficulty=\"+gameDifficulty+\"&solveType=1\");\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t}\n\t\t\tfunction clearFiveTimes(){\n\t\t\t\tfor(var i = 0; i < 5; i++){\n\t\t\t\t\tlastFiveTimes[gamePattern][gameDifficulty][i] = -1;\n\t\t\t\t}\n\t\t\t\tcalculateTimesAverage(false);\n\t\t\t}\n\t\t\tvar channel_max = 10;\t\t\t\t\t\t\t\t\t\t// number of channels\n\t\t\taudiochannels = new Array();\n\t\t\tfor (a=0; a<channel_max; a++){\t\t\t\t\t\t\t\t\t// prepare the channels\n\t\t\t\taudiochannels[a] = new Array();\n\t\t\t\taudiochannels[a]['channel'] = new Audio();\t\t\t\t\t\t// create a new audio object\n\t\t\t\taudiochannels[a]['finished'] = -1;\t\t\t\t\t\t\t// expected end time for this channel\n\t\t\t}\n\n\t\t\tfunction Tile (exposedLevel,hasMine,mineNeighbors,mostRecentQuake) {\n\t\t\t    this.exposedLevel = exposedLevel;\n\t\t\t    this.hasMine = hasMine;\n\t\t\t\tthis.mineNeighbors = mineNeighbors;\n\t\t\t\tthis.mostRecentQuake = mostRecentQuake;\n\t\t\t}\n\t\t\tfunction drawBoard(){\n\t\t\t\tctx.fillStyle = bgColor;\n\t\t\t\tctx.fillRect(0,0,myCanvas.width,myCanvas.height);\n\t\t\t\tctx.font = Math.round(tileSize*0.7)+\"px Arial\";\n\t\t\t\tctx.textAlign = \"center\";\n\n\t\t\t\tfor(var x = 0; x < BOARD_WIDTH; x++){\n\t\t\t\t\tfor(var y = 0; y < BOARD_HEIGHT; y++){\n\t\t\t\t\t\tvar apX = overallMargin+x*tileSize+getShift()*y*tileSize;\n\t\t\t\t\t\tvar apY = overallMargin+y*tileSize;\n\t\t\t\t\t\tif(gameOutcome == 1 && x == lastClickX && y == lastClickY){\n\t\t\t\t\t\t\tctx.fillStyle = deathColor;\n\t\t\t\t\t\t}else{\n\t\t\t\t\t\t\tctx.fillStyle = tileColor;\n\t\t\t\t\t\t}\n\t\t\t\t\t\tctx.fillRect(apX+tileMargin, apY+tileMargin, tileSize-2*tileMargin, tileSize-2*tileMargin);\n\t\t\t\t\t\tif(gameBoard[x][y].hasMine && gameOutcome == 1){\n\t\t\t\t\t\t\tctx.drawImage(img[0], apX+tileMargin, apY+tileMargin, tileSize-2*tileMargin, tileSize-2*tileMargin);\n\t\t\t\t\t\t\tif(gameBoard[x][y].exposedLevel == 1){\n\t\t\t\t\t\t\t\tctx.drawImage(img[1], apX+tileMargin, apY+tileMargin, tileSize-2*tileMargin, tileSize-2*tileMargin);\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t}else{\n\t\t\t\t\t\t\tif(gameBoard[x][y].exposedLevel <= 1){\n\t\t\t\t\t\t\t\tctx.drawImage(img[2], apX+tileMargin, apY+tileMargin, tileSize-2*tileMargin, tileSize-2*tileMargin);\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\tif(gameBoard[x][y].exposedLevel == 1){\n\t\t\t\t\t\t\t\tctx.drawImage(img[1], apX+tileMargin, apY+tileMargin, tileSize-2*tileMargin, tileSize-2*tileMargin);\n\t\t\t\t\t\t\t}else if(gameBoard[x][y].exposedLevel == 2){\n\t\t\t\t\t\t\t\tvar neighborCount = gameBoard[x][y].mineNeighbors;\n\t\t\t\t\t\t\t\tif(neighborCount >= 1){\n\t\t\t\t\t\t\t\t\tctx.fillStyle = numberColors[Math.min(neighborCount,numberColors.length-1)];\n\t\t\t\t\t\t\t\t\tctx.fillText(neighborCount, apX+tileSize/2, apY+tileSize*0.75);\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t}\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t}\n\t\t\tfunction getShift(){\n\t\t\t\tif(getPatternName().toLowerCase().indexOf(\"hex\") >= 0){\n\t\t\t\t\treturn 0.5;\n\t\t\t\t}else{\n\t\t\t\t\treturn 0;\n\t\t\t\t}\n\t\t\t}\n\t\t\tfunction getPatternName(){\n\t\t\t\treturn neighborPatterns[gamePattern][neighborPatterns[gamePattern].length-1];\n\t\t\t}\n\t\t\tfunction drawTimes(){\n\t\t\t\tvar timeToShow = 0;\n\t\t\t\tif(gameOutcome == -1){\n\t\t\t\t\ttimeToShow = 0;\n\t\t\t\t}else if(gameOutcome == 0){\n\t\t\t\t\ttimeToShow = rightNow()-gameStartTime;\n\t\t\t\t}else{\n\t\t\t\t\ttimeToShow = gameEndTime-gameStartTime;\n\t\t\t\t}\n\n\t\t\t\tvar s = timeText(timeToShow);\n\t\t\t\tctx.fillStyle = textColors[Math.min(gameOutcome+1,textColors.length-1)];\n\t\t\t\tctx.textAlign = \"right\";\n\t\t\t\tvar fontSize = 550/s.length;\n\t\t\t\tctx.font = fontSize+\"px Arial\";\n\t\t\t\tctx.fillText(s, screenWidth-overallMargin, screenHeight-overallMargin);\n\n\t\t\t\tctx.fillStyle = textColors[1];\n\t\t\t\tctx.font = \"30px Arial\";\n\t\t\t\tfor(var i = 0; i < 5; i++){\n\t\t\t\t\tvar s = timeText(lastFiveTimes[gamePattern][gameDifficulty][i]);\n\t\t\t\t\tif(i == recordLowHolder || i == recordHighHolder){\n\t\t\t\t\t\ts = \"(\"+s+\")\";\n\t\t\t\t\t}\n\t\t\t\t\tctx.fillText(s, screenWidth-overallMargin, screenHeight-overallMargin-182-30*i);\n\t\t\t\t}\n\t\t\t\tctx.fillText(\"= \"+timeText(timesAverage)+\" ao5\", screenWidth-overallMargin, screenHeight-overallMargin-135);\n\t\t\t}\n\t\t\tfunction drawButtons(){\n\t\t\t\tctx.textAlign = \"right\";\n\t\t\t\tctx.font = \"16px Arial\";\n\t\t\t\tctx.fillStyle = textColors[1];\n\t\t\t\tctx.fillText(\"\\\"Timed Minesweeper\\\" v1.32 by Cary Huang 2016\",screenWidth-overallMargin,overallMargin-9);\n\n\t\t\t\tctx.fillStyle = buttonColor;\n\n\t\t\t\tvar smallButtonWidth = (screenWidth*0.125-overallMargin)-5;\n\t\t\t\tctx.fillRect(screenWidth*0.75+overallMargin,overallMargin,smallButtonWidth,60);\n\t\t\t\tctx.fillRect(screenWidth*0.875+5,overallMargin,smallButtonWidth,60);\n\n\t\t\t\tctx.fillRect(screenWidth*0.75+overallMargin,overallMargin+70,screenWidth*0.25-overallMargin*2,60);\n\t\t\t\tctx.fillRect(screenWidth*0.75+overallMargin,overallMargin+140,smallButtonWidth,60);\n\t\t\t\tif(gameStartTime >= 0){\n\t\t\t\t\tctx.fillStyle = \"#304050\";\n\t\t\t\t}\n\t\t\t\tctx.fillRect(screenWidth*0.875+5,overallMargin+140,smallButtonWidth,60);\n\n\t\t\t\tctx.textAlign = \"left\";\n\t\t\t\tctx.font = \"38px Arial\";\n\t\t\t\tctx.fillStyle = textColors[1];\n\t\t\t\tctx.fillText(neighborPatterns[gamePattern][neighborPatterns[gamePattern].length-1],screenWidth*0.75+overallMargin+10,overallMargin+113);\n\n\t\t\t\tctx.textAlign = \"center\";\n\t\t\t\tctx.font = \"20px Arial\";\n\t\t\t\tctx.fillText(\"Reset\",screenWidth*13/16+12,overallMargin+23);\n\t\t\t\tctx.fillText(\"(or press R)\",screenWidth*13/16+12,overallMargin+49);\n\t\t\t\tctx.fillText(\"Your name:\",screenWidth*15/16-12,overallMargin+23);\n\t\t\t\tctx.fillText(yourName,screenWidth*15/16-12,overallMargin+49);\n\n\t\t\t\tctx.fillText(boardSizes[gameDifficulty][3],screenWidth*13/16+12,overallMargin+163);\n\t\t\t\tctx.fillText(BOARD_WIDTH+\" x \"+BOARD_HEIGHT,screenWidth*13/16+12,overallMargin+189);\n\n\t\t\t\tvar minePunishments = [\"DNFing\",\"Earthquake\"];\n\n\t\t\t\tctx.fillText(\"Mine Effect:\",screenWidth*15/16-12,overallMargin+163);\n\t\t\t\tctx.fillText(minePunishments[minePunishment],screenWidth*15/16-12,overallMargin+189);\n\n\t\t\t  ctx.fillStyle = \"#FFFFFF\";\n\t\t\t\tdrawEllipse(ctx,screenWidth*0.94+1,overallMargin+95,10,10);\n\n\t\t\t\tctx.textAlign = \"center\";\n\t\t\t\tctx.font = \"11px Arial\";\n\t\t\t\tfor(var neighbor = 0; neighbor < neighborPatterns[gamePattern].length-1; neighbor++){\n\t\t\t\t\tvar neighborY = neighborPatterns[gamePattern][neighbor][1];\n\t\t\t\t\tvar neighborX = neighborPatterns[gamePattern][neighbor][0]+getShift()*neighborY;\n\t\t\t\t\tctx.fillStyle = textColors[1];\n\t\t\t\t\tctx.fillRect(screenWidth*0.94+neighborX*12+1,overallMargin+95+neighborY*12,10,10);\n\t\t\t\t\tvar c = neighborPatterns[gamePattern][neighbor][2];\n\t\t\t\t\tif(c >= 2){\n\t\t\t\t\t\tctx.fillStyle = \"#FFFFFF\";\n\t\t\t\t\t\tctx.fillText(c,screenWidth*0.94+neighborX*12+6,overallMargin+104+neighborY*12);\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t\tctx.fillStyle = textColors[1];\n\t\t\t\tctx.font = \"30px Arial\";\n\t\t\t\tctx.textAlign = \"left\";\n\t\t\t\tvar x = screenWidth*0.75+overallMargin+40;\n\t\t\t\tctx.fillText(flagCount+\" / \"+MINE_COUNT,x,overallMargin+237);\n\t\t\t\tctx.fillText(uncoveredTileCount+\" / \"+goalToUncover,x,overallMargin+273);\n\t\t\t\tctx.fillText(clickCount,x,overallMargin+309);\n\t\t\t\tctx.drawImage(img[1], screenWidth*0.75+overallMargin,overallMargin+211,30,30);\n\t\t\t\tctx.drawImage(img[2], screenWidth*0.75+overallMargin,overallMargin+247,30,30);\n\t\t\t\tctx.drawImage(img[3], screenWidth*0.75+overallMargin,overallMargin+283,30,30);\n\n\t\t\t\tvar labels = [\"Display\",\"just PBs\",\"Display\",\"all time\",\"Scrolling\",\"doesn't work.\",\n\t\t\t\t\t\"Get single\",\"leaderboard\",\"Get average\",\"leaderboard\",\"Get\",\"news\"];\n\t\t\t\tif(showDuplicates){\n\t\t\t\t\tlabels[1] = \"all entries\";\n\t\t\t\t}\n\t\t\t\tif(allTime == 0){\n\t\t\t\t\tlabels[3] = \"last 24 hours\";\n\t\t\t\t}else if(allTime == 1){\n\t\t\t\t\tlabels[3] = \"last 7 days\";\n\t\t\t\t}else if(allTime == 2){\n\t\t\t\t\tlabels[3] = \"last 30 days\";\n\t\t\t\t}\n\t\t\t\tctx.font = \"22px Arial\";\n\t\t\t\tctx.textAlign = \"center\";\n\t\t\t\tfor(var i = 0; i < 3; i++){\n\t\t\t\t\tctx.fillStyle = buttonColor;\n\t\t\t\t\tctx.fillRect(screenWidth+5+240*i,5,230,90);\n\t\t\t\t\tif(i == leaderBoardType){\n\t\t\t\t\t\tctx.fillStyle = \"#FFFFFF\";\n\t\t\t\t\t}else{\n\t\t\t\t\t\tctx.fillStyle = buttonColor;\n\t\t\t\t\t}\n\t\t\t\t\tctx.fillRect(screenWidth+5+240*i,screenHeight-95,230,90);\n\t\t\t\t\tctx.fillStyle = textColors[1];\n\t\t\t\t\tctx.fillText(labels[i*2],screenWidth+120+240*i,44);\n\t\t\t\t\tctx.fillText(labels[i*2+1],screenWidth+120+240*i,70);\n\t\t\t\t\tctx.fillText(labels[6+i*2],screenWidth+120+240*i,screenHeight-56);\n\t\t\t\t\tctx.fillText(labels[6+i*2+1],screenWidth+120+240*i,screenHeight-30);\n\t\t\t\t}\n\t\t\t\tctx.fillStyle = textColors[1];\n\t\t\t\tctx.textAlign = \"left\";\n\t\t\t\tvar extras = [[0,60,250,350,540,590],[0,60,250,350,540,590],[0,90,175,245,295,435,540]];\n\t\t\t\tfor(var i = 0; i < leaderBoardOutput.length; i++){\n\t\t\t\t\tfor(var j = 0; j < leaderBoardOutput[i].length; j++){\n\t\t\t\t\t\tvar ay = overallMargin+100+18*i;\n\t\t\t\t\t\tif(i >= 2){\n\t\t\t\t\t\t\tay += 9;\n\t\t\t\t\t\t}\n\t\t\t\t\t\tif(i == 0){\n\t\t\t\t\t\t\tctx.font = \"28px Arial\";\n\t\t\t\t\t\t}else{\n\t\t\t\t\t\t\tctx.font = \"16px Arial\";\n\t\t\t\t\t\t}\n\t\t\t\t\t\tctx.fillText(leaderBoardOutput[i][j],screenWidth+extras[leaderBoardType][j],ay);\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t}\n\t\t\tfunction drawEllipse(ctx, x, y, w, h) {\n\t\t\t  var kappa = .5522848,\n\t\t\t\t  ox = (w / 2) * kappa, // control point offset horizontal\n\t\t\t\t  oy = (h / 2) * kappa, // control point offset vertical\n\t\t\t\t  xe = x + w,           // x-end\n\t\t\t\t  ye = y + h,           // y-end\n\t\t\t\t  xm = x + w / 2,       // x-middle\n\t\t\t\t  ym = y + h / 2;       // y-middle\n\n\t\t\t  ctx.beginPath();\n\t\t\t  ctx.moveTo(x, ym);\n\t\t\t  ctx.bezierCurveTo(x, ym - oy, xm - ox, y, xm, y);\n\t\t\t  ctx.bezierCurveTo(xm + ox, y, xe, ym - oy, xe, ym);\n\t\t\t  ctx.bezierCurveTo(xe, ym + oy, xm + ox, ye, xm, ye);\n\t\t\t  ctx.bezierCurveTo(xm - ox, ye, x, ym + oy, x, ym);\n\t\t\t  ctx.closePath();\n\t\t\t  ctx.fill();\n\t\t\t}\n\t\t\tfunction initializeBoard(dif,pat){\n\t\t\t\tgamePattern = pat;\n\t\t\t\tgameDifficulty = dif;\n\t\t\t\tlocalStorage[\"yourGamePattern\"] = gamePattern*1;\n\t\t\t\tlocalStorage[\"yourGameDifficulty\"] = gameDifficulty*1;\n\t\t\t\tBOARD_WIDTH = boardSizes[dif][0];\n\t\t\t\tBOARD_HEIGHT = boardSizes[dif][1];\n\t\t\t\tMINE_COUNT = boardSizes[dif][2];\n\t\t\t\ttileSize = Math.min((screenWidth*0.75-overallMargin*2)/(BOARD_WIDTH+getShift()*BOARD_HEIGHT),(screenHeight-overallMargin*2)/BOARD_HEIGHT);\n\t\t\t\ttileMargin = tileSize*0.00;\n\t\t\t\tgameBoard = new Array(BOARD_WIDTH);\n\t\t\t\tfor(var x = 0; x < BOARD_WIDTH; x++){\n\t\t\t\t\tgameBoard[x] = new Array(BOARD_HEIGHT);\n\t\t\t\t\tfor(var y = 0; y < BOARD_HEIGHT; y++){\n\t\t\t\t\t\tgameBoard[x][y] = new Tile(0,false,0,-1);\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t\tgameOutcome = -1;\n\t\t\t\tuncoveredTileCount = 0;\n\t\t\t\tflagCount = 0;\n\t\t\t\tgoalToUncover = BOARD_WIDTH*BOARD_HEIGHT-MINE_COUNT;\n\t\t\t\tquakeCount = 0;\n\t\t\t\tgameStartTime = -1;\n\t\t\t\tlastClickX = -1;\n\t\t\t\tlastClickY = -1;\n\t\t\t\tclickCount = 0;\n\t\t\t\tcalculateTimesAverage(false);\n\t\t\t}\n\t\t\tfunction placeMines(clickX, clickY){\n\t\t\t\tgameBoard[clickX][clickY].exposedLevel = -1;\n\t\t\t\tfor(var neighbor = 0; neighbor < neighborPatterns[gamePattern].length-1; neighbor++){\n\t\t\t\t\tvar neighborX = clickX+neighborPatterns[gamePattern][neighbor][0];\n\t\t\t\t\tvar neighborY = clickY+neighborPatterns[gamePattern][neighbor][1];\n\t\t\t\t\tif(inBounds(neighborX,neighborY)){\n\t\t\t\t\t\tgameBoard[neighborX][neighborY].exposedLevel = -1;\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t\tfor(var mine = 0; mine < MINE_COUNT; mine++){\n\t\t\t\t\tvar choiceX = -1;\n\t\t\t\t\tvar choiceY = -1;\n\t\t\t\t\twhile(choiceX < 0 || gameBoard[Math.max(0,choiceX)][choiceY].hasMine ||\n\t\t\t\t\tgameBoard[Math.max(0,choiceX)][choiceY].exposedLevel == -1){\n\t\t\t\t\t\tchoiceX = Math.floor(Math.random()*BOARD_WIDTH);\n\t\t\t\t\t\tif(getPatternName() == \"Pawn\"){\n\t\t\t\t\t\t\tchoiceY = Math.floor(Math.random()*(BOARD_HEIGHT-1));\n\t\t\t\t\t\t}else{\n\t\t\t\t\t\t\tchoiceY = Math.floor(Math.random()*BOARD_HEIGHT);\n\t\t\t\t\t\t}\n\t\t\t\t\t}\n\t\t\t\t\tgameBoard[choiceX][choiceY].hasMine = true;\n\t\t\t\t}\n\t\t\t\tfor(var x = 0; x < BOARD_WIDTH; x++){\n\t\t\t\t\tfor(var y = 0; y < BOARD_HEIGHT; y++){\n\t\t\t\t\t\tsetMineNeighbors(x,y);\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t\tgameEndTime = gameStartTime = rightNow();\n\t\t\t\tplaySound(\"beginSound\");\n\t\t\t}\n\t\t\tfunction setMineNeighbors(x,y){\n\t\t\t\tgameBoard[x][y].mineNeighbors = 0;\n\t\t\t\tfor(var neighbor = 0; neighbor < neighborPatterns[gamePattern].length-1; neighbor++){\n\t\t\t\t\tvar neighborX = x+neighborPatterns[gamePattern][neighbor][0];\n\t\t\t\t\tvar neighborY = y+neighborPatterns[gamePattern][neighbor][1];\n\t\t\t\t\tif(inBounds(neighborX,neighborY) && gameBoard[neighborX][neighborY].hasMine){\n\t\t\t\t\t\tgameBoard[x][y].mineNeighbors += neighborPatterns[gamePattern][neighbor][2];\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t}\n\t\t\tfunction inBounds(x,y){\n\t\t\t\treturn (x >= 0 && x < BOARD_WIDTH && y >= 0 && y < BOARD_HEIGHT);\n\t\t\t}\n\t\t\tfunction rightNow(){\n\t\t\t\tvar currentTime = new Date();\n\t\t\t\treturn currentTime.getTime();\n\t\t\t}\n\t\t\tfunction timeText(f){\n\t\t\t\tif(f == -1){\n\t\t\t\t\treturn \"DNF\";\n\t\t\t\t}\n\t\t\t\tvar digit = new Array(7);\n\t\t\t\tdigit[0] = Math.floor(f/10)%10;\n\t\t\t\tdigit[1] = Math.floor(f/100)%10;\n\t\t\t\tdigit[2] = Math.floor(f/1000)%10; //seconds\n\t\t\t\tdigit[3] = Math.floor(f/10000)%6; //10 seconds\n\t\t\t\tdigit[4] = Math.floor(f/60000)%10; //minutes\n\t\t\t\tdigit[5] = Math.floor(f/600000)%6; //10 minutes\n\t\t\t\tdigit[6] = Math.floor(f/3600000)%10; //hours\n\t\t\t\tdigit[7] = Math.floor(f/36000000)%10; //10 hours\n\t\t\t\tvar begin = false;\n\t\t\t\tvar textie = \"\";\n\t\t\t\tfor(var i = 7; i >= 0; i--){\n\t\t\t\t\tif((digit[i] >= 1 || i <= 2) && !begin){\n\t\t\t\t\t\tbegin = true;\n\t\t\t\t\t}\n\t\t\t\t\tif(begin){\n\t\t\t\t\t\ttextie += digit[i];\n\t\t\t\t\t\tif(i == 2) textie += \".\";\n\t\t\t\t\t\tif(i == 4 || i == 6) textie += \":\";\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t\treturn textie;\n\t\t\t}\n\t\t\tfunction post(path, params) {\n\t\t\t\tvar xhr = new XMLHttpRequest();\n\t\t\t\txhr.open(\"POST\", path, true);\n\t\t\t\txhr.setRequestHeader(\"Content-type\", \"application/x-www-form-urlencoded\");\n\t\t\t\txhr.send(params);\n\t\t\t\txhr.onload = function () {\n\t\t\t\t};\n\t\t\t}\n\t\t\tfunction httpGet(path){\n\t\t\t  var xmlHttp = new XMLHttpRequest();\n\t\t\t  xmlHttp.open( \"GET\", path, false ); // false for synchronous request\n\t\t\t  xmlHttp.send( null );\n\t\t\t  return xmlHttp.responseText;\n\t\t\t}\n\t\t\tfunction openTextBox(){\n\t\t\t\tvar o = document.getElementById (\"overlay\");\n\t\t\t\to.style.display = \"block\";\n\t\t\t\tc.onmousedown = null;\n\t\t\t\tc.oncontextmenu = null;\n\t\t\t\tdocument.onkeydown = null;\n\t\t\t}\n\t\t\tfunction closeTextBox(){\n\t\t\t\tif((document.getElementById(\"name\").value).length >= 2){\n\t\t\t\t\tvar o = document.getElementById (\"overlay\");\n\t\t\t\t\to.style.display = \"none\";\n\t\t\t\t\tc.onmousedown = onClick;\n\t\t\t\t\tc.oncontextmenu = onRightClick;\n\t\t\t\t\tplaySound(\"beginSound\");\n\t\t\t\t\tclearFiveTimes();\n\t\t\t\t\tinitializeBoard(gameDifficulty,gamePattern);\n\t\t\t\t\tsetName (document.getElementById(\"name\").value);\n\t\t\t\t\tdocument.onkeydown = keyDown;\n\t\t\t\t}\n\t\t\t}\n\t\t\tfunction cancelTextBox(){\n\t\t\t\tif((document.getElementById(\"name\").value).length >= 2 || yourName.length >= 2){\n\t\t\t\t\tvar o = document.getElementById (\"overlay\");\n\t\t\t\t\to.style.display = \"none\";\n\t\t\t\t\tc.onmousedown = onClick;\n\t\t\t\t\tc.oncontextmenu = onRightClick;\n\t\t\t\t\tplaySound(\"cantSound\");\n\t\t\t\t\tdocument.onkeydown = keyDown;\n\t\t\t\t}\n\t\t\t}\n\t\t\tfunction keyDown(){\n\t\t\t\tevent = event || window.event;\n\t\t\t\tvar e = event.keyCode;\n\t\t\t\tif(e == 82){\n\t\t\t\t\tif(gameOutcome == 0){\n\t\t\t\t\t\tendGame(1,false);\n\t\t\t\t\t}\n\t\t\t\t\tinitializeBoard(gameDifficulty,gamePattern);\n\t\t\t\t}\n\t\t\t}\n\t\t\tfunction setName (name) {\n\t\t\t\tname = name.replace(\"&\", \"and\");\n\t\t\t\tyourName = name.substr(0,50);\n\t\t\t\tlocalStorage[\"yourName\"] = yourName;\n\t\t\t}\n\n\t\t\tendGame(1,false);\n\t\t\tinitializeBoard(gameDifficulty,gamePattern);\n\t\t\tif(yourName.length < 2){\n\t\t\t\topenTextBox();\n\t\t\t}\n\t\t\tvar int=self.setInterval(function(){run()},1000/60);\n\t\t\tfunction run(){\n\t\t\t\tdrawBoard();\n\t\t\t\tdrawTimes();\n\t\t\t\tdrawButtons();\n\t\t\t}\n\t\t</script>\n\t\t<noscript>\n\t\t\t<h3>Poopoo</h3>\n\t\t</noscript>\n\t<div id=\"infix\">\n\t<script async src=\"//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js\"></script>\n\t<!-- HTwins.net footer -->\n\t<ins class=\"adsbygoogle\"\n\t\t style=\"display:inline-block;width:728px;height:90px\"\n\t\t data-ad-client=\"ca-pub-8441223715044524\"\n\t\t data-ad-slot=\"0403053471\"></ins>\n\t<script>\n\t(adsbygoogle = window.adsbygoogle || []).push({});\n\t</script>\n\t</div>\n\t</body>\n</html>\n",
 			"settings":
 			{
@@ -249,10 +238,14 @@
 	"build_varint": "",
 	"command_palette":
 	{
-		"height": 357.0,
-		"last_filter": "rei",
+		"height": 147.0,
+		"last_filter": "theme",
 		"selected_items":
 		[
+			[
+				"theme",
+				"Boxy Theme: Activation"
+			],
 			[
 				"rei",
 				"Indentation: Reindent Lines"
@@ -330,7 +323,7 @@
 				"SublimeLinter: Enable Linter"
 			]
 		],
-		"width": 446.0
+		"width": 398.0
 	},
 	"console":
 	{
@@ -356,6 +349,7 @@
 	],
 	"file_history":
 	[
+		"/C/Users/xXCancerBoyieXz '/AppData/Roaming/Sublime Text 3/Packages/Colorsublime - Themes/Brogrammer.tmTheme",
 		"/C/Users/xXCancerBoyieXz '/Pictures/wallpaper dumps/2365 Most Amazing Collection of Computer Desktop Wallpapers (Dump) - Previous uploads - 2326 [ECLiPSE]/22 Most Amazing Collection of Ultra HD 4K Computer Desktop Wallpapers - 1598 [ECLiPSE]/ECLiPSE.txt",
 		"/C/Games/minesweeper/arbiter/INDEX.HLP",
 		"/C/Games/minesweeper/arbiter/version.txt",
@@ -365,7 +359,6 @@
 		"/C/Workspace/minesweeper/node_modules/minesweeper/src/minesweeper.js",
 		"/C/Users/xXCancerBoyieXz '/AppData/Roaming/Sublime Text 3/Packages/User/Preferences.sublime-settings",
 		"/C/Workspace/minesweeper/infinite website/game.js",
-		"/C/Users/xXCancerBoyieXz '/AppData/Roaming/Sublime Text 3/Packages/Colorsublime - Themes/Brogrammer.tmTheme",
 		"/C/Users/xXCancerBoyieXz '/AppData/Roaming/Sublime Text 3/Packages/User/Package Control.sublime-settings",
 		"/C/Users/xXCancerBoyieXz '/AppData/Roaming/Sublime Text 3/Installed Packages/Theme - Brogrammer.sublime-package",
 		"/C/Workspace/minesweeper/paper.txt",
@@ -480,7 +473,7 @@
 	"groups":
 	[
 		{
-			"selected": 3,
+			"selected": 1,
 			"sheets":
 			[
 				{
@@ -489,7 +482,7 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 3479,
+						"buffer_size": 3505,
 						"regions":
 						{
 							"mark":
@@ -499,8 +492,8 @@
 								"regions":
 								[
 									[
-										2672,
-										2672
+										2700,
+										2700
 									]
 								],
 								"scope": "mark"
@@ -509,8 +502,8 @@
 						"selection":
 						[
 							[
-								222,
-								222
+								2782,
+								2782
 							]
 						],
 						"settings":
@@ -522,8 +515,8 @@
 								{
 									"1":
 									[
-										221,
-										222
+										3477,
+										3478
 									]
 								},
 								"icon":
@@ -538,8 +531,8 @@
 								{
 									"1":
 									[
-										165,
-										166
+										2781,
+										2782
 									]
 								},
 								"unmatched":
@@ -548,70 +541,70 @@
 							},
 							"bracket_highlighter.regions":
 							[
-								"bh_angle",
-								"bh_angle_center",
-								"bh_angle_open",
-								"bh_angle_close",
-								"bh_angle_content",
-								"bh_round",
-								"bh_round_center",
-								"bh_round_open",
-								"bh_round_close",
-								"bh_round_content",
 								"bh_default",
 								"bh_default_center",
 								"bh_default_open",
 								"bh_default_close",
 								"bh_default_content",
-								"bh_c_define",
-								"bh_c_define_center",
-								"bh_c_define_open",
-								"bh_c_define_close",
-								"bh_c_define_content",
-								"bh_curly",
-								"bh_curly_center",
-								"bh_curly_open",
-								"bh_curly_close",
-								"bh_curly_content",
-								"bh_double_quote",
-								"bh_double_quote_center",
-								"bh_double_quote_open",
-								"bh_double_quote_close",
-								"bh_double_quote_content",
-								"bh_tag",
-								"bh_tag_center",
-								"bh_tag_open",
-								"bh_tag_close",
-								"bh_tag_content",
-								"bh_unmatched",
-								"bh_unmatched_center",
-								"bh_unmatched_open",
-								"bh_unmatched_close",
-								"bh_unmatched_content",
-								"bh_square",
-								"bh_square_center",
-								"bh_square_open",
-								"bh_square_close",
-								"bh_square_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
 								"bh_single_quote",
 								"bh_single_quote_center",
 								"bh_single_quote_open",
 								"bh_single_quote_close",
 								"bh_single_quote_content",
-								"bh_regex",
-								"bh_regex_center",
-								"bh_regex_open",
-								"bh_regex_close",
-								"bh_regex_content"
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content"
 							],
 							"syntax": "Packages/HTML/HTML.sublime-syntax",
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 851.0,
+						"translation.y": 1692.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 3,
+					"stack_index": 2,
 					"type": "text"
 				},
 				{
@@ -627,8 +620,8 @@
 						"selection":
 						[
 							[
-								5874,
-								5874
+								5789,
+								5789
 							]
 						],
 						"settings":
@@ -666,61 +659,61 @@
 							},
 							"bracket_highlighter.regions":
 							[
-								"bh_angle",
-								"bh_angle_center",
-								"bh_angle_open",
-								"bh_angle_close",
-								"bh_angle_content",
-								"bh_round",
-								"bh_round_center",
-								"bh_round_open",
-								"bh_round_close",
-								"bh_round_content",
 								"bh_default",
 								"bh_default_center",
 								"bh_default_open",
 								"bh_default_close",
 								"bh_default_content",
-								"bh_c_define",
-								"bh_c_define_center",
-								"bh_c_define_open",
-								"bh_c_define_close",
-								"bh_c_define_content",
-								"bh_curly",
-								"bh_curly_center",
-								"bh_curly_open",
-								"bh_curly_close",
-								"bh_curly_content",
-								"bh_double_quote",
-								"bh_double_quote_center",
-								"bh_double_quote_open",
-								"bh_double_quote_close",
-								"bh_double_quote_content",
-								"bh_tag",
-								"bh_tag_center",
-								"bh_tag_open",
-								"bh_tag_close",
-								"bh_tag_content",
-								"bh_unmatched",
-								"bh_unmatched_center",
-								"bh_unmatched_open",
-								"bh_unmatched_close",
-								"bh_unmatched_content",
-								"bh_square",
-								"bh_square_center",
-								"bh_square_open",
-								"bh_square_close",
-								"bh_square_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
 								"bh_single_quote",
 								"bh_single_quote_center",
 								"bh_single_quote_open",
 								"bh_single_quote_close",
 								"bh_single_quote_content",
-								"bh_regex",
-								"bh_regex_center",
-								"bh_regex_open",
-								"bh_regex_close",
-								"bh_regex_content"
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content"
 							],
 							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
 							"tab_size": 2,
@@ -730,7 +723,7 @@
 						"translation.y": 3818.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 4,
+					"stack_index": 0,
 					"type": "text"
 				},
 				{
@@ -745,8 +738,8 @@
 						"selection":
 						[
 							[
-								93,
-								93
+								67,
+								67
 							]
 						],
 						"settings":
@@ -770,61 +763,61 @@
 							},
 							"bracket_highlighter.regions":
 							[
-								"bh_c_define",
-								"bh_c_define_center",
-								"bh_c_define_open",
-								"bh_c_define_close",
-								"bh_c_define_content",
 								"bh_default",
 								"bh_default_center",
 								"bh_default_open",
 								"bh_default_close",
 								"bh_default_content",
-								"bh_square",
-								"bh_square_center",
-								"bh_square_open",
-								"bh_square_close",
-								"bh_square_content",
-								"bh_round",
-								"bh_round_center",
-								"bh_round_open",
-								"bh_round_close",
-								"bh_round_content",
-								"bh_curly",
-								"bh_curly_center",
-								"bh_curly_open",
-								"bh_curly_close",
-								"bh_curly_content",
 								"bh_regex",
 								"bh_regex_center",
 								"bh_regex_open",
 								"bh_regex_close",
 								"bh_regex_content",
-								"bh_double_quote",
-								"bh_double_quote_center",
-								"bh_double_quote_open",
-								"bh_double_quote_close",
-								"bh_double_quote_content",
-								"bh_tag",
-								"bh_tag_center",
-								"bh_tag_open",
-								"bh_tag_close",
-								"bh_tag_content",
 								"bh_angle",
 								"bh_angle_center",
 								"bh_angle_open",
 								"bh_angle_close",
 								"bh_angle_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
 								"bh_unmatched",
 								"bh_unmatched_center",
 								"bh_unmatched_open",
 								"bh_unmatched_close",
 								"bh_unmatched_content",
-								"bh_single_quote",
-								"bh_single_quote_center",
-								"bh_single_quote_open",
-								"bh_single_quote_close",
-								"bh_single_quote_content"
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content"
 							],
 							"default_dir": "C:\\Workspace\\minesweeper",
 							"syntax": "Packages/Text/Plain text.tmLanguage"
@@ -838,111 +831,6 @@
 				},
 				{
 					"buffer": 3,
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 302,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								302,
-								302
-							]
-						],
-						"settings":
-						{
-							"auto_indent": false,
-							"bracket_highlighter.busy": false,
-							"bracket_highlighter.locations":
-							{
-								"close":
-								{
-								},
-								"icon":
-								{
-								},
-								"open":
-								{
-								},
-								"unmatched":
-								{
-								}
-							},
-							"bracket_highlighter.regions":
-							[
-								"bh_c_define",
-								"bh_c_define_center",
-								"bh_c_define_open",
-								"bh_c_define_close",
-								"bh_c_define_content",
-								"bh_square",
-								"bh_square_center",
-								"bh_square_open",
-								"bh_square_close",
-								"bh_square_content",
-								"bh_single_quote",
-								"bh_single_quote_center",
-								"bh_single_quote_open",
-								"bh_single_quote_close",
-								"bh_single_quote_content",
-								"bh_curly",
-								"bh_curly_center",
-								"bh_curly_open",
-								"bh_curly_close",
-								"bh_curly_content",
-								"bh_angle",
-								"bh_angle_center",
-								"bh_angle_open",
-								"bh_angle_close",
-								"bh_angle_content",
-								"bh_double_quote",
-								"bh_double_quote_center",
-								"bh_double_quote_open",
-								"bh_double_quote_close",
-								"bh_double_quote_content",
-								"bh_tag",
-								"bh_tag_center",
-								"bh_tag_open",
-								"bh_tag_close",
-								"bh_tag_content",
-								"bh_default",
-								"bh_default_center",
-								"bh_default_open",
-								"bh_default_close",
-								"bh_default_content",
-								"bh_round",
-								"bh_round_center",
-								"bh_round_open",
-								"bh_round_close",
-								"bh_round_content",
-								"bh_regex",
-								"bh_regex_center",
-								"bh_regex_open",
-								"bh_regex_close",
-								"bh_regex_content",
-								"bh_unmatched",
-								"bh_unmatched_center",
-								"bh_unmatched_open",
-								"bh_unmatched_close",
-								"bh_unmatched_content"
-							],
-							"default_dir": "C:\\Workspace\\minesweeper",
-							"syntax": "Packages/Text/Plain text.tmLanguage",
-							"tab_width": 2,
-							"word_wrap": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 0,
-					"type": "text"
-				},
-				{
-					"buffer": 4,
 					"semi_transient": false,
 					"settings":
 					{
@@ -992,16 +880,11 @@
 							},
 							"bracket_highlighter.regions":
 							[
-								"bh_angle",
-								"bh_angle_center",
-								"bh_angle_open",
-								"bh_angle_close",
-								"bh_angle_content",
-								"bh_round",
-								"bh_round_center",
-								"bh_round_open",
-								"bh_round_close",
-								"bh_round_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
 								"bh_default",
 								"bh_default_center",
 								"bh_default_open",
@@ -1012,11 +895,16 @@
 								"bh_c_define_open",
 								"bh_c_define_close",
 								"bh_c_define_content",
-								"bh_curly",
-								"bh_curly_center",
-								"bh_curly_open",
-								"bh_curly_close",
-								"bh_curly_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
 								"bh_double_quote",
 								"bh_double_quote_center",
 								"bh_double_quote_open",
@@ -1027,36 +915,36 @@
 								"bh_tag_open",
 								"bh_tag_close",
 								"bh_tag_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
 								"bh_unmatched",
 								"bh_unmatched_center",
 								"bh_unmatched_open",
 								"bh_unmatched_close",
-								"bh_unmatched_content",
-								"bh_square",
-								"bh_square_center",
-								"bh_square_open",
-								"bh_square_close",
-								"bh_square_content",
-								"bh_single_quote",
-								"bh_single_quote_center",
-								"bh_single_quote_open",
-								"bh_single_quote_close",
-								"bh_single_quote_content",
-								"bh_regex",
-								"bh_regex_center",
-								"bh_regex_open",
-								"bh_regex_close",
-								"bh_regex_content"
+								"bh_unmatched_content"
 							],
 							"default_dir": "C:\\Workspace\\minesweeper",
 							"syntax": "Packages/HTML/HTML.sublime-syntax",
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 38.0,
+						"translation.y": 2360.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 2,
+					"stack_index": 3,
 					"type": "text"
 				}
 			]
