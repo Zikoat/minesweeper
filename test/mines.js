@@ -8,9 +8,12 @@ class Minesweeper {
 	}
 
 	getCell(x, y){
-		if(typeof this.data[x] === "undefined") this.data[x] = {};
-		if(typeof this.data[x][y] === "undefined") this.data[x][y] = new Cell(x, y, this.probability);
-		return this.data[x][y];
+		// THIS IS WRONG, dont generate cell on get, generate on open.
+		if(this.doesExist(x, y)) return this.data[x][y];
+		else{
+			let dummyCell = new Cell(x, y, 0);
+			dummyCell.isMine = undefined;
+		}
 		// i should create a dummy cell if it has not been generated
 		// i can set isMine to undefined
 	}
@@ -26,6 +29,13 @@ class Minesweeper {
 	}
 
 	open(x, y){
+		//check if the cell exists
+		if(!this.doesExist(x, y)){
+			//if it does not exist, we create it
+			//the data is a nested object, so we have to create the outer object first
+			if(typeof this.data[x] === "undefined") this.data[x] = {};
+			this.data[x][y] = new Cell(x, y, this.probability);
+		}
 		this.data[x][y].isOpen = true;
 		//todo: update the surrounding tiles, and floodfill
 		//todo: return all the opened tiles
@@ -34,7 +44,7 @@ class Minesweeper {
 	flag(x, y){
 		//toggles the flag
 		this.data[x][y].isFlagged = !this.data[x][y].isFlagged;
-		//todo: return the updated flag
+		//todo: return the updated cell
 	}
 
 	render(size, optn){
@@ -55,15 +65,22 @@ class Minesweeper {
 		//the selected cell is used to render the board (todo: and to open cells)
 		this.selected = [x, y]
 	}
+
+	doesExist(x, y){
+		if(typeof this.data[x] === "undefined") return false;
+		if(typeof this.data[x][y] === "undefined") return false;
+		if(typeof this.data[x][y].isMine === "undefined") return false; //isMine should never have been set in the array, but it cant help to check
+		return true;
+	}
 }
 
 class Cell {
+	//note: isMine can have 3 values: true, false and undefined if the cell is not on the border
 	constructor(x, y, probability){
 		this.x=x;
 		this.y=y;
 		this.isMine = Math.random() > probability;
 		this.isOpen = false;
-
 	}
 	getNeigbours(){ return Minesweeper.getNeigbours(this.x, this.y); }
 
