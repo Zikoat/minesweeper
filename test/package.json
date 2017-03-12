@@ -1,0 +1,12 @@
+{
+  "name": "mines-cli-interface",
+  "version": "1.0.0",
+  "description": "an interface for an infinite version of minesweeper",
+  "main": "index.js",
+  "scripts": {
+    "test": "something, probably delete afterwards"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {}
+}
