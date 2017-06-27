@@ -15,15 +15,21 @@
 		}
 	</style>
 </head>
-<body onload="init(); update();	/*setInterval(()=>{update();}, 20);*/">
+<body onload="init(); update();	/*setInterval(()=>{update();}, 20);*/" onclick="update();">
 	<script src="minesweeper.js"></script>
 	<script src="stats.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.3.0/pixi.js"></script>
 	<script>
+		"use strict";
 
 		var renderer = PIXI.autoDetectRenderer(100, 100);
+		//renderer.view.id = "viewport";
+		//renderer.view.onclick = update();
 		document.body.appendChild(renderer.view);
-		stage = new PIXI.Container();
+		var stage = new PIXI.Container();
+
+		//stage.interactive = true;
+		//stage.click = update();
 
 		var textures = {};
 		textures.closed = new PIXI.Texture.fromImage("assets/closed.png");
@@ -38,30 +44,39 @@
 		var Minesweeper = window.minesweeper;
 
 		var stats = new Stats();
-		stats.showPanel( 1 ); // 0: fps, 1: ms, 2: mb, 3+: custom
-		document.body.appendChild( stats.dom );
+		//stats.showPanel( 1 ); // 0: fps, 1: ms, 2: mb, 3+: custom
+		//document.body.appendChild( stats.dom );
 
 
 		renderer.backgroundColor = 0x707070;
 		var scl = 20;
 		renderer.resize(window.innerWidth, window.innerHeight);
 
+		var viewport = {
+			numRows: 10,
+			numCols: 10,
+			xOff: 0,
+			yOff: 0
+		};
+		viewport.width = scl*viewport.numRows;
+		viewport.height = scl*viewport.numCols;
+
 		function init () {
 			for (var i = stage.children.length - 1; i >= 0; i--) {
 				stage.removeChild(stage.children[i]);
 			};
-			window.mineArray = Minesweeper.generateMineArray({
+			/*window.mineArray = Minesweeper.generateMineArray({
 				rows: 11,
 				//cols: 21,
-				mines: 10
-			});
-			window.board = new Minesweeper.Board(mineArray);
+				mines: 50
+			});*/
+			window.board = new Minesweeper.Board(0.25);
 			window.grid = board.grid();
 
-			for (let x = 0; x < board.numCols(); x++) {
-				for (let y = 0; y < board.numRows(); y++) {
+			for (let x = 0; x < viewport.numRows; x++) {
+				for (let y = 0; y < viewport.numCols; y++) {
 
-					let cell = grid[x][y];
+					let cell = board.cell(x, y);
 
 					if(!cell.sprite){
 						cell.sprite = new PIXI.Sprite(textures.closed);
@@ -73,32 +88,31 @@
 					}
 				}
 			}
-			renderer.resize(board.numCols()*scl, board.numRows()*scl);
+			renderer.resize(viewport.width, viewport.height);
 		}
 
 		function update () {
 			stats.begin();
 
 			board.openCell(
-				Math.floor(Math.random()*board.numCols()),
-				Math.floor(Math.random()*board.numRows()));
+				Math.floor(Math.random()*viewport.numCols),
+				Math.floor(Math.random()*viewport.numRows));
 			updateGame();
 			renderer.render(stage);
 
 			if (board.state() === Minesweeper.BoardStateEnum.LOST) {
 				init();
 			}
-
-			requestAnimationFrame(update);
+			console.log('updated');
+			//requestAnimationFrame(update);
 			stats.end();
-
 		}
 
 		function updateGame () {
 			grid = window.board.grid();
 
-			for (let x = 0; x < board.numCols(); x++) {
-				for (let y = 0; y < board.numRows(); y++) {
+			for (let x = 0; x < viewport.numCols; x++) {
+				for (let y = 0; y < viewport.numRows; y++) {
 
 					let cell = grid[x][y];
 
@@ -117,6 +131,9 @@
 					} else if (!isOpen){
 						if (isFlagged){
 							cell.sprite.texture = textures.flag;
+						} else if (isMine) {
+							cell.sprite.texture = textures.mineClicked;
+
 						} else {
 							cell.sprite.texture = textures.closed;
 						}

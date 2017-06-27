@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>infinite minesweeper</title>
+	<script src="assets/pixi.js"></script>
+	<style>
+		body { 
+			background-color: #555;
+			margin: 0px;
+			/*display: block;*/
+
+		}
+		canvas { 
+			background-color: #444; 
+			/*display: block;*/
+		}
+	</style>
+</head>
+<body style="margin: 0px;" onload="render()">
+	<script>
+	"use strict";
+
+	var renderer = PIXI.autoDetectRenderer(400, 300);
+	document.body.appendChild(renderer.view);
+	var field = new PIXI.Container();
+	field.interactive = true;
+	field.on("mouseMove", move);
+
+	renderer.backgroundColor = 0xeeeeee;
+	//renderer.resize(window.innerWidth, window.innerHeight);
+
+	var textures = [
+		new PIXI.Texture.fromImage("assets/closed.png"),
+		new PIXI.Texture.fromImage("assets/tileBlue.png"),
+		new PIXI.Texture.fromImage("assets/tileRed.png"),
+		new PIXI.Texture.fromImage("assets/tileGreen.png")
+	];
+
+	var chunkSize = 20;
+	var chunks = [];
+
+	var sprite = new PIXI.Sprite(textures[1]);
+	sprite.position.x = 10;
+	sprite.position.y = 10;
+	sprite.interactive = true;
+	sprite.tilePos = [2, 2];
+
+	sprite.on("click", openTile);
+	field.addChild(sprite);
+
+
+	function createChunk(x, y){
+		let chunk = new PIXI.Container()
+
+		for(var i=0; i>chunkSize; i++){
+
+		}
+		field.addChild(chunk);
+	}
+
+	function updateTile(tile){
+
+	}
+
+	function screenToTile(point) {
+
+		return [tileX, tileY];
+	}
+
+	function move (event) {
+		console.log(event, this);
+	}
+
+	function openTile(event){
+		this.clicked = true;
+		this.texture = textures[Math.floor(Math.random() * 3)]
+	}
+
+
+	function render(){
+		field.position.x++;
+		requestAnimationFrame(render);
+		renderer.render(field);
+
+	}
+</script>
+</body>
+</html>
+
