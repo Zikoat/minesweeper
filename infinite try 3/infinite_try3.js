@@ -1,14 +1,5 @@
 // jslint 'esversion: 6'
 
-class Cell {
-	constructor(x, y, isMine){
-
-	}
-	open(){
-		open(this.x, this.y);
-	}
-}
-
 var field = {};
 const neighbourPosition = [
 	[-1,-1],
@@ -33,7 +24,7 @@ function open(x, y){
 	}else{
 		console.log("already opened")
 	};
-	//recursively open all nearby cells
+	//todo: recursively open all nearby cells
 }
 
 function getCell(x, y){
