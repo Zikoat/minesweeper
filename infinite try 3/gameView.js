@@ -20,9 +20,19 @@ class CellSprite extends PIXI.Container{ // helper class for creating sprites
 		this.addChild(back);
 		this.addChild(front);
 		fieldContainer.addChild(this);
-	}
-	update(){
 
+	}
+	update(cell){
+		counter++;
+		if(counter == 100) console.warn("update counter is over 100");
+		if(cell.isOpen) {
+			this.back.texture = tex.open;
+			if(cell.isMine) this.front.texture = tex.mineWrong;
+			else this.front.texture = tex[cell.value()];
+		} else {
+			this.back.texture = tex.closed;
+			this.front.texture = cell.isFlagged ? tex.flag : null;
+		}
 	}
 }
 // global variables
@@ -31,9 +41,10 @@ document.body.appendChild(app.view);
 
 var fieldContainer = new PIXI.Container();
 
-var f = new Field();
+var f;
 var tex = {};
 var width;
+var counter = 0;
 
 PIXI.loader
 	.add("closed", "assets/closed.png")
@@ -53,8 +64,12 @@ PIXI.loader
 
 function updateCell(x, y){
 	let cell = f.getCell(x, y);
-	if(cell.sprite===undefined) cell.sprite = new CellSprite(cell);
-	else cell.sprite.update();
+	/*if(cell.sprite===undefined)*/ cell.sprite = new CellSprite(cell);
+	/*else {
+		console.log("updating", x, y);
+		cell.sprite.update(cell);
+
+	}*/
 }
 
 function setup(loader, resources){
@@ -63,21 +78,23 @@ function setup(loader, resources){
 	tex.mine = resources.mine.texture;
 	tex.mineWrong = resources.mineWrong.texture;
 	tex.open = resources.open.texture;
-	for(let i = 1; i >= 8; i++) tex[i] = resources[i].texture;
+	console.log(resources[1]);
+	for(let i = 1; i <= 8; i++) tex[i] = resources[i.toString()].texture;
 	width = tex.closed.width;
 	window.background = new PIXI.extras.TilingSprite(
 		tex.closed,
 	    app.renderer.width,
 	    app.renderer.height
 	);
-	window.background.tint = 0xff55ff;
+	window.background.tint = 0xff0088;
 	app.stage.addChild(background);
 	app.stage.addChild(fieldContainer);
 
+
+	// gameplay
+	f = new Field(0.20);
+
 	f.getCell(1,1);
-	f.open(1,2);
+	f.open(20,10);
 	f.getCell(1,2);
-	f.open(1,1);
-	f.open(2,1);
-	f.open(2,2);
 }
