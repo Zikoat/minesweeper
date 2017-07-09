@@ -26,13 +26,16 @@ class Cell {
 		if(this.parent===undefined) console.error("i don't know my parents", this);
 		return this.parent.getNeighbors(this.x, this.y);	
 	}
-	value(){}
+	value(){
+		if(this.parent===undefined) console.error("i don't know my parents", this);
+		return this.parent.value(this.x, this.y);
+	}
 }
 
 class Field {
 	// do not call any of the cell's functions in the field class, to prevent 
 	// infinite loops
-	constructor(probability=0.27){
+	constructor(probability=0.5){
 		this.field = {};
 		// this is the probability that a mine is a cell
 		this.probability = probability;
@@ -61,15 +64,14 @@ class Field {
 		// opened cells
 		// wrongly flagged cells
 		// dig up mines
+		// freeze
 	}
 	getCell(x, y){
-		// if the row is not created yet, return "default" cell
+		// if the row or cell is not created, we will get an error: cant read property of undefined
 		if(!(x in this.field)) return new Cell(x, y, this);
-		// if the cell is not created yet, return "default" cell
 		if(!(y in this.field[x])) return new Cell(x, y, this);
 
 		return this.field[x][y];
-		// prefer using getCell instead of accessing the object, to avoid these problems
 	}
 	open(x, y){
 		// we check if the cell is generated if we want to change the cell
@@ -84,23 +86,40 @@ class Field {
 		if(!cell.isFlagged){
 			// debugging
 			if(cell.isOpen) console.log(x, y, "is already open");
+			// we could return here, but its better (for debugging) to just go through the routine
 			cell.isOpen = true;
 			this.pristine = false;
 			if(cell.isMine) console.log("game over, you stepped on a mine: ("+x+", "+y+")");
+			console.log("open("+x+","+y+")");
 				// todo: set game state to over
-			if(cell.value() == 0){
-				cell.getNeighbors()
+			let neighbors = cell.getNeighbors();
+			for (var i = 0; i < neighbors.length; i++) {
+				if(neighbors[i].isMine === undefined){
+					console.log("opened neighbor is undefined, generating", neighbors[i].x, neighbors[i].y);
+					this.generateCell(neighbors[i].x, neighbors[i].y);
+				}
+			}
+			console.log(x, y, "value:", cell.value());
+			if(cell.value() === 0){
+				console.log("should open", x, y, "'s neighbors");
+				cell.getNeighbors() // get all the neighbors
+					.filter(cell=>!cell.isOpen) // filter the array, so only the closed neighbors are in it
+					.forEach(cell=>cell.open()); // open all the cells neighbors, which are closed
+			}
+				/*
 				.filter(Field.filter.isClosed)
 				.forEach(Field.filter.open);
-			}
+			}*/
 			// todo: generate neighboring cells
 			// todo: floodfill
+			// call the update method which pixi uses to draw things
+
+			updateCell(x, y);
 		} else {
 			// debugging
 			console.warn(x, y, "cant open because is flagged");
 		}
-		updateCell(x, y);
-		this.checkForErrors();
+		//this.checkForErrors();
 	}
 	flag(x, y){
 		// todo
@@ -124,19 +143,24 @@ class Field {
 		if(!(x in this.field)) this.field[x] = {};
 		// if the cell is not created
 		if(!(y in this.field[x])) {
+			// here, ismine is being put to something else than undefined, which 
+			// means isMine is undefined when the cell is not generated. this
+			// is why we can check isMine===undefined to determine if the cell is generated
+
 			// determine if the cell is a mine
 			if(isMine===undefined) isMine = Math.random() < this.probability;
 			// and add it to the field
 			let cell =  new Cell(x, y, this, isFlagged, isMine);
 			this.field[x][y] = cell;
+			updateCell(x,y);
 			return cell;
-		}
+		} else {console.warn(x, y, "is already generated");}
 	}
 	restart(){// todo
 		this.pristine = true;
 		// todo: delete all of the rows, update all of the cells
 	}
-	getAll(){// returns all the cells, in a 1-D array
+	getAll(){// returns all the cells, in a 1-dimensonal array, for easy iteration
 		let cells = [];
 		let rows = Object.keys(this.field);
 		for (var i = 0; i < rows.length; i++) {
@@ -148,8 +172,10 @@ class Field {
 		return cells;
 	}
 	value(x, y){// returns the amount of surrounding mines
-		// the value of a cell is the amount of neighboring mines it has
-		return this.getNeighbors(x, y) 
+		let cell = this.getCell(x,y);
+		// it does not make sense to request the value of a closed cell
+		if(cell.isOpen === false) return null; 
+		else return this.getNeighbors(x, y) 
 			.filter(Field.filter.isMine)
 			.length;
 	}
@@ -173,7 +199,7 @@ Field.filter.isOpen = function (cell){
 };
 Field.filter.isClosed = function (cell){
 	return !cell.isOpen;
-}
+};
 Field.filter.isFlagged = function (cell){
 	return cell.isFlagged;
 };
@@ -181,10 +207,11 @@ Field.filter.hasOpenNeighbors = function (cell){
 	let amount = cell.getNeighbors() // get the neigbhors of this cell
 		.filter(Field.filter.isOpen) // filter its neighbors, so only the open ones are left
 		.length; // see how many there are
+
 	console.log(amount, "number of open neigbors of", cell.x, cell.y);
 	return amount > 0;
 };
-Field.filter.perimeter = function(cell){
+Field.filter.isPerimeter = function(cell){
 	// These cells are the closed cells on the edge of the field.
 	// when playing the game, or creating a bot, these are the ones you should consider,
 	// and here is a function to get them all,
@@ -199,4 +226,11 @@ Field.filter.perimeter = function(cell){
 };
 Field.filter.open = function(cell){
 	cell.open();
-}
+};
+Field.filter.isNotGenerated = function(cell){
+	return cell.isMine === undefined;
+};
+Field.filter.generate = function(cell){
+	console.log(this);
+	//.generateCell(cell.x, cell.y);
+};
