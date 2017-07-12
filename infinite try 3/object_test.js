@@ -89,9 +89,10 @@ class Field {
 			// we could return here, but its better (for debugging) to just go through the routine
 			cell.isOpen = true;
 			this.pristine = false;
+			// todo: set game state to over
 			if(cell.isMine) console.log("game over, you stepped on a mine: ("+x+", "+y+")");
 			console.log("open("+x+","+y+")");
-				// todo: set game state to over
+			// generating of neighbors
 			let neighbors = cell.getNeighbors();
 			for (var i = 0; i < neighbors.length; i++) {
 				if(neighbors[i].isMine === undefined){
@@ -100,25 +101,22 @@ class Field {
 				}
 			}
 			console.log(x, y, "value:", cell.value());
+			// floodfill
 			if(cell.value() === 0){
 				console.log("should open", x, y, "'s neighbors");
 				cell.getNeighbors() // get all the neighbors
 					.filter(cell=>!cell.isOpen) // filter the array, so only the closed neighbors are in it
-					.forEach(cell=>cell.open()); // open all the cells neighbors, which are closed
+					.forEach(cell=>cell.open()); // open all the cells in the array
 			}
-				/*
-				.filter(Field.filter.isClosed)
-				.forEach(Field.filter.open);
-			}*/
-			// todo: generate neighboring cells
-			// todo: floodfill
-			// call the update method which pixi uses to draw things
 
+			// call the update method which pixi uses to draw things
+			// todo: make this not dependent of the funcion in the game script
 			updateCell(x, y);
 		} else {
 			// debugging
 			console.warn(x, y, "cant open because is flagged");
 		}
+		// debugging
 		//this.checkForErrors();
 	}
 	flag(x, y){
