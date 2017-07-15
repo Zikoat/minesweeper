@@ -1,43 +1,48 @@
 /*jshint esversion: 6 */
 
-class CellSprite extends PIXI.Container{ // helper class for creating sprites
+class CellSprite extends PIXI.Container{ // class for creating and updating sprites
 	constructor(cell){
 		super();
 		this.x = cell.x * width;
 		this.y = cell.y * width;
-		var backTexture;
-		var frontTexture;
-		if(cell.isOpen) {
-			backTexture = tex.open;
-			if(cell.isMine) frontTexture = tex.mineWrong;
-			else frontTexture = tex[cell.value()];
-		} else {
-			backTexture = tex.closed;
-			frontTexture = cell.isFlagged ? tex.flag : null;
-		}
-		let back = new PIXI.Sprite(backTexture);
-		let front = new PIXI.Sprite(frontTexture);
-		this.addChild(back);
-		this.addChild(front);
+		let textures = chooseTexture(cell);
+		let back = new PIXI.Sprite(textures.back);
+		let front = new PIXI.Sprite(textures.front);
+		this.addChildAt(back, 0);
+		this.addChildAt(front, 1);
 		fieldContainer.addChild(this);
-
 	}
 	update(cell){
-		counter++;
-		if(counter == 100) console.warn("update counter is over 100");
-		if(cell.isOpen) {
-			this.back.texture = tex.open;
-			if(cell.isMine) this.front.texture = tex.mineWrong;
-			else this.front.texture = tex[cell.value()];
-		} else {
-			this.back.texture = tex.closed;
-			this.front.texture = cell.isFlagged ? tex.flag : null;
-		}
+		let back = this.getChildAt(0);
+		let front = this.getChildAt(1);
+
+		let textures = chooseTexture(cell);
+
+		back.texture = textures.back;
+		front.texture = textures.front;
 	}
 }
+
+function chooseTexture(cell){ // helper function to get textures
+	var textures = {};
+
+	if(cell.isOpen) {
+		textures.back = tex.open;
+		if(cell.isMine) textures.front = tex.mineWrong;
+		else textures.front = tex[cell.value()];
+	} else {
+		textures.back = tex.closed;
+		textures.front = cell.isFlagged ? tex.flag : null;
+	}
+	return textures;
+}
+
 // global variables
 var app = new PIXI.Application(800, 600, {backgroundColor : 0x1099bb});
 document.body.appendChild(app.view);
+
+app.renderer.autoResize = true;
+app.renderer.resize(window.innerWidth, window.innerHeight);
 
 var fieldContainer = new PIXI.Container();
 
@@ -78,7 +83,6 @@ function setup(loader, resources){
 	tex.mine = resources.mine.texture;
 	tex.mineWrong = resources.mineWrong.texture;
 	tex.open = resources.open.texture;
-	console.log(resources[1]);
 	for(let i = 1; i <= 8; i++) tex[i] = resources[i.toString()].texture;
 	width = tex.closed.width;
 	window.background = new PIXI.extras.TilingSprite(
