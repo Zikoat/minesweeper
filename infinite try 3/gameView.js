@@ -68,13 +68,20 @@ PIXI.loader
 	.load(setup);
 
 function updateCell(x, y){
+	// debugging
+	counter++;
+	if(counter == 100) console.warn("update counter is over 100");
+
 	let cell = f.getCell(x, y);
-	/*if(cell.sprite===undefined)*/ cell.sprite = new CellSprite(cell);
-	/*else {
+
+	if(cell.sprite===undefined){
+		cell.sprite = new CellSprite(cell);
+	}
+	else {
+		// debugging
 		console.log("updating", x, y);
 		cell.sprite.update(cell);
-
-	}*/
+	}
 }
 
 function setup(loader, resources){

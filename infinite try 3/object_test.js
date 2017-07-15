@@ -43,13 +43,16 @@ class Field {
 		// Field.restart()
 		this.pristine = true;
 		// todo: implement safeRadius
-		// makes the first click not press a mine
+		// makes the first click not press a mine, is a float and checks in a circle
 		this.safeRadius = 0;
+		this.gameOver = false;
 		this.neighborPosition = [
 			[-1,-1],
 			[0,-1],
 			[1,-1],
 			[-1,0],
+			// counting with the centerpiece makes bombs not have a value of 0, and open its neigbhors
+			//[0,0], 
 			[1,0],
 			[-1,1],
 			[0,1],
@@ -74,48 +77,67 @@ class Field {
 		return this.field[x][y];
 	}
 	open(x, y){
+
+		if(this.gameOver){
+			console.log("game is over, cant open");
+			return;
+		}
+
 		// we check if the cell is generated if we want to change the cell
 		let cell = this.getCell(x,y);
 		if(cell.isMine === undefined){
 
 			cell = this.generateCell(x, y, cell.isFlagged);
 			// we call the function with cell.isFlagged so that the flagged state 
-			// gets carried over
+			// gets carried over (not implemented)
 		} 
 		
-		if(!cell.isFlagged){
-			// debugging
-			if(cell.isOpen) console.log(x, y, "is already open");
-			// we could return here, but its better (for debugging) to just go through the routine
-			cell.isOpen = true;
-			this.pristine = false;
-			// todo: set game state to over
-			if(cell.isMine) console.log("game over, you stepped on a mine: ("+x+", "+y+")");
-			console.log("open("+x+","+y+")");
-			// generating of neighbors
-			let neighbors = cell.getNeighbors();
-			for (var i = 0; i < neighbors.length; i++) {
-				if(neighbors[i].isMine === undefined){
-					console.log("opened neighbor is undefined, generating", neighbors[i].x, neighbors[i].y);
-					this.generateCell(neighbors[i].x, neighbors[i].y);
-				}
-			}
-			console.log(x, y, "value:", cell.value());
-			// floodfill
-			if(cell.value() === 0){
-				console.log("should open", x, y, "'s neighbors");
-				cell.getNeighbors() // get all the neighbors
-					.filter(cell=>!cell.isOpen) // filter the array, so only the closed neighbors are in it
-					.forEach(cell=>cell.open()); // open all the cells in the array
-			}
-
-			// call the update method which pixi uses to draw things
-			// todo: make this not dependent of the funcion in the game script
-			updateCell(x, y);
-		} else {
-			// debugging
-			console.warn(x, y, "cant open because is flagged");
+		if(cell.isOpen){
+			console.log(x, y, "is already open, cant open");
+			return;
 		}
+		if(cell.isOpen) console.log(x, y, "is open, and updating");
+
+		if(cell.isFlagged){
+			console.log(x, y, "is flagged, cant open");
+			return;
+		}
+
+		cell.isOpen = true;
+		this.pristine = false;
+		// todo: set game state to over
+		if(cell.isMine){
+			console.log("game over, you stepped on a mine: ("+x+", "+y+")");
+			this.gameOver = true;
+		}
+		console.log("open("+x+","+y+")");
+
+		// generating of neighbors. we generate the cells when a neighbor is opened
+		let neighbors = cell.getNeighbors();
+		for (var i = 0; i < neighbors.length; i++) {
+			if(neighbors[i].isMine === undefined){
+				// debugging
+				// console.log("opened neighbor is undefined, generating", neighbors[i].x, neighbors[i].y);
+				this.generateCell(neighbors[i].x, neighbors[i].y);
+			}
+		}
+		// debugging
+		console.log(x, y, "value:", cell.value());
+
+		// floodfill
+		if(cell.value() === 0){
+			// debugging
+			//console.log("should open", x, y, "'s neighbors");
+			cell.getNeighbors() // get all the neighbors
+				.filter(cell=>!cell.isOpen) // filter the array, so only the closed neighbors are in it
+				.forEach(cell=>cell.open()); // open all the cells in the array
+		}
+
+		// call the update method which pixi uses to draw things
+		// the function is in another file
+		// todo: make this not dependent of the funcion in the game script
+		updateCell(x, y);
+
 		// debugging
 		//this.checkForErrors();
 	}
@@ -174,17 +196,22 @@ class Field {
 		// it does not make sense to request the value of a closed cell
 		if(cell.isOpen === false) return null; 
 		else return this.getNeighbors(x, y) 
-			.filter(Field.filter.isMine)
+			.filter(cell=>cell.isMine)
 			.length;
 	}
 	checkForErrors(){
-		// this is only for debugging
+		// debugging
 		let cells = this.getAll();
+		let openedCells = cells.filter(cell=>cell.isOpen);
 		let flags = cells.filter(Field.filter.isFlagged);
 		let flagAndOpen = flags.filter(Field.filter.isOpen);
 		if(flagAndOpen.length > 0){console.error("cell is flagged and open", flagAndOpen);}
 		let undefinedCells = cells.filter((cell)=>{return cell.isMine===undefined;});
 		if(undefinedCells.length > 1){console.error("undefined cells", undefinedCells);}
+		if(openedCells.some(cell=>cell.isMine) && !this.gameOver){
+			console.warn("mine dug up, but wasnt set");
+			this.gameOver = true;
+		}
 	}
 }
 // i don't know how to set things like this with the class initializer
