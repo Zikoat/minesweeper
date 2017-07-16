@@ -51,9 +51,8 @@ app.renderer.autoResize = true;
 app.renderer.resize(window.innerWidth, window.innerHeight);
 
 var fieldContainer = new PIXI.Container();
-var clickHandler = new PIXI.Container();
-clickHandler.interactive = true;
-app.stage.addChild(clickHandler);
+
+fieldContainer.interactive = true;
 
 var f;
 var tex = {};
@@ -112,10 +111,10 @@ function setup(loader, resources){
 	);
 	window.background.tint = 0xff0088;
 	
-	clickHandler.addChildAt(background, 0);
-	clickHandler.addChildAt(fieldContainer, 1);
+	app.stage.addChildAt(background, 0);
+	app.stage.addChildAt(fieldContainer, 1);
 
-	clickHandler
+	fieldContainer
         .on('pointerdown', onDragStart)
         .on('pointerup', onDragEnd)
         .on('pointerupoutside', onDragEnd)
@@ -130,6 +129,8 @@ function setup(loader, resources){
 // DRAGGING, copied from pixijs demos (dragging and zorder)
 
 function onDragStart(event) {
+	fieldContainer.hitArea = new PIXI.Rectangle(0,0,200,200);
+
     // store a reference to the data
     // the reason for this is because of multitouch
     // we want to track the movement of this particular touch
@@ -169,6 +170,7 @@ function onDragMove() {
 
         this.x = newPosition.x - this.dragPoint.x;
         this.y = newPosition.y - this.dragPoint.y;
+
     }
 }
 /*
@@ -192,3 +194,9 @@ function onDragMove(event) {
     	fieldContainer.position.set(newPosition.x, newPosition.y);
     }
 }*/
+
+/* todo
+move the interactivity to fieldcontainer
+make the hitarea large(whole screen)
+remove interactivity on pointerhandler
+move the background to the same position as the fieldcontaienre*/
