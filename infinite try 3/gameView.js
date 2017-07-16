@@ -23,6 +23,12 @@ class CellSprite extends PIXI.Container{ // class for creating and updating spri
 	}
 }
 
+class FieldRenderer {
+	constructor(field){
+
+	}
+}
+
 function chooseTexture(cell){ // helper function to get textures
 	var textures = {};
 
@@ -45,6 +51,9 @@ app.renderer.autoResize = true;
 app.renderer.resize(window.innerWidth, window.innerHeight);
 
 var fieldContainer = new PIXI.Container();
+var clickHandler = new PIXI.Container();
+clickHandler.interactive = true;
+app.stage.addChild(clickHandler);
 
 var f;
 var tex = {};
@@ -102,14 +111,80 @@ function setup(loader, resources){
 	    app.renderer.height
 	);
 	window.background.tint = 0xff0088;
-	app.stage.addChild(background);
-	app.stage.addChild(fieldContainer);
+	
+	clickHandler.addChildAt(background, 0);
+	clickHandler.addChildAt(fieldContainer, 1);
 
+	clickHandler
+        .on('pointerdown', onDragStart)
+        .on('pointerup', onDragEnd)
+        .on('pointerupoutside', onDragEnd)
+        .on('pointermove', onDragMove);
 
 	// gameplay
-	f = new Field(0.20);
-
-	f.getCell(1,1);
+	f = new Field(1);
 	f.open(20,10);
-	f.getCell(1,2);
 }
+
+// -----------------------------
+// DRAGGING, copied from pixijs demos (dragging and zorder)
+
+function onDragStart(event) {
+    // store a reference to the data
+    // the reason for this is because of multitouch
+    // we want to track the movement of this particular touch
+    this.data = event.data;
+    //this.alpha = 0.5;
+    this.dragging = true;
+
+    console.log("onDragStart");
+
+    // event.data.getLocalPosition(this.parent)
+    // is the location of the mouseclick within this container's parent. makes it move within the parent
+    // this.parent is the root container, which makes this return the global coordinate
+
+    this.dragPoint = event.data.getLocalPosition(this.parent);
+    this.dragPoint.x -= this.x;
+    this.dragPoint.y -= this.y;
+
+    console.log(this.dragPoint);
+    console.log(event.data.global);
+
+}
+
+function onDragEnd() {
+    //this.alpha = 1;
+    this.dragging = false;
+    // set the interaction data to null
+    this.data = null;
+}
+
+function onDragMove() {
+    if (this.dragging) {
+    	var newPosition = this.data.getLocalPosition(this.parent);
+
+        this.x = newPosition.x - this.dragPoint.x;
+        this.y = newPosition.y - this.dragPoint.y;
+    }
+}
+/*
+function onDragMove(event) {
+    if (this.dragging) {
+    	var startClickPosition = this.data.global;
+    	console.log(startClickPosition);
+    	console.log(this.oldPosition);
+    	console.log(event.data.global);
+        var newPosition = {};
+        newPosition.x = startClickPosition.x - this.oldPosition.x + event.data.global.x;
+        newPosition.y = startClickPosition.y - this.oldPosition.y + event.data.global.y;
+
+        console.log(newPosition.x);
+        //this.x = newPosition.x;
+        //this.y = newPosition.y;
+        
+        // get the background, and only change the tileposition
+    	background.tilePosition.set(newPosition.x, newPosition.y);
+    	// change the position of the field
+    	fieldContainer.position.set(newPosition.x, newPosition.y);
+    }
+}*/
