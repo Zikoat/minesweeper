@@ -70,7 +70,11 @@ PIXI.loader
 function updateCell(x, y){
 	// debugging
 	counter++;
-	if(counter == 100) console.warn("update counter is over 100");
+	if(counter > 100){
+		console.warn("update counter is over 100, checking field");
+		f.checkForErrors();
+		counter -= 1000;
+	}
 
 	let cell = f.getCell(x, y);
 

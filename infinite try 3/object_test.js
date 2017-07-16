@@ -146,6 +146,7 @@ class Field {
 		// to make it work, can make the mine not undefined if it is flagged, 
 		// and delete it if we unflag it
 		// todo: update
+		updateCell(x, y);
 	}
 	getNeighbors(x, y){
 		let neighbors = [];
@@ -172,7 +173,6 @@ class Field {
 			// and add it to the field
 			let cell =  new Cell(x, y, this, isFlagged, isMine);
 			this.field[x][y] = cell;
-			updateCell(x,y);
 			return cell;
 		} else {console.warn(x, y, "is already generated");}
 	}
@@ -203,15 +203,17 @@ class Field {
 		// debugging
 		let cells = this.getAll();
 		let openedCells = cells.filter(cell=>cell.isOpen);
-		let flags = cells.filter(Field.filter.isFlagged);
-		let flagAndOpen = flags.filter(Field.filter.isOpen);
-		if(flagAndOpen.length > 0){console.error("cell is flagged and open", flagAndOpen);}
-		let undefinedCells = cells.filter((cell)=>{return cell.isMine===undefined;});
-		if(undefinedCells.length > 1){console.error("undefined cells", undefinedCells);}
+		
+		if(openedCells.some(cell=>cell.isFlagged)) console.error("cell is flagged and open", flagAndOpen);
+		
+		let undefinedCells = cells.filter(cell=>cell.isMine===undefined);
+		if(undefinedCells.length > 1) console.error("undefined cells", undefinedCells);
+		
 		if(openedCells.some(cell=>cell.isMine) && !this.gameOver){
-			console.warn("mine dug up, but wasnt set");
+			console.warn("mine dug up, but gameOver wasnt set");
 			this.gameOver = true;
 		}
+
 	}
 }
 // i don't know how to set things like this with the class initializer
