@@ -44,7 +44,7 @@ class Field {
 		this.pristine = true;
 		// todo: implement safeRadius
 		// makes the first click not press a mine, is a float and checks in a circle
-		this.safeRadius = 0;
+		this.safeRadius = 1;
 		this.gameOver = false;
 		this.neighborPosition = [
 			[-1,-1],
@@ -104,6 +104,7 @@ class Field {
 		}
 
 		cell.isOpen = true;
+		if(this.pristine) this.openSafeCells(x, y);
 		this.pristine = false;
 		// todo: set game state to over
 		if(cell.isMine){
@@ -214,6 +215,20 @@ class Field {
 			this.gameOver = true;
 		}
 
+	}
+	openSafeCells(x0, y0){
+		var r = this.safeRadius;
+		for (var dy = Math.floor(-r); dy < Math.ceil(r); dy++) {
+			for (var dx = Math.floor(-r); dx < Math.ceil(r); dx++) {
+				if(r**2>dx**2+dy**2){
+					let x = x0+dx;
+					let y = y0+dy;
+					let cell = this.getCell(x,y);
+					console.log(x, y, "is safe");
+					cell.open();
+				}
+			}
+		}
 	}
 }
 // i don't know how to set things like this with the class initializer
