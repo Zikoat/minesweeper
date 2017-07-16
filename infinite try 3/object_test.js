@@ -44,7 +44,7 @@ class Field {
 		this.pristine = true;
 		// todo: implement safeRadius
 		// makes the first click not press a mine, is a float and checks in a circle
-		this.safeRadius = 1;
+		this.safeRadius = 2.5;
 		this.gameOver = false;
 		this.neighborPosition = [
 			[-1,-1],
@@ -82,6 +82,7 @@ class Field {
 			console.log("game is over, cant open");
 			return;
 		}
+		if(this.pristine) this.setSafeCells(x, y);
 
 		// we check if the cell is generated if we want to change the cell
 		let cell = this.getCell(x,y);
@@ -104,14 +105,11 @@ class Field {
 		}
 
 		cell.isOpen = true;
-		if(this.pristine) this.openSafeCells(x, y);
-		this.pristine = false;
-		// todo: set game state to over
 		if(cell.isMine){
 			console.log("game over, you stepped on a mine: ("+x+", "+y+")");
 			this.gameOver = true;
 		}
-		console.log("open("+x+","+y+")");
+		console.log("opening "+x+","+y);
 
 		// generating of neighbors. we generate the cells when a neighbor is opened
 		let neighbors = cell.getNeighbors();
@@ -123,7 +121,7 @@ class Field {
 			}
 		}
 		// debugging
-		console.log(x, y, "value:", cell.value());
+		// console.log(x, y, "value:", cell.value());
 
 		// floodfill
 		if(cell.value() === 0){
@@ -216,17 +214,21 @@ class Field {
 		}
 
 	}
-	openSafeCells(x0, y0){
+	setSafeCells(x0, y0){ // opens a circle of tiles around a point
+		this.pristine = false;
 		var r = this.safeRadius;
+		console.log(this.safeRadius);
 		for (var dy = Math.floor(-r); dy < Math.ceil(r); dy++) {
 			for (var dx = Math.floor(-r); dx < Math.ceil(r); dx++) {
 				if(r**2>dx**2+dy**2){
 					let x = x0+dx;
 					let y = y0+dy;
-					let cell = this.getCell(x,y);
+					// we generate the cell, and overwrite the isMine state
+					this.generateCell(x, y, false, false); 
 					console.log(x, y, "is safe");
-					cell.open();
 				}
+				// one-lined version
+				// if(r**2>dx**2+dy**2) this.open(x0+dx, y0+dx);
 			}
 		}
 	}
