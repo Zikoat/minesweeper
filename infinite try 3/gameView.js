@@ -147,9 +147,12 @@ function onDragStart(event) {
     this.dragPoint.x -= this.x;
     this.dragPoint.y -= this.y;
 
-    console.log(this.dragPoint);
-    console.log(event.data.global);
+    // this.x is the position of the container we want to change
 
+    console.log("event.data.getLocalPosition(this.parent)", event.data.getLocalPosition(this.parent));
+    console.log("dragpoint", this.dragPoint);
+    console.log("data.global", event.data.global);
+    console.log("this.position", this.position);
 }
 
 function onDragEnd() {
@@ -162,6 +165,7 @@ function onDragEnd() {
 function onDragMove() {
     if (this.dragging) {
     	var newPosition = this.data.getLocalPosition(this.parent);
+    	console.log(newPosition);
 
         this.x = newPosition.x - this.dragPoint.x;
         this.y = newPosition.y - this.dragPoint.y;
