@@ -94,7 +94,8 @@ class Field {
 		} 
 		
 		if(cell.isOpen){
-			console.log(x, y, "is already open, cant open");
+			// debugging
+			//console.log(x, y, "is already open, cant open");
 			return;
 		}
 		if(cell.isOpen) console.log(x, y, "is open, and updating");
@@ -109,7 +110,8 @@ class Field {
 			console.log("game over, you stepped on a mine: ("+x+", "+y+")");
 			this.gameOver = true;
 		}
-		console.log("opening "+x+","+y);
+		// debugging
+		//console.log("opening "+x+","+y);
 
 		// generating of neighbors. we generate the cells when a neighbor is opened
 		let neighbors = cell.getNeighbors();
@@ -217,7 +219,7 @@ class Field {
 	setSafeCells(x0, y0){ // opens a circle of tiles around a point
 		this.pristine = false;
 		var r = this.safeRadius;
-		console.log(this.safeRadius);
+		console.log("safeRadius", this.safeRadius);
 		for (var dy = Math.floor(-r); dy < Math.ceil(r); dy++) {
 			for (var dx = Math.floor(-r); dx < Math.ceil(r); dx++) {
 				if(r**2>dx**2+dy**2){
@@ -225,7 +227,8 @@ class Field {
 					let y = y0+dy;
 					// we generate the cell, and overwrite the isMine state
 					this.generateCell(x, y, false, false); 
-					console.log(x, y, "is safe");
+					// debugging
+					//console.log(x, y, "is safe");
 				}
 				// one-lined version
 				// if(r**2>dx**2+dy**2) this.open(x0+dx, y0+dx);

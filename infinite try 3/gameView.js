@@ -80,7 +80,7 @@ function updateCell(x, y){
 	// debugging
 	counter++;
 	if(counter > 100){
-		console.warn("update counter is over 100, checking field");
+		console.log("update counter is over 100, checking field");
 		f.checkForErrors();
 		counter -= 1000;
 	}
@@ -92,7 +92,7 @@ function updateCell(x, y){
 	}
 	else {
 		// debugging
-		console.log("updating", x, y);
+		//console.log("updating", x, y);
 		cell.sprite.update(cell);
 	}
 }
@@ -110,7 +110,7 @@ function setup(loader, resources){
 	    app.renderer.width,
 	    app.renderer.height
 	);
-	window.background.tint = 0xff0088;
+	window.background.tint = 0x4fe1ff;
 	
 	clickHandler.addChildAt(background, 0);
 	clickHandler.addChildAt(fieldContainer, 1);
