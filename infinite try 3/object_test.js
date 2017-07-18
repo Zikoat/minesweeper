@@ -44,7 +44,7 @@ class Field {
 		this.pristine = true;
 		// todo: implement safeRadius
 		// makes the first click not press a mine, is a float and checks in a circle
-		this.safeRadius = 2.5;
+		this.safeRadius = 4;
 		this.gameOver = false;
 		this.neighborPosition = [
 			[-1,-1],

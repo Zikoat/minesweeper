@@ -122,8 +122,10 @@ function setup(loader, resources){
         .on('pointermove', onDragMove);
 
 	// gameplay
-	f = new Field(0.25);
-	f.open(20,10);
+	f = new Field(0.3);
+	//f.open(20,10);
+	console.info(runBotSimple());
+
 }
 
 function onDragStart(event) {
@@ -157,4 +159,47 @@ function onDragMove() {
         background.tilePosition.set(x,y);
         this.hasDragged = true;
     }
+}
+
+function openCellsSimple(){
+	f.getAll()
+		.forEach(cell=>{
+			if(
+				cell.value()===
+				cell.getNeighbors()
+					.filter(cell2=>cell2.isFlagged)
+					.length
+			) cell.getNeighbors()
+				.filter(cell=>!cell.isFlagged)
+				.forEach(cell=>cell.open());
+		});
+}
+function flagCellsSimple(){
+	f.getAll()
+		.forEach(cell=>{
+			let neighbors = cell.getNeighbors();
+			let closedNeighbors = neighbors.filter(cell=>!cell.isOpen);
+			if(cell.value() === closedNeighbors.length){
+				closedNeighbors.forEach(cell=>cell.flag());
+			}
+	});
+}
+function runBotSimple(){
+	f.open(40,10);
+	var steps = 0;
+	prevOpened = -1;
+	while(f.getAll().filter(cell=>cell.isOpen).length!==prevOpened){
+		steps++;
+		prevOpened = f.getAll().filter(cell=>cell.isOpen).length;
+		flagCellsSimple();
+		openCellsSimple();
+	}
+	var all = f.getAll();
+	console.log("all:", all.length);
+	console.log("flags:", all.filter(cell=>cell.isFlagged).length);
+	let opened = all.filter(cell=>cell.isOpen);
+	console.log("opened:", opened.length);
+	if(all.length-opened.length!=all.filter(cell=>!cell.isOpen).length) console.warn("openDiff:", all.length-opened.length-all.filter(cell=>!cell.isOpen).length);
+	console.log("closed:", all.length-opened.length);
+	return {steps:steps};
 }
