@@ -51,9 +51,8 @@ app.renderer.autoResize = true;
 app.renderer.resize(window.innerWidth, window.innerHeight);
 
 var fieldContainer = new PIXI.Container();
-var clickHandler = new PIXI.Container();
-clickHandler.interactive = true;
-app.stage.addChild(clickHandler);
+
+fieldContainer.interactive = true;
 
 var f;
 var tex = {};
@@ -112,10 +111,10 @@ function setup(loader, resources){
 	);
 	window.background.tint = 0xff0088;
 	
-	clickHandler.addChildAt(background, 0);
-	clickHandler.addChildAt(fieldContainer, 1);
+	app.stage.addChildAt(background, 0);
+	app.stage.addChildAt(fieldContainer, 1);
 
-	clickHandler
+	fieldContainer
         .on('pointerdown', onDragStart)
         .on('pointerup', onDragEnd)
         .on('pointerupoutside', onDragEnd)
@@ -127,6 +126,8 @@ function setup(loader, resources){
 }
 
 function onDragStart(event) {
+	fieldContainer.hitArea = new PIXI.Rectangle(0,0,200,200);
+
     this.data = event.data;
     this.dragging = true;
     this.hasDragged = false;
@@ -154,6 +155,7 @@ function onDragMove() {
 
         let x = newPosition.x - this.dragPoint.x;
         let y = newPosition.y - this.dragPoint.y;
+
 
         fieldContainer.position.set(x,y);
         background.tilePosition.set(x,y);
