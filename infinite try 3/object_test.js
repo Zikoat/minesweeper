@@ -19,8 +19,8 @@ class Cell {
 	}
 
 	flag(){// flags this cell
-		console.info("flagging is not ready yet");
-		//this.parent.flag(this.x, this.y);
+		if(this.parent===undefined) console.error("i don't know my parents", this);
+		this.parent.flag(this.x, this.y);
 	}
 	getNeighbors(){//returns an array of this cell's neighbors
 		if(this.parent===undefined) console.error("i don't know my parents", this);
@@ -134,19 +134,16 @@ class Field {
 				.forEach(cell=>cell.open()); // open all the cells in the array
 		}
 
-		// call the update method which pixi uses to draw things
-		// the function is in another file
-		// todo: make this not dependent of the funcion in the game script
+		// call the update method which pixi uses to draw things.
+		// the function is in another file.
+		// todo: make this not dependent of the funcion in the game script.
 		updateCell(x, y);
 
 		// debugging
 		//this.checkForErrors();
 	}
 	flag(x, y){
-		// todo
-		// to make it work, can make the mine not undefined if it is flagged, 
-		// and delete it if we unflag it
-		// todo: update
+		f.getCell(x, y).isFlagged = true;
 		updateCell(x, y);
 	}
 	getNeighbors(x, y){
