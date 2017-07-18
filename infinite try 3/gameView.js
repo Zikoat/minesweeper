@@ -122,73 +122,41 @@ function setup(loader, resources){
         .on('pointermove', onDragMove);
 
 	// gameplay
-	f = new Field(1);
+	f = new Field(0.25);
 	f.open(20,10);
 }
 
-// -----------------------------
-// DRAGGING, copied from pixijs demos (dragging and zorder)
-
 function onDragStart(event) {
-    // store a reference to the data
-    // the reason for this is because of multitouch
-    // we want to track the movement of this particular touch
     this.data = event.data;
-    //this.alpha = 0.5;
     this.dragging = true;
-
-    console.log("onDragStart");
-
-    // event.data.getLocalPosition(this.parent)
-    // is the location of the mouseclick within this container's parent. makes it move within the parent
-    // this.parent is the root container, which makes this return the global coordinate
-
-    this.dragPoint = event.data.getLocalPosition(this.parent);
-    this.dragPoint.x -= this.x;
-    this.dragPoint.y -= this.y;
-
-    // this.x is the position of the container we want to change
-
-    console.log("event.data.getLocalPosition(this.parent)", event.data.getLocalPosition(this.parent));
-    console.log("dragpoint", this.dragPoint);
-    console.log("data.global", event.data.global);
-    console.log("this.position", this.position);
+    this.hasDragged = false;
+    this.dragPoint = event.data.getLocalPosition(fieldContainer);
 }
 
 function onDragEnd() {
-    //this.alpha = 1;
-    this.dragging = false;
-    // set the interaction data to null
-    this.data = null;
+	if(this.hasDragged) {
+	    this.dragging = false;
+	    this.data = null;
+	} else {
+		this.dragging = false;
+	    this.data = null;
+
+		let x = Math.floor(this.dragPoint.x / width);
+		let y = Math.floor(this.dragPoint.y / width);
+		f.open(x, y);
+		console.log("clicked "+x+", "+y);
+	}
 }
 
 function onDragMove() {
     if (this.dragging) {
     	var newPosition = this.data.getLocalPosition(this.parent);
-    	console.log(newPosition);
 
-        this.x = newPosition.x - this.dragPoint.x;
-        this.y = newPosition.y - this.dragPoint.y;
+        let x = newPosition.x - this.dragPoint.x;
+        let y = newPosition.y - this.dragPoint.y;
+
+        fieldContainer.position.set(x,y);
+        background.tilePosition.set(x,y);
+        this.hasDragged = true;
     }
 }
-/*
-function onDragMove(event) {
-    if (this.dragging) {
-    	var startClickPosition = this.data.global;
-    	console.log(startClickPosition);
-    	console.log(this.oldPosition);
-    	console.log(event.data.global);
-        var newPosition = {};
-        newPosition.x = startClickPosition.x - this.oldPosition.x + event.data.global.x;
-        newPosition.y = startClickPosition.y - this.oldPosition.y + event.data.global.y;
-
-        console.log(newPosition.x);
-        //this.x = newPosition.x;
-        //this.y = newPosition.y;
-        
-        // get the background, and only change the tileposition
-    	background.tilePosition.set(newPosition.x, newPosition.y);
-    	// change the position of the field
-    	fieldContainer.position.set(newPosition.x, newPosition.y);
-    }
-}*/
