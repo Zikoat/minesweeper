@@ -1,25 +1,41 @@
 /*jshint esversion: 6 */
 
 class CellSprite extends PIXI.Container{ // class for creating and updating sprites
+
 	constructor(cell){
 		super();
 		this.x = cell.x * width;
 		this.y = cell.y * width;
-		let textures = chooseTexture(cell);
+		let textures = this.chooseTexture(cell);
 		let back = new PIXI.Sprite(textures.back);
 		let front = new PIXI.Sprite(textures.front);
 		this.addChildAt(back, 0);
 		this.addChildAt(front, 1);
 		fieldContainer.addChild(this);
 	}
+
 	update(cell){
 		let back = this.getChildAt(0);
 		let front = this.getChildAt(1);
 
-		let textures = chooseTexture(cell);
+		let textures = this.chooseTexture(cell);
 
 		back.texture = textures.back;
 		front.texture = textures.front;
+	}
+
+	chooseTexture(cell){
+		var textures = {};
+
+		if(cell.isOpen) {
+			textures.back = tex.open;
+			if(cell.isMine) textures.front = tex.mineWrong;
+			else textures.front = tex[cell.value()];
+		} else {
+			textures.back = tex.closed;
+			textures.front = cell.isFlagged ? tex.flag : null;
+		}
+		return textures;
 	}
 }
 
@@ -27,20 +43,6 @@ class FieldRenderer {
 	constructor(field){
 
 	}
-}
-
-function chooseTexture(cell){ // helper function to get textures
-	var textures = {};
-
-	if(cell.isOpen) {
-		textures.back = tex.open;
-		if(cell.isMine) textures.front = tex.mineWrong;
-		else textures.front = tex[cell.value()];
-	} else {
-		textures.back = tex.closed;
-		textures.front = cell.isFlagged ? tex.flag : null;
-	}
-	return textures;
 }
 
 // global variables
