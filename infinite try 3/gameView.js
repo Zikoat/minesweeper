@@ -126,8 +126,6 @@ function setup(loader, resources){
 }
 
 function onDragStart(event) {
-	fieldContainer.hitArea = new PIXI.Rectangle(0,0,200,200);
-
     this.data = event.data;
     this.dragging = true;
     this.hasDragged = false;
@@ -139,9 +137,8 @@ function onDragEnd() {
 	    this.dragging = false;
 	    this.data = null;
 	} else {
-		this.dragging = false;
+	    this.dragging = false;
 	    this.data = null;
-
 		let x = Math.floor(this.dragPoint.x / width);
 		let y = Math.floor(this.dragPoint.y / width);
 		f.open(x, y);
@@ -155,7 +152,6 @@ function onDragMove() {
 
         let x = newPosition.x - this.dragPoint.x;
         let y = newPosition.y - this.dragPoint.y;
-
 
         fieldContainer.position.set(x,y);
         background.tilePosition.set(x,y);
