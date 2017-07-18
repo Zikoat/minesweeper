@@ -51,8 +51,9 @@ app.renderer.autoResize = true;
 app.renderer.resize(window.innerWidth, window.innerHeight);
 
 var fieldContainer = new PIXI.Container();
-
-fieldContainer.interactive = true;
+var clickHandler = new PIXI.Container();
+clickHandler.interactive = true;
+app.stage.addChild(clickHandler);
 
 var f;
 var tex = {};
@@ -111,10 +112,10 @@ function setup(loader, resources){
 	);
 	window.background.tint = 0xff0088;
 	
-	app.stage.addChildAt(background, 0);
-	app.stage.addChildAt(fieldContainer, 1);
+	clickHandler.addChildAt(background, 0);
+	clickHandler.addChildAt(fieldContainer, 1);
 
-	fieldContainer
+	clickHandler
         .on('pointerdown', onDragStart)
         .on('pointerup', onDragEnd)
         .on('pointerupoutside', onDragEnd)
@@ -149,7 +150,6 @@ function onDragEnd() {
 function onDragMove() {
     if (this.dragging) {
     	var newPosition = this.data.getLocalPosition(this.parent);
-
         let x = newPosition.x - this.dragPoint.x;
         let y = newPosition.y - this.dragPoint.y;
 
