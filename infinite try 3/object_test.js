@@ -35,7 +35,7 @@ class Cell {
 class Field {
 	// do not call any of the cell's functions in the field class, to prevent 
 	// infinite loops
-	constructor(probability=0.5){
+	constructor(probability=0.5, safeRadius=1){
 		this.field = {};
 		// this is the probability that a mine is a cell
 		this.probability = probability;
@@ -44,7 +44,7 @@ class Field {
 		this.pristine = true;
 		// todo: implement safeRadius
 		// makes the first click not press a mine, is a float and checks in a circle
-		this.safeRadius = 4;
+		this.safeRadius = safeRadius;
 		this.gameOver = false;
 		this.neighborPosition = [
 			[-1,-1],
