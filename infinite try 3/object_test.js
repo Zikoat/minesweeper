@@ -58,6 +58,7 @@ class Field {
 			[0,1],
 			[1,1]
 		];
+		this.renderer = null;
 
 		// todo: more options: 
 		// generate on get or open neighbor
@@ -98,7 +99,7 @@ class Field {
 			//console.log(x, y, "is already open, cant open");
 			return;
 		}
-		if(cell.isOpen) console.log(x, y, "is open, and updating");
+		if(cell.isOpen) console.log(x, y, "is open");
 
 		if(cell.isFlagged){
 			console.log(x, y, "is flagged, cant open");
@@ -137,14 +138,14 @@ class Field {
 		// call the update method which pixi uses to draw things.
 		// the function is in another file.
 		// todo: make this not dependent of the funcion in the game script.
-		updateCell(x, y);
+		if(this.renderer) this.renderer.updateCell(x, y);
 
 		// debugging
 		//this.checkForErrors();
 	}
 	flag(x, y){
 		f.getCell(x, y).isFlagged = true;
-		updateCell(x, y);
+		if(this.renderer)this.renderer.updateCell(x, y);
 	}
 	getNeighbors(x, y){
 		let neighbors = [];
