@@ -118,10 +118,13 @@ function setup(loader, resources){
 	clickHandler.addChildAt(fieldContainer, 1);
 
 	clickHandler
-        .on('pointerdown', onDragStart)
-        .on('pointerup', onDragEnd)
-        .on('pointerupoutside', onDragEnd)
-        .on('pointermove', onDragMove);
+		.on('mousedown', onDragStart)
+		.on('mouseup', onDragEnd)
+		.on('pointerupoutside', onDragEnd)
+		.on('pointermove', onDragMove)
+		.on("rightclick", onRightClick);
+
+	document.addEventListener('contextmenu', event => event.preventDefault());
 
 	// gameplay
 	f = new Field(0.3);
@@ -131,19 +134,19 @@ function setup(loader, resources){
 }
 
 function onDragStart(event) {
-    this.data = event.data;
-    this.dragging = true;
-    this.hasDragged = false;
-    this.dragPoint = event.data.getLocalPosition(fieldContainer);
+	this.data = event.data;
+	this.dragging = true;
+	this.hasDragged = false;
+	this.dragPoint = event.data.getLocalPosition(fieldContainer);
 }
 
 function onDragEnd() {
 	if(this.hasDragged) {
-	    this.dragging = false;
-	    this.data = null;
+		this.dragging = false;
+		this.data = null;
 	} else {
-	    this.dragging = false;
-	    this.data = null;
+		this.dragging = false;
+		this.data = null;
 		let x = Math.floor(this.dragPoint.x / width);
 		let y = Math.floor(this.dragPoint.y / width);
 		f.open(x, y);
@@ -152,15 +155,29 @@ function onDragEnd() {
 }
 
 function onDragMove() {
-    if (this.dragging) {
-    	var newPosition = this.data.getLocalPosition(this.parent);
-        let x = newPosition.x - this.dragPoint.x;
-        let y = newPosition.y - this.dragPoint.y;
+	if (this.dragging) {
+		var newPosition = this.data.getLocalPosition(this.parent);
+		let x = newPosition.x - this.dragPoint.x;
+		let y = newPosition.y - this.dragPoint.y;
 
-        fieldContainer.position.set(x,y);
-        background.tilePosition.set(x,y);
-        this.hasDragged = true;
-    }
+		fieldContainer.position.set(x,y);
+		background.tilePosition.set(x,y);
+		this.hasDragged = true;
+	}
+}
+
+function onRightClick(event){
+	let position = event.data.getLocalPosition(fieldContainer);
+
+	let x = Math.floor(position.x / width);
+	let y = Math.floor(position.y / width);
+	cell = f.getCell(x,y);
+	if(cell.isOpen){
+		console.log("cant flag, is open", x, y);
+	} else {
+		f.flag(x,y);
+		console.log("flagged "+x+", "+y);
+	}
 }
 
 function openCellsSimple(){
