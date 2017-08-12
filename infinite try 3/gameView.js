@@ -127,9 +127,10 @@ function setup(loader, resources){
 	document.addEventListener('contextmenu', event => event.preventDefault());
 
 	// gameplay
-	f = new Field(0.3);
-	//f.open(20,10);
-	console.info(runBotSimple());
+	f = new Field(0.3, 7);
+	centerField(0,0);
+	f.open(0,0);
+	console.info(runBotSimple(f));
 
 }
 
@@ -165,12 +166,26 @@ function onDragMove() {
 		this.hasDragged = true;
 	}
 }
+/** center the field around a coordinate */
+function centerField(x,y){
+	if(x==="undefined") x=0;
+	if(y==="undefined") y=0;
+
+	let centerX = app.renderer.width/2;
+	let centerY = app.renderer.height/2;
+
+	let newX = -x*width + centerX;
+	let newY = -y*width + centerY;
+	fieldContainer.position.set(newX,newY);
+	background.tilePosition.set(newX,newY);
+}
 
 function onRightClick(event){
 	let position = event.data.getLocalPosition(fieldContainer);
 
 	let x = Math.floor(position.x / width);
 	let y = Math.floor(position.y / width);
+
 	cell = f.getCell(x,y);
 	if(cell.isOpen){
 		console.log("cant flag, is open", x, y);
@@ -180,8 +195,8 @@ function onRightClick(event){
 	}
 }
 
-function openCellsSimple(){
-	f.getAll()
+function openCellsSimple(field){
+	field.getAll()
 		.forEach(cell=>{
 			if(
 				cell.value()===
@@ -193,8 +208,8 @@ function openCellsSimple(){
 				.forEach(cell=>cell.open());
 		});
 }
-function flagCellsSimple(){
-	f.getAll()
+function flagCellsSimple(field){
+	field.getAll()
 		.forEach(cell=>{
 			let neighbors = cell.getNeighbors();
 			let closedNeighbors = neighbors.filter(cell=>!cell.isOpen);
@@ -203,17 +218,16 @@ function flagCellsSimple(){
 			}
 	});
 }
-function runBotSimple(){
-	f.open(40,10);
+function runBotSimple(field){
 	var steps = 0;
 	prevOpened = -1;
-	while(f.getAll().filter(cell=>cell.isOpen).length!==prevOpened){
+	while(field.getAll().filter(cell=>cell.isOpen).length!==prevOpened){
 		steps++;
-		prevOpened = f.getAll().filter(cell=>cell.isOpen).length;
-		flagCellsSimple();
-		openCellsSimple();
+		prevOpened = field.getAll().filter(cell=>cell.isOpen).length;
+		flagCellsSimple(field);
+		openCellsSimple(field);
 	}
-	var all = f.getAll();
+	var all = field.getAll();
 	console.log("all:", all.length);
 	console.log("flags:", all.filter(cell=>cell.isFlagged).length);
 	let opened = all.filter(cell=>cell.isOpen);
