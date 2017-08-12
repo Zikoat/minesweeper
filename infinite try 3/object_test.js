@@ -143,7 +143,10 @@ class Field {
 		//this.checkForErrors();
 	}
 	flag(x, y){
-		f.getCell(x, y).isFlagged = true;
+		// debugging
+		//console.log("the cell's flagged status is: ", f.getCell(x, y).isFlagged);
+		
+		f.getCell(x, y).isFlagged = !f.getCell(x,y).isFlagged;
 		updateCell(x, y);
 	}
 	getNeighbors(x, y){

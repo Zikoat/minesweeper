@@ -33,7 +33,7 @@ class CellSprite extends PIXI.Container{ // class for creating and updating spri
 			else textures.front = tex[cell.value()];
 		} else {
 			textures.back = tex.closed;
-			textures.front = cell.isFlagged ? tex.flag : null;
+			textures.front = cell.isFlagged ? tex.flag : PIXI.Texture.EMPTY;
 		}
 		return textures;
 	}
@@ -81,10 +81,9 @@ PIXI.loader
 function updateCell(x, y){
 	// debugging
 	counter++;
-	if(counter > 100){
-		console.log("update counter is over 100, checking field");
+	if(counter % 1000 === 100){
+		console.log(`update counter is ${counter}, checking field`);
 		f.checkForErrors();
-		counter -= 1000;
 	}
 
 	let cell = f.getCell(x, y);
