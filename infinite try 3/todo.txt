@@ -84,3 +84,5 @@ make the grid be able to use for of loop to loop through all cells
 this will affect getAll, generate, getCell, default cells, flagging, opening,
 
 clone field's functions into cell's (prototype)
+
+use import statements

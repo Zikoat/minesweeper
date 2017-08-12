@@ -180,18 +180,13 @@ function centerField(x,y){
 }
 
 function onRightClick(event){
+	// reminder: use selector
 	let position = event.data.getLocalPosition(fieldContainer);
 
 	let x = Math.floor(position.x / width);
 	let y = Math.floor(position.y / width);
 
-	cell = f.getCell(x,y);
-	if(cell.isOpen){
-		console.log("cant flag, is open", x, y);
-	} else {
-		f.flag(x,y);
-		console.log("flagged "+x+", "+y);
-	}
+	f.flag(x,y);
 }
 
 function openCellsSimple(field){

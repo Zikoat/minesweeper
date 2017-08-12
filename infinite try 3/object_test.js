@@ -143,11 +143,18 @@ class Field {
 		//this.checkForErrors();
 	}
 	flag(x, y){
+		if(this.gameOver){
+			console.log("game is over, cant flag");
+			return;
+		}
 		// debugging
 		//console.log("the cell's flagged status is: ", f.getCell(x, y).isFlagged);
-		
-		f.getCell(x, y).isFlagged = !f.getCell(x,y).isFlagged;
-		updateCell(x, y);
+		let cell = this.getCell(x, y);
+		if(!cell.isOpen){
+			cell.isFlagged = !cell.isFlagged;
+			//console.log("flagged: ", x, y);
+			updateCell(x, y);
+		} //else console.log("cant flag, is open", cell.x, cell.y);
 	}
 	getNeighbors(x, y){
 		let neighbors = [];
