@@ -3,18 +3,22 @@ we now use p.then whenever we need somithng run after it has loaded
 
 we cans just load all the things, and run the code after we have loaded, have a function which is called after constructor
 
-to do better code: 
-var f is passed
-tex is fieldrenderer.tex
-var width is fieldrenderer.cellWidth
-var app = fieldrenderer.app
+to do better code:
+class textures
+	emits when done loading(or promise?)
+move into fieldrenderer
+	var app is this.app
+	var f is passed, this.field
+	tex (own class), this.textures
+	var width, this.cellWidth
+	app.render.width, this.screenWidth
 class controls is clickhandler
 	put dragging into clickhandler
 	emits events when things are selected
 	handle keyboard controls
 	toggle keyboard/mouse selection
 	on keyboard controls, move field slowly towards cursor
-class textures
+field.select, field.selected
 move the bot to its own file
 
 promises didnt work. commit message: moved loader into a promise, renamed updateCell to windows.updateCell
@@ -23,12 +27,60 @@ is f.getcell called in updatecell? yes
 
 problem: the field is created after the renderer has been initialized, should work fine
 
+make a function, called something like _multipleArgumentsHandler(arg1, arg2), which takes either a cell or an x/y combination
+we can build this into getCell()
+	description: this is the atom of the field engine, every piece of information
+		from the field is retrieved using this method
+	this means it has to be optimized
+	the new behaviour means it has a slightly larger overhead, 
+		but this is a tradeoff for the usability
+old behaviour
+	take x and y, and return a cell
+	if the cell is not in the array, return a dummy cell
+	we cant check if 2 dummy cells are the same[1]
+new behaviour
+	take x and y, and return a cell
+	if the cell is not in the array, return a dummy cell
+	can also take a cell, and returns the cell
+	this makes all the functions that take x/y coordinates, be able to take
+		a cell as well
+	this means that x can be a cell, and we cant reliably use it inside the function
+	instead we have to use cell.x, which is fine(or better)
+	function has to be optimized
+	i have to not mix up using the new and improved version in places where it doesnt fit
+	i have to add tests to the function, in early stages of development
+		if it is a x/y pair
+			return the cell/dummy cell
+		if it is a cell
+			check if it is the same as one from the array
+			check if one from the array is the same as one from the array
+			if it is not a cell, but has x/y coordinates in it
+				check if the state is the same
+			return the cell
+	we have to write a note on the top of the usage with something like:
+	all the functions that take a cell's coordinates as input, can also
+		be called with a cell, see Field.getCell()
+	example: 
+		let field = new Field();
+		let cell = field.getCell(0,0);
+		field.open(cell) // is the same as
+		field.open(0,0)
+
+add tinting(and flash)
+
 if field.enableView then updateCell()
 
 fix menu click propagation
 
-flagging: lone cells dont get flagged
+fix infinite floodfill with low probability
+on probability below percolation threshold, use slow cell opening
+queue.stepAll and queue.stepOne
 
-use a grid library on the bottom of this minefield implementation
+flagging: lone cells dont get flagged[1]
+
+to solve [1]
+use a grid library on the bottom of this minefield implementation 
 make the grid be able to use for of loop to loop through all cells
+this will affect getAll, generate, getCell, default cells, flagging, opening,
 
+clone field's functions into cell's (prototype)
