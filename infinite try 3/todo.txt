@@ -1,0 +1,34 @@
+we create a new pormise, and add the loader  things in the function. when done loading, do all the thens
+we now use p.then whenever we need somithng run after it has loaded
+
+we cans just load all the things, and run the code after we have loaded, have a function which is called after constructor
+
+to do better code: 
+var f is passed
+tex is fieldrenderer.tex
+var width is fieldrenderer.cellWidth
+var app = fieldrenderer.app
+class controls is clickhandler
+	put dragging into clickhandler
+	emits events when things are selected
+	handle keyboard controls
+	toggle keyboard/mouse selection
+	on keyboard controls, move field slowly towards cursor
+class textures
+move the bot to its own file
+
+promises didnt work. commit message: moved loader into a promise, renamed updateCell to windows.updateCell
+
+is f.getcell called in updatecell? yes
+
+problem: the field is created after the renderer has been initialized, should work fine
+
+if field.enableView then updateCell()
+
+fix menu click propagation
+
+flagging: lone cells dont get flagged
+
+use a grid library on the bottom of this minefield implementation
+make the grid be able to use for of loop to loop through all cells
+
