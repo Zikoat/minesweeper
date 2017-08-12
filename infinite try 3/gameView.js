@@ -130,7 +130,7 @@ function setup(loader, resources){
 	f = new Field(0.3, 7);
 	centerField(0,0);
 	f.open(0,0);
-	console.info(runBotSimple(f));
+	//console.info(runBotSimple(f));
 
 }
 
