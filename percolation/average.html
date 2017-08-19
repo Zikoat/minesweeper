@@ -1,0 +1,167 @@
+<script type="text/javascript">
+// Download the ZIP(on github), and open this HTML file in the browser. 
+// Open the console, and you should see the result of runTest(20, 100);
+
+// try writing "runTest(1000,10)" in the console
+
+runTest(20, 100);
+
+// the Percolation and WeightedQuickUnionUF functions come from this article:
+// http://michaeltoth.me/using-javascript-to-visualize-a-percolation-system.html
+// stripped of all its nice UI, to barebones javascript
+
+function runTest(N, amount) {
+    
+    var t0 = performance.now();
+    console.log("The average is: " + getAverage(N, amount));
+    var t1 = performance.now();
+
+    console.log("Calculating the average took " + (t1 - t0) + " milliseconds.");
+}
+
+function getAverage(N, amount){
+    let openTiles = [];
+
+    for (var i = 0; i < amount; i++) {
+        let perc = new Percolation(N);
+        let count = 0;
+    
+        while (!perc.percolates()) {
+            perc.openRandom();
+            count++;
+        }
+    
+        openTiles.push(count);
+    }
+
+    var sum = openTiles.reduce(function(a, b) { return a + b; });
+    let averageCount = sum / openTiles.length;
+    let averagePercolationThreshold = averageCount / (N**2);
+
+    return averagePercolationThreshold;
+}
+
+// Percolation system.  Grid begins closed with functions to open sites and check status
+function Percolation(N) {
+    // Constructor
+    var size = N;
+    var uf = new WeightedQuickUnionUF(N * N + 2);
+    var topUF = new WeightedQuickUnionUF(N * N + 2);
+    var opened = [];
+    for (var i = 0; i < N * N; i++) {
+        opened[i] = false;
+    }
+
+    // Helper function to convert 2 digit references to 1 digit
+    function xyTo1D(i, j) {
+        return size * (i - 1) + j;
+    }
+        // Open a site uniformly at random within the grid
+    this.openRandom = function() {
+        // Generate random integers between 1 and N
+        var i = Math.floor(Math.random() * N + 1);
+        var j = Math.floor(Math.random() * N + 1);
+
+        if (this.isOpen(i, j)) {
+            this.openRandom();
+        } else {
+            this.open(i, j);
+            return;
+        }
+    }
+
+    // Open a new site in the grid
+    this.open = function(i, j) {
+        // Mark open in boolean array:
+        opened[xyTo1D(i, j)] = true;
+        
+        // Connect with open neighbors:
+        if (i != 1 && this.isOpen(i - 1, j)) {
+            uf.union(xyTo1D(i, j), xyTo1D(i - 1, j));
+            topUF.union(xyTo1D(i, j), xyTo1D(i - 1, j));
+        }
+        if (i != size && this.isOpen(i + 1, j)) {
+            uf.union(xyTo1D(i, j), xyTo1D(i + 1, j));
+            topUF.union(xyTo1D(i, j), xyTo1D(i + 1, j));
+        }
+        if (j != 1 && this.isOpen(i, j - 1)) {
+            uf.union(xyTo1D(i, j), xyTo1D(i, j - 1));
+            topUF.union(xyTo1D(i, j), xyTo1D(i, j - 1));
+        }
+        if (j != size && this.isOpen(i, j + 1)) {
+            uf.union(xyTo1D(i, j), xyTo1D(i, j + 1));
+            topUF.union(xyTo1D(i, j), xyTo1D(i, j + 1));
+        }
+
+        // If in top or bottom row, connect to virtual sites:
+        if (i === 1) {
+            uf.union(xyTo1D(i, j), 0);
+            topUF.union(xyTo1D(i, j), 0);
+        }
+        if (i === size) {
+            // Don't connect topUF.  Prevents backwash problem
+            uf.union(xyTo1D(i, j), size * size + 1);
+        }
+
+
+    }
+    
+    this.isOpen = function(i, j) {
+        return opened[xyTo1D(i, j)];
+    }
+
+    // A site is full if a path exists from it to the top
+    this.isFull = function(i, j) {
+        return topUF.connected(xyTo1D(i, j), 0);
+    }
+
+    // System percolates if top and bottom virtual sites are connected
+    this.percolates = function() {
+        return uf.connected(0, size * size + 1);
+        return 0;
+    }
+}
+
+// Union find implementation for efficient checking of percolation
+function WeightedQuickUnionUF(N) {
+    
+    // Constructor
+    var id = [];
+    var sz = []; 
+    for (var i = 0; i < N; i++) {
+        id[i] = i; // id[i] = parent of i
+        sz[i] = 1; // sz[i] = number of objects in subtree rooted at i
+    }
+
+    // Returns the number of components, which starts at N
+    this.count = N;
+
+    // Returns the component id for the component containing site
+    this.find = function(p) {
+        while (p != id[p]) {
+            p = id[p];
+        }
+        return p;
+    }
+
+    // Returns true if two elements are part of the same component
+    this.connected = function(p, q) {
+        return this.find(p) === this.find(q);
+    }
+
+    // Connects the components of two elements
+    this.union = function(p, q) {
+        var rootP = this.find(p);
+        var rootQ = this.find(q);
+        if (rootP === rootQ) { return; }
+        
+        // make smaller root point to large one
+        if (sz[rootP] < sz[rootQ]) {
+            id[rootP] = rootQ; sz[rootQ] += sz[rootP];
+        } else {
+            id[rootQ] = rootP; sz[rootP] += sz[rootQ];
+        }
+        this.count--;
+    }
+}
+</script>
